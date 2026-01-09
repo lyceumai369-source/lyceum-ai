@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lyceum AI | Smart Study</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+</head>
+<body class="dark">
+
+<div class="overlay" id="aboutOverlay">
+  <div class="popup">
+    <button class="close-btn" onclick="togglePopup()">×</button>
+    <img src="logo.png" class="popup-logo">
+    <h2>Lyceum AI</h2>
+    <div class="popup-body">
+      <p>Developed by</p>
+      <h3 class="dev-name">Ananthu Shaji</h3>
+      <p class="dev-desc">A specialized AI companion for <br>Indian History & Polity.</p>
+      <div class="version-tag">Version 3.0 Gold</div>
+    </div>
+    <button class="btn-primary" onclick="togglePopup()">Close</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="logo.png" class="logo">
+      <div class="title">Lyceum AI</div>
+    </div>
+    <button class="btn main-btn" onclick="newChat()">+ New Chat</button>
+    <button class="btn" onclick="togglePopup()">About Developer</button>
+    <div class="history-label">RECENT ACTIVITY</div>
+    <div id="historyList" class="history-list"></div>
+    <button class="clear-btn" onclick="clearHistory()">🗑️ Clear History</button>
+  </aside>
+
+  <main class="chat-container">
+    <header class="chat-header">
+      <div class="header-left"><strong>Lyceum AI</strong></div>
+      <div class="header-right">
+        <button class="mob-btn" onclick="newChat()">➕</button>
+        <button class="mob-btn" onclick="togglePopup()">ℹ️</button>
+        <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+      </div>
+    </header>
+
+    <div class="chat-scroller" id="scrollArea">
+      <div class="chat-content" id="chatBox">
+        <div class="welcome-screen" id="welcome">
+          <img src="logo.png">
+          <h1>Lyceum AI</h1>
+          <p>The Master of History & Indian Polity</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="input-container">
+      <div class="input-bar">
+        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload()">
+        <button class="action-btn" onclick="document.getElementById('imageInput').click()">📎</button>
+        <input id="userInput" placeholder="Ask about Polity, History, or me..." autocomplete="off">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

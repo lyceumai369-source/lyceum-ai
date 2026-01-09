@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lyceum AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+
+<div class="overlay" id="aboutOverlay">
+  <div class="popup">
+    <button class="close-btn" onclick="togglePopup()">×</button>
+    <div class="popup-img-wrap"><img src="logo.png"></div>
+    <h2>Lyceum AI</h2>
+    <div class="popup-body">
+      <p>Developed by</p>
+      <h3 class="dev-name">Ananthu Shaji</h3>
+      <p>Smart AI Study Partner</p>
+    </div>
+    <button class="btn-primary" onclick="togglePopup()">Close</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="logo.png" class="logo">
+      <div class="title">Lyceum AI</div>
+    </div>
+    <button class="btn main-btn" onclick="newChat()">+ New Chat</button>
+    <button class="btn" onclick="togglePopup()">About Developer</button>
+  </aside>
+
+  <main class="chat-container">
+    <header class="chat-header">
+      <strong>Lyceum AI</strong>
+      <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+    </header>
+
+    <div class="chat-scroller" id="scrollArea">
+      <div class="chat-content" id="chatBox">
+        <div class="welcome-screen" id="welcome">
+          <img src="logo.png">
+          <h1>Lyceum AI</h1>
+          <p>How can I help you today?</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="input-container">
+      <div class="input-bar">
+        <input id="userInput" placeholder="Message Lyceum AI..." autocomplete="off">
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

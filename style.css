@@ -1,0 +1,316 @@
+/* ===============================
+   THEME VARIABLES
+================================ */
+
+/* DARK MODE (DEFAULT) */
+:root {
+  --bg: #0b1020;
+  --panel: rgba(255,255,255,0.08);
+  --panel-strong: rgba(255,255,255,0.12);
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #4f46e5;
+  --accent-2: #22d3ee;
+  --bot: rgba(255,255,255,0.14);
+  --border: rgba(255,255,255,0.18);
+}
+
+/* LIGHT MODE */
+body.light {
+  --bg: #f5f7fb;
+  --panel: rgba(0,0,0,0.06);
+  --panel-strong: rgba(0,0,0,0.08);
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #4f46e5;
+  --accent-2: #0ea5e9;
+  --bot: rgba(0,0,0,0.06);
+  --border: rgba(0,0,0,0.12);
+}
+
+/* ===============================
+   BASE
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: radial-gradient(1200px 600px at 10% -10%, #1b2250, transparent),
+              radial-gradient(800px 500px at 90% 10%, #0ea5e9, transparent),
+              var(--bg);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+}
+
+/* ===============================
+   APP LAYOUT
+================================ */
+
+.app {
+  width: min(1100px, 96vw);
+  height: min(680px, 92vh);
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 12px;
+}
+
+/* ===============================
+   SIDEBAR
+================================ */
+
+.sidebar {
+  background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+.brand .logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.brand .title {
+  font-weight: 700;
+}
+
+.brand .tag {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.side-actions {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.btn {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--panel-strong);
+}
+
+.footer-note {
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ===============================
+   CHAT WRAPPER
+================================ */
+
+.chat-wrap {
+  position: relative;
+  background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ===============================
+   CHAT HEADER
+================================ */
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ===============================
+   CENTER TITLE (START SCREEN)
+================================ */
+
+.center-title {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.center-title img {
+  width: 72px;
+  height: 72px;
+  margin-bottom: 12px;
+}
+
+.center-title h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.center-title.hidden {
+  opacity: 0;
+  display: none;
+}
+
+/* ===============================
+   CHAT BOX
+================================ */
+
+.chat-box {
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* ===============================
+   MESSAGES
+================================ */
+
+.msg {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.user .avatar {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+
+.bubble {
+  max-width: 78%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bot);
+}
+
+.user .bubble {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  margin-left: auto;
+}
+
+/* ===============================
+   INPUT AREA
+================================ */
+
+.input-area {
+  padding: 12px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.input-area input {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: transparent;
+  color: var(--text);
+}
+
+.send {
+  border: none;
+  border-radius: 14px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  cursor: pointer;
+}
+
+/* ===============================
+   LOGO
+================================ */
+
+.logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media (max-width: 820px) {
+  .app {
+    grid-template-columns: 1fr;
+    height: 100vh;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .chat-wrap {
+    border-radius: 0;
+  }
+}
+/* Hide mobile-only button on desktop */
+.mobile-only {
+  display: none;
+}
+
+/* Show New Chat button in header on mobile */
+@media (max-width: 820px) {
+  .mobile-only {
+    display: inline-flex;
+  }
+}

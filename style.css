@@ -1,0 +1,204 @@
+/* --- ROOT VARIABLES --- */
+:root {
+    --accent: #ffffff;
+    --bg: #050505;
+    --sidebar-bg: #0a0a0a;
+    --user-text: #000000;
+}
+
+/* --- BASE STYLES --- */
+body {
+    background-color: var(--bg);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    overflow: hidden;
+    transition: background 0.5s ease;
+}
+
+#app {
+    display: flex;
+    flex-direction: row; 
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- SIDEBAR --- */
+#sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    flex-shrink: 0;
+    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- MAIN CONTENT & HERO --- */
+#main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-image: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+}
+
+#hero-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+    justify-content: center; 
+    text-align: center;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bot-name-title {
+    font-size: 2.5rem;
+    letter-spacing: 5px;
+    margin-top: 20px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.1);
+    transition: all 0.8s ease;
+}
+
+/* --- 3D CUBE LOGO --- */
+.cube-wrapper {
+    width: 80px; 
+    height: 80px;
+    perspective: 1000px;
+    transition: all 0.8s ease;
+}
+
+.cube {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotateCube 10s infinite linear;
+}
+
+.face {
+    position: absolute;
+    width: 80px; height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--accent);
+}
+
+.face img {
+    width: 80%; height: 80%;
+    object-fit: contain;
+}
+
+/* --- CHAT LAYOUT --- */
+#chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 10%;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    padding: 14px 22px;
+    border-radius: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 80%; 
+    word-wrap: break-word;
+    position: relative;
+    padding-bottom: 28px !important; 
+    min-width: 90px;
+    animation: messageSlideIn 0.3s ease-out forwards;
+}
+
+.user { align-self: flex-end; background: var(--accent); color: var(--user-text); border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.bot { align-self: flex-start; background: #1a1a1a; color: #ffffff; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+
+/* --- INPUT AREA --- */
+#input-area { padding: 20px 10%; background: var(--bg); }
+.input-wrapper { background: #121212; padding: 8px 15px; border-radius: 15px; border: 1px solid var(--accent); display: flex; align-items: center; }
+.footer-input { display: flex; align-items: center; width: 100%; }
+#user-input { flex: 1; background: none; border: none; color: white; outline: none; font-size: 16px; padding: 10px; }
+#send-btn { background: var(--accent); width: 40px; height: 40px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+#send-btn svg { width: 20px; height: 20px; fill: var(--user-text); }
+
+/* --- GLOBAL MOVIE EFFECT --- */
+body.chat-active #hero-section {
+    flex: none;
+    height: 70px; 
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 10px 25px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+body.chat-active .cube-wrapper {
+    transform: scale(0.4);
+    margin-right: 15px;
+}
+
+body.chat-active .bot-name-title {
+    font-size: 1.1rem;
+    margin-top: 0;
+    letter-spacing: 2px;
+}
+
+/* --- MOBILE VIEW --- */
+@media (max-width: 768px) {
+    #menu-toggle { display: block; }
+
+    #sidebar {
+        position: fixed;
+        left: -100%; /* Fix: Completely hide to remove black line */
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        background: #0a0a0a !important; 
+        z-index: 4000;
+        display: flex !important; /* Fix: Ensures buttons are visible in sidebar */
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 40px 20px 20px 20px;
+        transition: left 0.4s ease;
+    }
+
+    #sidebar.active { left: 0; }
+
+    body.chat-active #hero-section {
+        flex: none;
+        height: 80px; 
+        padding-top: 20px;
+        margin-bottom: 5px;
+    }
+
+    body.chat-active .cube-wrapper { transform: scale(0.4); }
+
+    #chat-container { padding: 80px 5% 20px 5%; }
+    #input-area { padding: 10px 5% 30px 5%; }
+}
+
+/* --- MODALS & ANIMATIONS --- */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.modal-content { background: #111 !important; border: 1px solid var(--accent); padding: 30px !important; border-radius: 20px; width: 90%; max-width: 400px; }
+
+@keyframes rotateCube { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
+.front { transform: translateZ(40px); }
+.back { transform: rotateY(180deg) translateZ(40px); }
+.right { transform: rotateY(90deg) translateZ(40px); }
+.left { transform: rotateY(-90deg) translateZ(40px); }
+.top { transform: rotateX(90deg) translateZ(40px); }
+.bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+#menu-toggle {
+    display: none; position: fixed; top: 20px; left: 20px; z-index: 2000; background: var(--accent); border: none; padding: 10px; border-radius: 8px; cursor: pointer;
+}
+.bar { width: 22px; height: 2px; background-color: var(--user-text); margin: 4px 0; transition: 0.3s; }

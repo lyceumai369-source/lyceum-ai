@@ -13,7 +13,7 @@
   box-sizing: border-box;
 }
 
-/* === GLOBAL IMAGE SAFETY (LOGO FIX) === */
+/* ================= IMAGE SAFETY ================= */
 img {
   max-width: 100%;
   height: auto;
@@ -27,22 +27,14 @@ body {
   font-family: Inter, system-ui, sans-serif;
   overflow-x: hidden;
 }
-/* ===== PREMIUM ACCENT BACKGROUND ===== */
+
+/* ================= ACCENT OVERLAY (STABLE GLASS CORE) ================= */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(
-      circle at top left,
-      color-mix(in srgb, var(--accent) 18%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      color-mix(in srgb, var(--accent) 12%, transparent),
-      transparent 65%
-    );
+  background: var(--accent);
+  opacity: 0.06;              /* glass tint strength */
   pointer-events: none;
   z-index: -1;
 }
@@ -57,8 +49,8 @@ body::before {
 /* ================= SIDEBAR ================= */
 #sidebar {
   width: 260px;
-  background: var(--sidebar-bg);
-  border-right: 1px solid rgba(255,255,255,0.05);
+  background: rgba(20,20,20,0.88);
+  border-right: 1px solid rgba(255,255,255,0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -82,10 +74,10 @@ body::before {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  background: rgba(15,15,15,0.88);
 }
 
-/* ================= HERO SECTION ================= */
+/* ================= HERO ================= */
 #hero-section {
   flex: 1;
   display: flex;
@@ -93,7 +85,6 @@ body::before {
   align-items: center;
   justify-content: center;
   text-align: center;
-  overflow: hidden; /* IMPORTANT */
 }
 
 .bot-name-title {
@@ -102,7 +93,7 @@ body::before {
   margin-top: 20px;
 }
 
-/* ================= 3D CUBE LOGO ================= */
+/* ================= CUBE LOGO ================= */
 .cube-wrapper {
   width: 80px;
   height: 80px;
@@ -128,7 +119,6 @@ body::before {
   border: 1px solid var(--accent);
 }
 
-/* LOGO IMAGE LOCK (CRITICAL FIX) */
 .face img {
   width: 70%;
   height: 70%;
@@ -150,37 +140,46 @@ body::before {
 
 .message {
   max-width: 80%;
-  padding: 14px 22px 28px;
-  border-radius: 20px;
-  font-size: 16px;
+  padding: 12px 18px 24px;    /* slightly smaller */
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.45;
   word-wrap: break-word;
+  background: rgba(255,255,255,0.08); /* glass bubble */
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 .user {
   align-self: flex-end;
   background: var(--accent);
   color: var(--user-text);
-  border-bottom-right-radius: 5px;
 }
 
 .bot {
   align-self: flex-start;
-  background: #1a1a1a;
-  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ================= TIMESTAMP ================= */
+.timestamp {
+  font-size: 13px;     /* light big, not loud */
+  opacity: 0.7;
+  margin-top: 5px;
+  display: block;
 }
 
 /* ================= INPUT ================= */
 #input-area {
   position: sticky;
   bottom: 0;
-  background: var(--bg);
+  background: rgba(15,15,15,0.9);
   padding: 15px 10%;
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 .input-wrapper {
-  background: #121212;
+  background: rgba(255,255,255,0.08);
   border-radius: 15px;
-  border: 1px solid var(--accent);
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 8px 12px;
 }
 
@@ -231,48 +230,6 @@ body.chat-active .bot-name-title {
   letter-spacing: 2px;
 }
 
-/* ================= MOBILE ================= */
-#menu-toggle {
-  display: none;
-}
-
-@media (max-width: 768px) {
-
-  #sidebar {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    height: 100vh;
-    width: 280px;
-    z-index: 4000;
-    transition: left 0.3s ease;
-  }
-
-  #sidebar.active {
-    left: 0;
-  }
-
-  #menu-toggle {
-    display: block;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 5000;
-    background: var(--accent);
-    border: none;
-    padding: 10px;
-    border-radius: 8px;
-  }
-
-  #chat-container {
-    padding: 90px 5% 120px;
-  }
-
-  #input-area {
-    padding: 10px 5% 20px;
-  }
-}
-
 /* ================= MODAL ================= */
 .modal {
   position: fixed;
@@ -283,16 +240,22 @@ body.chat-active .bot-name-title {
   justify-content: center;
   z-index: 10000;
 }
-/* ===== SETTINGS MODAL LOGO FIX ===== */
-.modal-logo {
-  width: 70px;        /* perfect size */
-  height: auto;
-  margin: 0 auto 15px;
-  display: block;
-  opacity: 0.95;
+
+.modal-content {
+  background: rgba(20,20,20,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
 }
 
-/* ===== THEME COLOR DOTS ===== */
+.modal-logo {
+  width: 70px;
+  margin: 0 auto 15px;
+}
+
+/* ================= THEME DOTS ================= */
 .color-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -306,24 +269,70 @@ body.chat-active .bot-name-title {
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid rgba(255,255,255,0.4);
-  transition: transform 0.2s ease, border 0.2s ease;
 }
 
 .color-dot:hover {
   transform: scale(1.15);
-  border-color: white;
 }
 
-.modal-content {
-  background: #111;
-  border: 1px solid var(--accent);
-  padding: 30px;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 400px;
+/* ================= MOBILE (SINGLE, CLEAN) ================= */
+#menu-toggle {
+  display: none;
 }
 
-/* ================= ANIMATIONS ================= */
+@media (max-width: 768px) {
+
+  #app {
+    flex-direction: column;
+  }
+
+  #sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 6000;
+    transition: left 0.3s ease;
+  }
+
+  #sidebar.active {
+    left: 0;
+  }
+
+  #menu-toggle {
+    display: block;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 7000;
+    background: var(--accent);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  #hero-section {
+    flex: none;
+    padding: 20px 0 10px;
+  }
+
+  #chat-container {
+    flex: 1;
+    padding: 20px 6% 120px;
+  }
+
+  #input-area {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 12px 6%;
+    z-index: 5000;
+  }
+}
+
+/* ================= ANIMATION ================= */
 @keyframes rotateCube {
   from { transform: rotateX(0) rotateY(0); }
   to { transform: rotateX(360deg) rotateY(360deg); }
@@ -335,120 +344,3 @@ body.chat-active .bot-name-title {
 .left   { transform: rotateY(-90deg) translateZ(40px); }
 .top    { transform: rotateX(90deg) translateZ(40px); }
 .bottom { transform: rotateX(-90deg) translateZ(40px); }
-/* ================= DYNAMIC PREMIUM ACCENT UI ================= */
-
-/* Dynamic accent glow for ALL colors */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at top left,
-      color-mix(in srgb, var(--accent) 18%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      color-mix(in srgb, var(--accent) 12%, transparent),
-      transparent 65%
-    );
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* ================= GLASS MORPHISM – FINAL ================= */
-
-/* Dynamic accent glass background */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at top left,
-      color-mix(in srgb, var(--accent) 14%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      color-mix(in srgb, var(--accent) 10%, transparent),
-      transparent 65%
-    );
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Glass panels */
-#main-content,
-#sidebar,
-#input-area {
-  background: color-mix(in srgb, var(--accent) 5%, rgba(0,0,0,0.88));
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
-}
-
-/* Subtle accent borders */
-#sidebar,
-#input-area {
-  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
-}
-
-/* ================= CHAT BOX SIZE (SLIGHTLY SMALLER) ================= */
-.message {
-  padding: 12px 18px 24px;   /* ⬅ reduced from before */
-  font-size: 15px;          /* ⬅ slightly smaller text */
-  line-height: 1.45;
-  border-radius: 18px;
-}
-
-/* Timestamp stays subtle */
-.timestamp {
-  font-size: 13px;
-  opacity: 0.7;
-  margin-top: 5px;
-  display: block;
-}
-/* ================= MOBILE LAYOUT FIX ================= */
-@media (max-width: 768px) {
-
-  /* Make main layout vertical */
-  #app {
-    flex-direction: column;
-  }
-
-  /* Hero should NOT take full height */
-  #hero-section {
-    flex: none;
-    height: auto;
-    padding: 20px 0 10px;
-  }
-
-  /* Ensure chat is visible */
-  #chat-container {
-    flex: 1;
-    min-height: 0;
-    padding: 20px 6% 120px;
-    overflow-y: auto;
-  }
-
-  /* Input always visible */
-  #input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 12px 6%;
-    z-index: 5000;
-  }
-
-  /* Sidebar settings button visible */
-  #sidebar {
-    z-index: 6000;
-  }
-
-  /* Mobile menu button always visible */
-  #menu-toggle {
-    display: block;
-  }
-}

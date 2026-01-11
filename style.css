@@ -344,3 +344,77 @@ body.chat-active .bot-name-title {
 .left   { transform: rotateY(-90deg) translateZ(40px); }
 .top    { transform: rotateX(90deg) translateZ(40px); }
 .bottom { transform: rotateX(-90deg) translateZ(40px); }
+/* ================= MOBILE SAFE FINAL OVERRIDE ================= */
+
+/* Force solid glass-style tint for ALL devices */
+#main-content,
+#sidebar,
+#input-area {
+  background-color: rgba(15, 15, 15, 0.95) !important;
+}
+
+/* Accent color overlay using box-shadow (100% supported) */
+#main-content,
+#sidebar,
+#input-area {
+  box-shadow: inset 0 0 0 1000px rgba(0,0,0,0.7);
+}
+
+/* User message uses accent color safely */
+.user {
+  background-color: var(--accent) !important;
+  color: var(--user-text) !important;
+}
+
+/* Bot message safe style */
+.bot {
+  background-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Compact chat box (slightly smaller) */
+.message {
+  padding: 11px 16px 22px !important;
+  font-size: 14.8px !important;
+  border-radius: 16px !important;
+}
+
+/* Mobile layout FORCE FIX */
+@media (max-width: 768px) {
+
+  body {
+    overflow-y: auto !important;
+  }
+
+  #app {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100vh !important;
+  }
+
+  #hero-section {
+    flex: none !important;
+    height: auto !important;
+    padding: 16px 0 !important;
+  }
+
+  #chat-container {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 20px 6% 120px !important;
+  }
+
+  #input-area {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+  }
+
+  #menu-toggle {
+    display: block !important;
+    z-index: 10000 !important;
+  }
+}
+
+

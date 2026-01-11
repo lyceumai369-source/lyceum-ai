@@ -470,6 +470,36 @@ body.chat-active .bot-name-title {
     content: "☰";
   }
 }
+/* ================= MOBILE CLICK FIX ================= */
+@media (max-width: 768px) {
+
+  /* Make sure menu button receives clicks */
+  #menu-toggle {
+    pointer-events: auto !important;
+    z-index: 100001 !important;
+  }
+
+  /* Prevent hero/cube from blocking clicks */
+  #hero-section,
+  .cube-wrapper,
+  .cube {
+    pointer-events: none;
+  }
+}
+/* ================= MOBILE HEADER SPACING FIX ================= */
+@media (max-width: 768px) {
+
+  #hero-section {
+    padding-top: 60px !important; /* space for menu button */
+  }
+
+  .bot-name-title {
+    font-size: 2rem;   /* slightly smaller for mobile */
+    letter-spacing: 3px;
+    text-align: center;
+  }
+}
+
 
 
 

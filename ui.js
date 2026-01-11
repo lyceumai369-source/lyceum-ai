@@ -1,3 +1,4 @@
+alert("UI JS LOADED");
 const UI = {
   chatContainer: document.getElementById('chat-container'),
   messagesArea: document.getElementById('chat-messages'),
@@ -45,3 +46,4 @@ const UI = {
 document.addEventListener('DOMContentLoaded', () => {
   UI.init();
 });
+

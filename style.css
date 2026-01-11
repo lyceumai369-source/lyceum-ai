@@ -1,0 +1,336 @@
+:root {
+    --accent: #ffffff;
+    --bg: #050505;
+    --sidebar-bg: #0a0a0a;
+    --user-text: #000000;
+}
+
+body {
+    background-color: var(--bg);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    overflow: hidden;
+    transition: background 0.5s ease;
+}
+
+#app {
+    display: flex;
+    flex-direction: row; 
+    width: 100vw;
+    height: 100vh;
+}
+
+/* --- SIDEBAR --- */
+#sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    flex-shrink: 0;
+    transition: left 0.3s ease;
+}
+
+/* --- MAIN CONTENT & LOGO CENTERING --- */
+#main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-image: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+}
+
+#hero-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+    justify-content: center; 
+    text-align: center;
+}
+
+.bot-name-title {
+    font-size: 2.5rem;
+    letter-spacing: 5px;
+    margin-top: 20px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+
+/* --- 3D CUBE LOGO --- */
+.cube-wrapper {
+    width: 80px; 
+    height: 80px;
+    perspective: 1000px;
+}
+
+.cube {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotateCube 10s infinite linear;
+}
+
+.face {
+    position: absolute;
+    width: 80px; height: 80px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--accent);
+}
+
+.face img {
+    width: 80%; height: 80%;
+    object-fit: contain;
+}
+
+/* --- MODERN CHAT LAYOUT --- */
+#chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 10%;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    padding: 14px 22px;
+    border-radius: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 80%; 
+    word-wrap: break-word;
+}
+
+.user {
+    align-self: flex-end; 
+    background: var(--accent);
+    color: var(--user-text);
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.bot {
+    align-self: flex-start; 
+    background: #1a1a1a;
+    color: #ffffff;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* --- INPUT BOX (FIXED FOR MIC & SEND POSITIONS) --- */
+/* --- INPUT AREA CONTAINER --- */
+#input-area {
+    padding: 20px 10%;
+    background: var(--bg);
+}
+
+/* --- THE MAIN WRAPPER --- */
+.input-wrapper {
+    background: #121212;
+    padding: 8px 15px;
+    border-radius: 15px;
+    border: 1px solid var(--accent);
+    display: flex;
+    align-items: center;
+}
+
+/* --- THE NEW CLASS YOU WERE LOOKING FOR --- */
+/* This ensures everything stays in one line and moves buttons to the right */
+.footer-input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* This makes the text box take up the left side */
+#user-input {
+    flex: 1; 
+    background: none;
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 16px;
+    padding: 10px;
+}
+
+/* Grouping Mic and Send on the right side */
+#mic-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 10px; /* Space between Mic and Send */
+    flex-shrink: 0;
+}
+
+#send-btn {
+    background: var(--accent);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+#send-btn svg {
+    width: 20px; 
+    height: 20px;
+    fill: var(--user-text); /* Matches the theme text color */
+}
+
+/* --- MODALS --- */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+}
+
+.hidden { display: none !important; }
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+.color-dot {
+    width: 35px; height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes rotateCube {
+    from { transform: rotateX(0deg) rotateY(0deg); }
+    to { transform: rotateX(360deg) rotateY(360deg); }
+}
+
+.front  { transform: translateZ(40px); }
+.back   { transform: rotateY(180deg) translateZ(40px); }
+.right  { transform: rotateY(90deg) translateZ(40px); }
+.left   { transform: rotateY(-90deg) translateZ(40px); }
+.top    { transform: rotateX(90deg) translateZ(40px); }
+.bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+/* --- MESSAGE TIME STAMP STYLES --- */
+.message {
+    position: relative;
+    padding-bottom: 28px !important; 
+    min-width: 90px;
+    animation: messageSlideIn 0.3s ease-out forwards;
+}
+
+.timestamp {
+    position: absolute;
+    bottom: 6px;
+    font-size: 10px;
+    opacity: 0.5;
+    font-weight: 400;
+}
+
+.user .timestamp { 
+    right: 15px; 
+    color: var(--user-text, #000); 
+}
+
+.bot .timestamp { 
+    left: 15px; 
+    color: #888; 
+}
+
+@keyframes messageSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- HAMBURGER MENU REFINEMENT --- */
+#menu-toggle {
+    display: none; 
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    background: var(--accent);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.bar {
+    width: 22px;
+    height: 2px;
+    background-color: var(--user-text);
+    margin: 4px 0;
+    transition: 0.3s;
+}
+
+/* --- FINAL CLEAN MOBILE FIX --- */
+@media (max-width: 768px) {
+    #menu-toggle { 
+        display: block; 
+    }
+
+    #sidebar {
+        position: fixed;
+        left: -100%; /* Fixes the black line on the left */
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        background: #0a0a0a !important; 
+        z-index: 4000;
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #sidebar.active { 
+        left: 0; 
+    }
+
+    #hero-section {
+        padding-top: 60px;
+    }
+
+    /* Makes New Chat, Settings, About, and Themes buttons clearly visible */
+    .secondary-btn, .new-chat-btn, .tab-btn {
+        background: rgba(255,255,255,0.1) !important;
+        border: 1px solid rgba(255,255,255,0.3) !important;
+        color: white !important;
+        padding: 15px !important;
+        margin: 10px 0 !important;
+        font-size: 1rem !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        cursor: pointer;
+    }
+}
+
+/* Fixes the Settings pop-up layout for mobile screens */
+.modal-content {
+    width: 90% !important;
+    max-width: 400px;
+    background: #111 !important;
+    border: 1px solid var(--accent);
+    padding: 30px !important;
+}

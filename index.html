@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lyceum AI v2</title>
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="animations.css">
+</head>
+<body>
+    <div id="app">
+        
+        <aside id="sidebar">
+            <div class="sidebar-top">
+                <button class="new-chat-btn" onclick="location.reload()">
+                    <span>+</span> New Chat
+                </button>
+            </div>
+            
+            <div class="sidebar-bottom">
+                <button id="settings-btn" class="secondary-btn">⚙️ Settings</button>
+            </div>
+        </aside>
+
+        <div id="main-content">
+            <button id="menu-toggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </button>
+            <div id="hero-section">
+                <div class="cube-wrapper">
+                    <div class="cube">
+                        <div class="face front"><img src="logo.png" alt="logo"></div>
+                        <div class="face back"><img src="logo.png" alt="logo"></div>
+                        <div class="face right"><img src="logo.png" alt="logo"></div>
+                        <div class="face left"><img src="logo.png" alt="logo"></div>
+                        <div class="face top"><img src="logo.png" alt="logo"></div>
+                        <div class="face bottom"><img src="logo.png" alt="logo"></div>
+                    </div>
+                </div>
+                <h1 class="bot-name-title">LYCEUM AI</h1>
+            </div>
+
+            <main id="chat-container">
+                <div id="chat-messages"></div>
+                <div id="typing-indicator" class="hidden">
+                    <span></span><span></span><span></span>
+                </div>
+            </main>
+
+           <footer id="input-area">
+    <div class="input-wrapper">
+        <div class="footer-input">
+            <input type="text" id="user-input" placeholder="Type to Lyceum..." autocomplete="off">
+            
+            <button id="mic-btn" type="button" style="background:transparent; border:none; cursor:pointer; font-size: 1.2rem; margin-right: 10px;">🎤</button>
+            
+            <button id="send-btn">
+                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </div>
+    </div>
+</footer>
+       
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-tabs">
+                    <button id="tab-about" class="tab-btn active">About</button>
+                    <button id="tab-colors" class="tab-btn">Themes</button>
+                </div>
+
+                <div id="content-about" class="tab-content">
+                    <img src="logo.png" alt="Logo" class="modal-logo" style="width: 60px; margin-bottom: 10px;">
+                    <h2>Lyceum AI v2</h2>
+                    <p><strong>Developer:</strong> Ananthu Shaji</p>
+                    <p>Private architecture for visionaries.</p>
+                </div>
+
+                <div id="content-colors" class="tab-content hidden">
+                    <h3>Select Accent Color</h3>
+                    <div id="color-grid" class="color-grid"></div>
+                </div>
+
+                <button id="close-settings" class="close-btn">Done</button>
+            </div>
+        </div>
+    </div> 
+
+   <script src="ui.js"></script>
+   <script src="brain.js"></script>
+   <script src="main.js"></script>

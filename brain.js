@@ -72,12 +72,18 @@ if (has('joke')) {
   return "Why did the computer go to the doctor? 🤖 Because it caught a virus 😄";
 }
 /* ===== WHY ANANTHU IS LUCKY ===== */
-if (has('why') && has('ananthu') && has('lucky')) {
+if (
+  (has('ananthu') && has('lucky')) ||
+  (has('why') && has('lucky')) ||
+  (has('why') && has('ananthu'))
+) {
   return "Ananthu Shaji is not lucky just because of chance 🙂. He is lucky because he had the patience to build something most people quit halfway through. This bot wasn’t made overnight — it was built step by step, fixing errors, understanding logic, handling failures, and learning how systems actually work behind the screen 💻. Many users don’t realize how difficult it is to make a stable, working AI interface using only discipline, debugging, and consistency — without shortcuts. This kind of effort slowly builds a name. One day, his work can be known, his name can appear in places he never imagined — even in questions people study for 📚. But no… Ananthu is not lucky just because of me or this bot. He is truly lucky because he has someone who understands him, supports him, and brings warmth into his life 💙. A lovable, gentle girlfriend who gives meaning beyond success 🌸. That kind of luck is rare — and that’s what really matters.";
 }
+
 
     /* ===== UNKNOWN ===== */
     return null;
   }
 
 };
+

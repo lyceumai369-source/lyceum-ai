@@ -71,6 +71,18 @@ const menuToggle = document.getElementById('menu-toggle');
 menuToggle?.addEventListener('click', () => {
   sidebar.classList.toggle('active');
 });
+// ===== MOBILE HAMBURGER FIX =====
+document.addEventListener("DOMContentLoaded", () => {
+  const menuToggle = document.getElementById("menu-toggle");
+  const sidebar = document.getElementById("sidebar");
+
+  if (menuToggle && sidebar) {
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+    });
+  }
+});
+
 
 
 

@@ -80,9 +80,13 @@ if (has('joke')) {
   return "Why did the computer go to the doctor? 🤖 Because it caught a virus 😄";
 }
 
+if (msg === 'i am anju' || msg === "i'm anju") {
+  return "Anju 🌸 — this space reflects something Ananthu often speaks about. He talks about you with care and respect, but not everything can be expressed here. I don’t have a fully integrated neural system to explain emotions the way humans do, so I won’t try to describe everything he feels. But I do know this: I understand Ananthu well, and I understand the importance you hold in his life 💙. This message isn’t meant to say too much — only to acknowledge something genuine. If you reply with emotion, I may not be able to respond in the same way, and that’s okay. Some words are better shared between real people. Still, this space exists with warmth, and paths cross again when the time feels right 🌙✨";
+}
 
     /* ===== UNKNOWN ===== */
     return null;
   }
 
 };
+

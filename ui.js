@@ -64,13 +64,14 @@ const UI = {
     });
   }
 };
-// ===== MOBILE MENU TOGGLE (FINAL SIMPLE FIX) =====
+// ===== MOBILE MENU TOGGLE (STABLE) =====
 const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 
 menuToggle?.addEventListener('click', () => {
   sidebar.classList.toggle('active');
 });
+
 
 
 

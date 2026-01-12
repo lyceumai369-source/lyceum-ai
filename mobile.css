@@ -96,19 +96,17 @@
   background: #fff;
   margin: 4px 0;
 }
-/* ===== FORCE HAMBURGER ICON ===== */
-#menu-toggle {
-  background: rgba(255,255,255,0.12);
-  border-radius: 10px;
-  padding: 10px;
+/* ===== MOBILE CHAT HEIGHT FIX ===== */
+#hero-section {
+  flex: none !important;
+  height: 120px !important;
 }
 
-#menu-toggle .bar {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: #fff;
-  margin: 4px 0;
+#chat-container {
+  flex: 1 !important;
+  overflow-y: auto;
 }
+
+
 
 

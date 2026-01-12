@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ===== ELEMENTS ===== */
@@ -97,7 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       UI.showTyping(false);
 
-      const response = Brain.getResponse(text);
+      // 🧠 Brain → Fallback (ONLY ADDITION)
+      let response = Brain.getResponse(text);
+      if (!response) {
+        response = getFallbackReply();
+      }
+
       const botTime = new Date().toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit'

@@ -1,0 +1,101 @@
+/* ================= MOBILE ONLY FIXES ================= */
+@media (max-width: 768px) {
+
+  /* Layout */
+  #app {
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* Hero spacing */
+  #hero-section {
+    padding-top: 70px;
+  }
+
+  .bot-name-title {
+    font-size: 2rem;
+    letter-spacing: 3px;
+    text-align: center;
+  }
+
+  /* Menu button */
+  #menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    top: 16px;
+    left: 16px;
+
+    width: 44px;
+    height: 44px;
+
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+
+    color: white;
+    font-size: 22px;
+    z-index: 99999;
+  }
+
+  /* Sidebar */
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 280px;
+    height: 100vh;
+    z-index: 99998;
+    transition: left 0.3s ease;
+  }
+
+  #sidebar.active {
+    left: 0;
+  }
+
+  /* Chat */
+  #chat-container {
+    flex: 1;
+    padding: 20px 6% 120px;
+    overflow-y: auto;
+  }
+
+  /* Input fixed */
+  #input-area {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 12px 6%;
+    z-index: 99997;
+  }
+
+  /* Prevent cube blocking taps */
+  .cube-wrapper,
+  .cube,
+  #hero-section {
+    pointer-events: none;
+  }
+
+  #menu-toggle {
+    pointer-events: auto;
+  }
+}
+/* ================= FIX DOUBLE HEADER ON MOBILE ================= */
+@media (max-width: 768px) {
+
+  /* Hide hero title on mobile */
+  #hero-section .bot-name-title {
+    display: none;
+  }
+
+  /* Ensure mobile header is visible */
+  .mobile-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+}

@@ -42,15 +42,8 @@ const Brain = {
       return "I’m not human, but the intention behind me is real. I exist to support your journey.";
     }
 
-    /* ===== FALLBACKS ===== */
-    const fallback = [
-      "I’m still learning, bro. Try asking about my features or my creator.",
-      "That’s interesting. I’ll get smarter with time.",
-      "I may not know everything yet, but I’m built to grow.",
-      "Ask me about themes, voice, or who built me."
-    ];
-
-    return fallback[Math.floor(Math.random() * fallback.length)];
+    /* ===== UNKNOWN ===== */
+    return null;
   }
 
 };

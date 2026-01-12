@@ -97,5 +97,71 @@
     align-items: center;
     justify-content: center;
   }
-
+/* ===== FIX HAMBURGER ICON ===== */
+#menu-toggle {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px;
 }
+
+#menu-toggle .bar {
+  width: 22px;
+  height: 2px;
+  background: white;
+  margin: 4px 0;
+  display: block;
+}
+
+/* ===== FULL SCREEN CHAT (MOBILE) ===== */
+@media (max-width: 768px) {
+
+  #app {
+    height: 100vh;
+  }
+
+  #main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  #hero-section {
+    flex: none;
+    height: auto;
+    padding: 16px 0 8px;
+  }
+
+  #chat-container {
+    flex: 1;
+    padding: 10px 6% 110px;
+    overflow-y: auto;
+  }
+}
+
+/* ===== INPUT SIZE FIX ===== */
+@media (max-width: 768px) {
+
+  #input-area {
+    padding: 10px 6%;
+  }
+
+  .input-wrapper {
+    padding: 6px 10px;
+    border-radius: 14px;
+  }
+
+  #user-input {
+    font-size: 15px;
+  }
+}
+
+/* ===== SIDEBAR SCROLL FIX ===== */
+@media (max-width: 768px) {
+
+  #sidebar {
+    overflow-y: auto;
+    padding-bottom: 40px;
+  }
+}
+
+

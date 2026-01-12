@@ -64,3 +64,34 @@ const UI = {
     });
   }
 };
+// ================= MOBILE SIDEBAR + SETTINGS FIX =================
+
+// Elements
+const sidebar = document.getElementById('sidebar');
+const menuToggle = document.getElementById('menu-toggle');
+const settingsBtn = document.getElementById('settings-btn');
+const settingsModal = document.getElementById('settings-modal');
+const closeSettings = document.getElementById('close-settings');
+
+// Toggle sidebar (hamburger)
+menuToggle?.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  document.body.classList.toggle('sidebar-open');
+});
+
+// Open settings → CLOSE sidebar
+settingsBtn?.addEventListener('click', () => {
+  settingsModal.classList.remove('hidden');
+
+  sidebar.classList.remove('active');
+  document.body.classList.remove('sidebar-open');
+});
+
+// Close settings → ensure sidebar closed
+closeSettings?.addEventListener('click', () => {
+  settingsModal.classList.add('hidden');
+
+  sidebar.classList.remove('active');
+  document.body.classList.remove('sidebar-open');
+});
+

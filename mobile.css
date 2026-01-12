@@ -163,5 +163,85 @@
     padding-bottom: 40px;
   }
 }
+/* ================= FINAL MOBILE LAYOUT RESET ================= */
+@media (max-width: 768px) {
+
+  /* App height lock */
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #app {
+    height: 100vh;
+  }
+
+  #main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* Hero (cube + name) */
+  #hero-section {
+    flex: none;
+    height: 120px;
+    padding: 12px 0 6px;
+    overflow: visible;
+  }
+
+  .cube-wrapper {
+    transform: scale(0.6);
+    margin: 0 auto;
+  }
+
+  .bot-name-title {
+    font-size: 1.4rem;
+    margin-top: 4px;
+  }
+
+  /* Chat takes rest of screen */
+  #chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 6% 90px;
+  }
+
+  /* Input fixed bottom */
+  #input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 6%;
+    z-index: 2000;
+  }
+}
+/* ================= HAMBURGER FIX ================= */
+#menu-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 3000; /* ABOVE EVERYTHING */
+  background: rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#menu-toggle .bar {
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  margin: 4px 0;
+  display: block;
+}
+@media (max-width: 768px) {
+  #sidebar {
+    overflow-y: auto;
+    padding-bottom: 40px;
+    z-index: 2500;
+  }
+}
+
 
 

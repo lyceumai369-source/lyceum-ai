@@ -67,7 +67,15 @@
     document.getElementById("certDate").textContent =
       new Date().toLocaleDateString();
   </script>
+<script>
+  // Existing auto-fill code stays
+
+  document.getElementById("downloadCert").addEventListener("click", () => {
+    window.print();
+  });
+</script>
 
 </body>
 </html>
+
 

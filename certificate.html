@@ -16,7 +16,7 @@
 
     <p class="subtitle">This certificate is proudly presented to</p>
 
-    <p class="username" id="userName">User Name</p>
+    <p class="username" id="userName">Valued User</p>
 
     <p class="content">
       For successfully completing the <b>Lyceum AI Relaxation Challenge</b>.<br><br>
@@ -47,35 +47,32 @@
     </div>
 
     <div class="seal">✔ Official</div>
+
+    <button id="downloadCert" class="download-btn">
+      ⬇ Download PDF
+    </button>
   </div>
-<button id="downloadCert" class="download-btn">
-  ⬇ Download PDF
-</button>
 
   <script>
-    // ===== AUTO FILL LOGIC =====
+    // ===== AUTO FILL DATA =====
 
-    // 1️⃣ USER NAME (change this dynamically later)
+    // User Name
     const userName = localStorage.getItem("lyceumUser") || "Valued User";
     document.getElementById("userName").textContent = userName;
 
-    // 2️⃣ CERTIFICATE ID (unique)
+    // Certificate ID
     const certId = "LYC-" + Math.random().toString(36).substr(2, 8).toUpperCase();
     document.getElementById("certId").textContent = certId;
 
-    // 3️⃣ DATE
+    // Date
     document.getElementById("certDate").textContent =
       new Date().toLocaleDateString();
-  </script>
-<script>
-  // Existing auto-fill code stays
 
-  document.getElementById("downloadCert").addEventListener("click", () => {
-    window.print();
-  });
-</script>
+    // Download PDF
+    document.getElementById("downloadCert").addEventListener("click", () => {
+      window.print();
+    });
+  </script>
 
 </body>
 </html>
-
-

@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: "Georgia", serif;
+}
+
+.certificate {
+  background: #ffffff;
+  width: 900px;
+  max-width: 92%;
+  padding: 60px;
+  position: relative;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.border {
+  position: absolute;
+  inset: 14px;
+  border: 2px solid #c9a227;
+  border-radius: 14px;
+}
+
+h1 {
+  font-size: 38px;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+h2 {
+  font-size: 20px;
+  color: #475569;
+  margin-bottom: 30px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #64748b;
+}
+
+.username {
+  font-size: 34px;
+  font-weight: bold;
+  color: #0f766e;
+  margin: 20px 0;
+}
+
+.content {
+  font-size: 16px;
+  color: #334155;
+  line-height: 1.7;
+  margin: 18px 0;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.label {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.sign {
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.seal {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+}

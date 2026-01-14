@@ -65,16 +65,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ===== MESSAGE HELPERS ===== */
   function addMsg(text, type) {
-    const div = document.createElement("div");
-    div.className = `msg ${type}`;
-    div.textContent = text;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
+  const div = document.createElement("div");
+  div.className = `msg ${type}`;
+  div.textContent = text;
+  messages.appendChild(div);
 
-  function botReply(text) {
-    addMsg(text, "bot");
-  }
+  // 👇 force scroll to bottom
+  messages.scrollTop = messages.scrollHeight;
+}
+
 
   /* ===== REPLY LOGIC ===== */
   function handleReply(msg) {
@@ -139,4 +138,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 900);
 
 });
+
 

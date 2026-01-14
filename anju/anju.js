@@ -73,6 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // 👇 force scroll to bottom
   messages.scrollTop = messages.scrollHeight;
 }
+function botReply(text) {
+  addMsg(text, "bot");
+}
 
 
   /* ===== REPLY LOGIC ===== */
@@ -138,5 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 900);
 
 });
+
 
 

@@ -429,3 +429,9 @@ body::before {
   margin-top: 5px;
   display: block;
 }
+#input-area,
+#input-area * {
+  pointer-events: auto;
+  z-index: 9999;
+}
+

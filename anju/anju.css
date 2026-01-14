@@ -79,14 +79,20 @@ body {
 
 /* INPUT */
 .input-bar {
-  position: absolute;
+  position: fixed;
   left: 50%;
   bottom: 50%;
   transform: translate(-50%, 50%);
   display: flex;
   gap: 10px;
-  width: 90%;
-  max-width: 420px;
+  width: 94%;
+  max-width: 480px;
+  transition: all 0.5s ease;
+  z-index: 100;
+}
+.input-bar.at-bottom {
+  bottom: 18px;                 /* not too bottom */
+  transform: translateX(-50%);
 }
 
 
@@ -138,5 +144,6 @@ body {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
+
 
 

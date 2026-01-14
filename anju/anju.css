@@ -5,11 +5,12 @@
 
 body {
   margin: 0;
-  height: 100vh;
+  height: 100dvh;          /* ✅ mobile-safe viewport */
   background: linear-gradient(180deg,#020617,#020617);
   color: white;
   overflow: hidden;
 }
+
 
 /* LOCK SCREEN */
 #lockScreen {
@@ -39,10 +40,13 @@ body {
 /* CHAT SCREEN */
 #chatScreen {
   display: none;
-  height: 100vh;
+  height: 100dvh;          /* ✅ important */
   background: radial-gradient(circle at top,#0f172a,#020617);
-  position: relative;   /* ⭐ IMPORTANT */
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
+
 
 
 /* TOP BAR */
@@ -55,10 +59,11 @@ body {
 
 /* MESSAGES */
 #messages {
-  height: calc(100vh - 120px);
-  padding: 15px;
+  flex: 1;                         /* ✅ fills available space */
+  padding: 15px 15px 140px;        /* ✅ space for input bar */
   overflow-y: auto;
 }
+
 
 .msg {
   max-width: 75%;
@@ -144,6 +149,7 @@ body {
   0%,100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
+
 
 
 

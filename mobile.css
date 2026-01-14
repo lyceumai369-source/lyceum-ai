@@ -2,18 +2,22 @@
 @media (max-width: 768px) {
 
   html, body {
-    height: 100%;
+    height: 100dvh; /* Added dynamic height to fix mobile browser bar issue */
     margin: 0;
+    overflow: hidden; /* Stops the whole page from bouncing */
   }
 
   #app {
-    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
   }
 
   #main-content {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
+    position: relative;
   }
 
   /* Header */
@@ -21,6 +25,7 @@
     display: flex;
     align-items: center;
     padding: 12px;
+    height: 60px; /* Fixed height for header */
   }
 
   /* Hamburger */
@@ -50,21 +55,24 @@
     margin: 0 auto;
   }
 
-  /* Chat */
+  /* Chat - FIXED: flex-1 ensures it takes all available middle space */
   #chat-container {
     flex: 1;
     overflow-y: auto;
-    padding: 10px 6% 100px;
+    padding: 10px 6% 120px !important; /* Added extra bottom padding for the input box */
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Input */
+  /* Input - FIXED: Using absolute keeps it inside the viewport correctly */
   #input-area {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 8px 6%;
-    background: rgba(0,0,0,0.6);
+    padding: 12px 6% calc(12px + env(safe-area-inset-bottom));
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
   }
 
   /* Sidebar */
@@ -72,16 +80,17 @@
     position: fixed;
     left: -100%;
     top: 0;
-    height: 100vh;
+    height: 100dvh;
     width: 260px;
     transition: left 0.3s ease;
-    z-index: 3000;
+    z-index: 10000;
   }
 
   #sidebar.active {
     left: 0;
   }
 }
+
 /* ===== FORCE HAMBURGER ICON ===== */
 #menu-toggle {
   background: rgba(255,255,255,0.12);
@@ -96,6 +105,7 @@
   background: #fff;
   margin: 4px 0;
 }
+
 /* ===== MOBILE CHAT HEIGHT FIX ===== */
 #hero-section {
   flex: none !important;

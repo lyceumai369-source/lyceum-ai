@@ -20,10 +20,11 @@
     position: relative;
   }
 
-  /* Header */
+  /* Header - FIXED: Added gap to prevent hamburger overlap */
   .mobile-nav {
     display: flex;
     align-items: center;
+    gap: 15px; 
     padding: 12px;
     height: 60px; /* Fixed height for header */
   }
@@ -33,6 +34,7 @@
     background: rgba(255,255,255,0.1);
     padding: 10px;
     border-radius: 10px;
+    flex-shrink: 0; /* Prevents button from squishing */
   }
 
   #menu-toggle .bar {
@@ -48,6 +50,7 @@
     height: 120px;
     flex: none;
     text-align: center;
+    transition: all 0.3s ease; /* Smooth transition when hiding */
   }
 
   .cube-wrapper {
@@ -88,6 +91,20 @@
 
   #sidebar.active {
     left: 0;
+  }
+
+  /* NEW: Hide the big title text when chat is active to stop clutter */
+  body.chat-active #hero-section .bot-name-title {
+    display: none;
+  }
+  
+  /* NEW: Move Cube to top left when chat is active */
+  body.chat-active #hero-section {
+    height: 60px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
   }
 }
 

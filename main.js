@@ -83,6 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleSend() {
     const text = userInput.value.trim();
     if (!text) return;
+      // 🔐 SECRET PASSWORD → OPEN ANJU UI
+  if (text === "april8!") {
+    window.open("anju/index.html", "_blank");
+    userInput.value = "";
+    return; // stop normal bot flow
+  }
 
     document.body.classList.add('chat-active');
 

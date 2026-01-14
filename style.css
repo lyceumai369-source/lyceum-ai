@@ -497,6 +497,48 @@ body::before {
   }
 
 }
+/* =====================================================
+   🔥 MOBILE SCROLL + INPUT LINE BUG FIX (FINAL)
+   ===================================================== */
+
+@media (max-width: 768px) {
+
+  /* ✅ Allow scrolling again */
+  body {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+
+  #app,
+  #main-content {
+    height: auto !important;
+    overflow: hidden;
+  }
+
+  /* ✅ Chat scrolls, not the page */
+  #chat-container {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    height: calc(100vh - 165px);
+    overflow-y: auto;
+    padding-bottom: 120px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ✅ Input restored to full height */
+  #input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 70px;
+    padding: 12px 5% calc(14px + env(safe-area-inset-bottom));
+    z-index: 9999;
+  }
+
+}
+
 
 
 

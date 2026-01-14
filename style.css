@@ -460,6 +460,44 @@ body::before {
   pointer-events: auto;
   z-index: 9999;
 }
+/* =========================================================
+   ✅ MOBILE VIEWPORT + CHAT INPUT FINAL FIX (ADD ONLY)
+   DOES NOT REMOVE OR CHANGE EXISTING DESIGN
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  /* ✅ Use dynamic viewport height (fixes mobile scroll issue) */
+  body {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  #app {
+    height: 100dvh;
+  }
+
+  #main-content {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* ✅ Chat container adjusted for REAL mobile height */
+  #chat-container {
+    top: 90px; /* same as your mobile header */
+    bottom: calc(85px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ✅ Input ALWAYS visible – no scroll needed */
+  #input-area {
+    bottom: 0;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+  }
+
+}
+
 
 
 

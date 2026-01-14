@@ -58,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addMsg(text, "user");
     msgInput.value = "";
+   document.querySelector(".input-bar").classList.add("at-bottom");
 
     setTimeout(() => handleReply(text.toLowerCase()), 500);
   }
@@ -138,3 +139,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 900);
 
 });
+

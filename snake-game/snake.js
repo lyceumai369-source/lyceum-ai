@@ -257,3 +257,7 @@ function downloadCert() {
         a.click();
     });
 }
+document.getElementById("exitSnake").onclick = () => {
+  history.back(); // go back to bot
+};
+

@@ -1,5 +1,3 @@
-alert("relax.js loaded");
-
 document.addEventListener("DOMContentLoaded", () => {
 
   let score = 0;
@@ -179,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
 
 
 

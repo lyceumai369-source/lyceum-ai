@@ -1,3 +1,4 @@
+alert("relax.js loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -178,5 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
 
 

@@ -96,16 +96,26 @@ document.getElementById("snakeBtn").style.display = "none";
   };
 
   /* ===== START GAME ===== */
-  document.getElementById("gamesBtn").onclick = () => {
-    document.getElementById("relaxText").style.display = "none";
-    document.getElementById("gamesBtn").style.display = "none";
-     document.getElementById("snakeBtn").style.display = "inline-block";
-    if (!leafInterval) spawnLeaves();
-  };
-  document.getElementById("snakeBtn").onclick = () => {
-  overlay.style.display = "none";
-  window.location.href = "./snake-game/";
+ document.getElementById("gamesBtn").onclick = () => {
+
+  // hide text & Games button
+  document.getElementById("relaxText").style.display = "none";
+  document.getElementById("gamesBtn").style.display = "none";
+
+  // stop leaf game
+  if (leafInterval) {
+    clearInterval(leafInterval);
+    leafInterval = null;
+  }
+  document.getElementById("leafLayer").innerHTML = "";
+
+  // hide score
+  document.getElementById("scoreBoard").style.display = "none";
+
+  // show ONLY snake button
+  document.getElementById("snakeBtn").style.display = "inline-block";
 };
+
 
   /* ===== LEAF GAME ===== */
   function spawnLeaves() {
@@ -178,6 +188,7 @@ document.getElementById("snakeBtn").style.display = "none";
   }
 
 });
+
 
 
 

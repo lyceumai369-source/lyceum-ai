@@ -40,8 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div class="relax-card">
       <div class="relax-text" id="relaxText">Take a deep breath 🌬️</div>
-      <button class="games-btn" id="gamesBtn">🎮 Games</button>
-      <button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
+     <button class="games-btn" id="leafBtn">🍃 Relax</button>
+<button class="games-btn" id="gamesBtn">🎮 Games</button>
+<button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
+
     </div>
 
     <div id="scoreBoard" class="score-only">Score: 0</div>
@@ -66,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.body.appendChild(overlay);
 document.getElementById("snakeBtn").style.display = "none";
+document.getElementById("leafBtn").style.display = "inline-block";
 
   /* ===== LEAF LAYER ===== */
   const leafLayer = document.createElement("div");
@@ -73,12 +76,27 @@ document.getElementById("snakeBtn").style.display = "none";
   overlay.appendChild(leafLayer);
 
   /* ===== OPEN RELAX ===== */
-  const relaxBtn = document.getElementById("relaxBtn");
-  if (relaxBtn) {
-    relaxBtn.addEventListener("click", () => {
-      overlay.style.display = "flex";
-    });
-  }
+ const relaxBtn = document.getElementById("relaxBtn");
+if (relaxBtn) {
+  relaxBtn.addEventListener("click", () => {
+
+    // RESET UI STATE
+    document.getElementById("relaxText").style.display = "block";
+    document.getElementById("gamesBtn").style.display = "inline-block";
+    document.getElementById("snakeBtn").style.display = "none";
+    document.getElementById("scoreBoard").style.display = "block";
+
+    // stop leaves
+    if (leafInterval) {
+      clearInterval(leafInterval);
+      leafInterval = null;
+    }
+    document.getElementById("leafLayer").innerHTML = "";
+
+    overlay.style.display = "flex";
+  });
+}
+
 
   /* ===== EXIT CONFIRM ===== */
   document.getElementById("exitRelax").onclick = () => {
@@ -114,6 +132,11 @@ document.getElementById("snakeBtn").style.display = "none";
 
   // show ONLY snake button
   document.getElementById("snakeBtn").style.display = "inline-block";
+};
+/* ===== SNAKE GAME CLICK ===== */
+document.getElementById("snakeBtn").onclick = () => {
+  overlay.style.display = "none";   // close relax
+  window.location.href = "./snake-game/";
 };
 
 
@@ -188,6 +211,7 @@ document.getElementById("snakeBtn").style.display = "none";
   }
 
 });
+
 
 
 

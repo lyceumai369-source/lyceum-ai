@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
   document.body.appendChild(overlay);
+document.getElementById("snakeBtn").style.display = "none";
 
   /* ===== LEAF LAYER ===== */
   const leafLayer = document.createElement("div");
@@ -177,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
 
 
 

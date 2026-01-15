@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
   let score = 0;
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="relax-card">
       <div class="relax-text" id="relaxText">Take a deep breath 🌬️</div>
       <button class="games-btn" id="gamesBtn">🎮 Games</button>
+      <button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
     </div>
 
     <div id="scoreBoard" class="score-only">Score: 0</div>
@@ -97,8 +99,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("gamesBtn").onclick = () => {
     document.getElementById("relaxText").style.display = "none";
     document.getElementById("gamesBtn").style.display = "none";
+     document.getElementById("snakeBtn").style.display = "inline-block";
     if (!leafInterval) spawnLeaves();
   };
+  document.getElementById("snakeBtn").onclick = () => {
+  window.location.href = "snake game/index.html";
+};
 
   /* ===== LEAF GAME ===== */
   function spawnLeaves() {

@@ -103,7 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!leafInterval) spawnLeaves();
   };
   document.getElementById("snakeBtn").onclick = () => {
-  window.location.href = "snake game/index.html";
+  overlay.style.display = "none";
+  window.location.href = "./snake-game/";
+};
+
+
 };
 
   /* ===== LEAF GAME ===== */
@@ -177,3 +181,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+

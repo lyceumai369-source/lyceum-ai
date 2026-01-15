@@ -107,9 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.location.href = "./snake-game/";
 };
 
-
-};
-
   /* ===== LEAF GAME ===== */
   function spawnLeaves() {
     leafInterval = setInterval(() => {
@@ -181,4 +178,5 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+
 

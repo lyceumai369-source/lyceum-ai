@@ -6,17 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const rewards = {
     50: {
-      title: "Bronze Badge 🥉",
+      title: "Bronze Badge 3️⃣",
       icon: "🥉",
       msg: "Nice start 🌱\nRelaxation begins with small steps.\nKeep going… something special awaits."
     },
     100: {
-      title: "Silver Badge 🥈",
+      title: "Silver Badge 2️⃣",
       icon: "🥈",
       msg: "You're building calm and focus ✨\nFew people reach this state.\nStay with it."
     },
     200: {
-      title: "Gold Badge 🥇",
+      title: "Gold Badge 1️⃣",
       icon: "🥇",
       msg: "Impressive 💛\nYour mind is slowing down beautifully.\nOnly dedicated users reach what's next."
     },
@@ -40,10 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div class="relax-card">
       <div class="relax-text" id="relaxText">Take a deep breath 🌬️</div>
-     <button class="games-btn" id="leafBtn">🍃 Relax</button>
-<button class="games-btn" id="gamesBtn">🎮 Games</button>
-<button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
-
+      <button class="games-btn" id="leafBtn">🍃 Relax</button>
+      <button class="games-btn" id="gamesBtn">🎮 Games</button>
+      <button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
     </div>
 
     <div id="scoreBoard" class="score-only">Score: 0</div>
@@ -67,8 +66,11 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
   document.body.appendChild(overlay);
-document.getElementById("snakeBtn").style.display = "none";
-document.getElementById("leafBtn").style.display = "inline-block";
+
+  /* ===== INITIAL SETUP ===== */
+  document.getElementById("snakeBtn").style.display = "none";
+  document.getElementById("leafBtn").style.display = "inline-block";
+  document.getElementById("gamesBtn").style.display = "inline-block";
 
   /* ===== LEAF LAYER ===== */
   const leafLayer = document.createElement("div");
@@ -76,12 +78,13 @@ document.getElementById("leafBtn").style.display = "inline-block";
   overlay.appendChild(leafLayer);
 
   /* ===== OPEN RELAX ===== */
-const relaxBtn = document.getElementById("relaxBtn");
-relaxBtn.addEventListener("click", () => {
-  overlay.style.display = "flex";
-});
+  const relaxBtn = document.getElementById("relaxBtn");
+  if (relaxBtn) {
+    relaxBtn.addEventListener("click", () => {
+      overlay.style.display = "flex";
+    });
+  }
 
- 
   /* ===== EXIT CONFIRM ===== */
   document.getElementById("exitRelax").onclick = () => {
     document.getElementById("exitConfirm").style.display = "flex";
@@ -97,38 +100,32 @@ relaxBtn.addEventListener("click", () => {
     overlay.style.display = "none";
   };
 
-  /* ===== START GAME ===== */
-document.getElementById("gamesBtn").onclick = () => {
-  document.getElementById("relaxText").style.display = "none";
-  document.getElementById("leafBtn").style.display = "none";
-  document.getElementById("gamesBtn").style.display = "none";
+  /* ===== BUTTON CLICK LOGIC ===== */
 
-  if (leafInterval) {
-    clearInterval(leafInterval);
-    leafInterval = null;
-  }
-  document.getElementById("leafLayer").innerHTML = "";
+  // Games Button: Hide Relax/Games, show Snake
+  document.getElementById("gamesBtn").onclick = () => {
+    document.getElementById("relaxText").style.display = "none";
+    document.getElementById("leafBtn").style.display = "none";
+    document.getElementById("gamesBtn").style.display = "none";
+    document.getElementById("snakeBtn").style.display = "inline-block";
+  };
 
-  document.getElementById("scoreBoard").style.display = "none";
-  document.getElementById("snakeBtn").style.display = "inline-block";
-};
+  // Snake Button: Go to snake folder
+  document.getElementById("snakeBtn").onclick = () => {
+    overlay.style.display = "none"; 
+    window.location.href = "./snake-game/";
+  };
 
-/* ===== SNAKE GAME CLICK ===== */
-document.getElementById("snakeBtn").onclick = () => {
-  overlay.style.display = "none";   // close relax
-  window.location.href = "./snake-game/";
-};
-/* ===== LEAF BUTTON CLICK ===== */
-document.getElementById("leafBtn").onclick = () => {
-  document.getElementById("relaxText").style.display = "none";
-  document.getElementById("leafBtn").style.display = "none";
-  document.getElementById("gamesBtn").style.display = "none";
-  document.getElementById("snakeBtn").style.display = "none";
-  document.getElementById("scoreBoard").style.display = "block";
+  // Leaf/Relax Button: Hide menu, show scoreboard, start leaves
+  document.getElementById("leafBtn").onclick = () => {
+    document.getElementById("relaxText").style.display = "none";
+    document.getElementById("leafBtn").style.display = "none";
+    document.getElementById("gamesBtn").style.display = "none";
+    document.getElementById("snakeBtn").style.display = "none";
+    document.getElementById("scoreBoard").style.display = "block";
 
-  if (!leafInterval) spawnLeaves();
-};
-
+    if (!leafInterval) spawnLeaves();
+  };
 
   /* ===== LEAF GAME ===== */
   function spawnLeaves() {
@@ -177,11 +174,9 @@ document.getElementById("leafBtn").onclick = () => {
       document.getElementById("celebration").style.display = "none";
 
       if (value === 500) {
-        if (leafInterval) {
-          clearInterval(leafInterval);
-          leafInterval = null;
-        }
-        document.getElementById("scoreBoard").textContent = "Certified ✔️";
+        stopGame();
+        // This triggers your beautiful certificate!
+        window.location.href = "certificate.html";
       }
     };
   }
@@ -197,19 +192,9 @@ document.getElementById("leafBtn").onclick = () => {
     rewarded.clear();
     document.getElementById("scoreBoard").textContent = "Score: 0";
     document.getElementById("relaxText").style.display = "block";
+    document.getElementById("leafBtn").style.display = "inline-block";
     document.getElementById("gamesBtn").style.display = "inline-block";
+    document.getElementById("snakeBtn").style.display = "none";
   }
 
 });
-
-
-
-
-
-
-
-
-
-
-
-

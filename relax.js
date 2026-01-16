@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (value === 500) {
         stopGame();
-        // Automatically redirects to your beautiful certificate
+        // Redirect to your premium Lyceum Intelligence certificate
         window.location.href = "certificate.html";
       }
     };

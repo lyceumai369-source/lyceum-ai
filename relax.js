@@ -76,6 +76,7 @@ document.getElementById("leafBtn").style.display = "inline-block";
   overlay.appendChild(leafLayer);
 
   /* ===== OPEN RELAX ===== */
+const relaxBtn = document.getElementById("relaxBtn");
 relaxBtn.addEventListener("click", () => {
   overlay.style.display = "flex";
   if (!leafInterval) spawnLeaves(); // ✅ prevent duplicate starts
@@ -212,6 +213,7 @@ document.getElementById("snakeBtn").onclick = () => {
   }
 
 });
+
 
 
 

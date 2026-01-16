@@ -97,7 +97,7 @@ relaxBtn.addEventListener("click", () => {
 
     overlay.style.display = "flex";
   });
-}
+
 
 
   /* ===== EXIT CONFIRM ===== */
@@ -213,6 +213,7 @@ document.getElementById("snakeBtn").onclick = () => {
   }
 
 });
+
 
 
 

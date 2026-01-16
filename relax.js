@@ -79,7 +79,6 @@ document.getElementById("leafBtn").style.display = "inline-block";
 const relaxBtn = document.getElementById("relaxBtn");
 relaxBtn.addEventListener("click", () => {
   overlay.style.display = "flex";
-  if (!leafInterval) spawnLeaves(); // ✅ prevent duplicate starts
 });
 
  
@@ -99,29 +98,35 @@ relaxBtn.addEventListener("click", () => {
   };
 
   /* ===== START GAME ===== */
- document.getElementById("gamesBtn").onclick = () => {
-
-  // hide text & Games button
+document.getElementById("gamesBtn").onclick = () => {
   document.getElementById("relaxText").style.display = "none";
+  document.getElementById("leafBtn").style.display = "none";
   document.getElementById("gamesBtn").style.display = "none";
 
-  // stop leaf game
   if (leafInterval) {
     clearInterval(leafInterval);
     leafInterval = null;
   }
   document.getElementById("leafLayer").innerHTML = "";
 
-  // hide score
   document.getElementById("scoreBoard").style.display = "none";
-
-  // show ONLY snake button
   document.getElementById("snakeBtn").style.display = "inline-block";
 };
+
 /* ===== SNAKE GAME CLICK ===== */
 document.getElementById("snakeBtn").onclick = () => {
   overlay.style.display = "none";   // close relax
   window.location.href = "./snake-game/";
+};
+/* ===== LEAF BUTTON CLICK ===== */
+document.getElementById("leafBtn").onclick = () => {
+  document.getElementById("relaxText").style.display = "none";
+  document.getElementById("leafBtn").style.display = "none";
+  document.getElementById("gamesBtn").style.display = "none";
+  document.getElementById("snakeBtn").style.display = "none";
+  document.getElementById("scoreBoard").style.display = "block";
+
+  if (!leafInterval) spawnLeaves();
 };
 
 
@@ -196,6 +201,7 @@ document.getElementById("snakeBtn").onclick = () => {
   }
 
 });
+
 
 
 

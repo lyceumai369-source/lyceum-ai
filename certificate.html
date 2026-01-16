@@ -8,71 +8,72 @@
 </head>
 <body>
 
-  <div class="certificate-container">
-    <div class="outer-border"></div>
-    <div class="inner-border"></div>
-    
-    <div class="content-wrapper">
-      <div class="header">
-        <img src="logo.png" alt="Lyceum Intelligence Logo" class="corp-logo">
-        <div class="brand-name">LYCEUM INTELLIGENCE</div>
-        <div class="brand-division">Cognitive & Behavioral Research Division</div>
-      </div>
+  <div class="bg-glow"></div>
 
-      <div class="main-title">CERTIFICATE OF COMPLETION</div>
+  <div class="cert-wrapper">
+    <div class="glass-card">
+      <div class="inner-border"></div>
       
-      <p class="declaration">By the authority vested in the Lyceum Intelligence Board of Directors, it is hereby certified that</p>
+      <header>
+        <img src="logo.png" alt="Lyceum Intelligence" class="cert-logo">
+        <h3 class="brand-title">LYCEUM INTELLIGENCE</h3>
+        <p class="brand-sub">Neural Research Division</p>
+      </header>
 
-      <h1 class="username" id="userName">Gava</h1>
+      <section class="main-content">
+        <h2 class="gold-text">CERTIFICATE</h2>
+        <p class="small-text">OF COMPLETION</p>
+        
+        <div class="divider"></div>
 
-      <p class="achievement-text">
-        Has successfully navigated the <strong>Relaxation Challenge</strong> and demonstrated exceptional proficiency in 
-        cognitive regulation and mental endurance within the Lyceum AI Neural Framework.
-      </p>
+        <p class="present-text">This official record is presented to</p>
+        <h1 id="userName" class="user-name">Valued User</h1>
+        
+        <p class="desc">
+          For demonstrating elite cognitive endurance and successfully mastering the 
+          <b>Lyceum AI Relaxation Framework</b>.
+        </p>
+      </section>
 
-      <div class="curriculum-details">
-        <span>Verification ID: <strong id="certId"></strong></span>
-        <span>Issued: <strong id="certDate"></strong></span>
-      </div>
-
-      <div class="signatures">
-        <div class="signature-box">
-          <div class="sign-line">Ananthu Shaji</div>
-          <p>Founder & Chief Architect</p>
-        </div>
-        <div class="seal-box">
-          <div class="official-seal">
-            <span class="seal-inner">LI</span>
+      <footer>
+        <div class="meta-data">
+          <div class="data-item">
+            <span class="label">ID:</span>
+            <span id="certId" class="val"></span>
+          </div>
+          <div class="data-item">
+            <span class="label">Date:</span>
+            <span id="certDate" class="val"></span>
           </div>
         </div>
-        <div class="signature-box">
-          <div class="sign-line">Lyceum AI</div>
-          <p>Core Intelligence Unit</p>
+
+        <div class="sign-area">
+          <div class="signature">
+            <p class="sign-name">Ananthu Shaji</p>
+            <p class="sign-title">Chief Architect</p>
+          </div>
+          <div class="official-seal">LI</div>
         </div>
-      </div>
+      </footer>
     </div>
 
-    <button id="downloadCert" class="download-btn">DOWNLOAD OFFICIAL RECORD</button>
+    <button id="downloadBtn" class="download-fab">Download Official Record</button>
   </div>
 
   <script>
-    // Pull name from storage or default
-    const userName = localStorage.getItem("lyceumUser") || "Valued Candidate";
+    // Pull the name from storage
+    const userName = localStorage.getItem("lyceumUser") || "Visionary Candidate";
     document.getElementById("userName").textContent = userName;
 
-    // Generate Corporate Verification ID
-    const certId = "LI-SYS-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+    // Generate Verification ID
+    const certId = "LI-" + Math.random().toString(36).substr(2, 6).toUpperCase();
     document.getElementById("certId").textContent = certId;
 
     // Date
-    document.getElementById("certDate").textContent = new Date().toLocaleDateString('en-US', { 
-      year: 'numeric', month: 'long', day: 'numeric' 
-    });
+    document.getElementById("certDate").textContent = new Date().toLocaleDateString();
 
-    document.getElementById("downloadCert").addEventListener("click", () => {
-      window.print();
-    });
+    // Mobile-friendly Download
+    document.getElementById("downloadBtn").onclick = () => window.print();
   </script>
-
 </body>
 </html>

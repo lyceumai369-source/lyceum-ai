@@ -6,17 +6,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const rewards = {
     50: {
-      title: "Bronze Badge 3️⃣",
+      title: "Bronze Badge 🥉",
       icon: "🥉",
       msg: "Nice start 🌱\nRelaxation begins with small steps.\nKeep going… something special awaits."
     },
     100: {
-      title: "Silver Badge 2️⃣",
+      title: "Silver Badge 🥈",
       icon: "🥈",
       msg: "You're building calm and focus ✨\nFew people reach this state.\nStay with it."
     },
     200: {
-      title: "Gold Badge 1️⃣",
+      title: "Gold Badge 🥇",
       icon: "🥇",
       msg: "Impressive 💛\nYour mind is slowing down beautifully.\nOnly dedicated users reach what's next."
     },
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="relax-card">
       <div class="relax-text" id="relaxText">Take a deep breath 🌬️</div>
       <button class="games-btn" id="leafBtn">🍃 Relax</button>
-      <button class="games-btn" id="gamesBtn">🎮 Games</button>
+      <button class="games-btn" id="gamesBtn" style="display:none;">🎮 Games</button>
       <button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
     </div>
 
@@ -70,18 +70,24 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===== INITIAL SETUP ===== */
   document.getElementById("snakeBtn").style.display = "none";
   document.getElementById("leafBtn").style.display = "inline-block";
-  document.getElementById("gamesBtn").style.display = "inline-block";
 
   /* ===== LEAF LAYER ===== */
   const leafLayer = document.createElement("div");
   leafLayer.id = "leafLayer";
   overlay.appendChild(leafLayer);
 
-  /* ===== OPEN RELAX ===== */
+  /* ===== OPEN RELAX (Triggered by your Chatbot Button) ===== */
   const relaxBtn = document.getElementById("relaxBtn");
   if (relaxBtn) {
     relaxBtn.addEventListener("click", () => {
       overlay.style.display = "flex";
+      // Show both choices immediately
+      document.getElementById("relaxText").style.display = "block";
+      document.getElementById("relaxText").innerText = "Choose your game 🌿";
+      document.getElementById("leafBtn").style.display = "inline-block";
+      document.getElementById("snakeBtn").style.display = "inline-block";
+      document.getElementById("gamesBtn").style.display = "none";
+      document.getElementById("scoreBoard").style.display = "none";
     });
   }
 
@@ -100,34 +106,25 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.style.display = "none";
   };
 
-  /* ===== BUTTON CLICK LOGIC ===== */
+  /* ===== BUTTON ACTIONS ===== */
 
-  // Games Button: Hide Relax/Games, show Snake
-  document.getElementById("gamesBtn").onclick = () => {
-    document.getElementById("relaxText").style.display = "none";
-    document.getElementById("leafBtn").style.display = "none";
-    document.getElementById("gamesBtn").style.display = "none";
-    document.getElementById("snakeBtn").style.display = "inline-block";
-  };
-
-  // Snake Button: Go to snake folder
-  document.getElementById("snakeBtn").onclick = () => {
-    overlay.style.display = "none"; 
-    window.location.href = "./snake-game/";
-  };
-
-  // Leaf/Relax Button: Hide menu, show scoreboard, start leaves
+  // 1. LEAF GAME BUTTON
   document.getElementById("leafBtn").onclick = () => {
     document.getElementById("relaxText").style.display = "none";
     document.getElementById("leafBtn").style.display = "none";
-    document.getElementById("gamesBtn").style.display = "none";
     document.getElementById("snakeBtn").style.display = "none";
     document.getElementById("scoreBoard").style.display = "block";
 
     if (!leafInterval) spawnLeaves();
   };
 
-  /* ===== LEAF GAME ===== */
+  // 2. SNAKE GAME BUTTON
+  document.getElementById("snakeBtn").onclick = () => {
+    overlay.style.display = "none"; 
+    window.location.href = "./snake-game/"; // Redirects to your snake game folder
+  };
+
+  /* ===== LEAF GAME ENGINE ===== */
   function spawnLeaves() {
     leafInterval = setInterval(() => {
       const leaf = document.createElement("div");
@@ -149,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 600);
   }
 
-  /* ===== SCORE ===== */
+  /* ===== SCORE LOGIC ===== */
   function updateScore() {
     score++;
     document.getElementById("scoreBoard").textContent = "Score: " + score;
@@ -175,13 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (value === 500) {
         stopGame();
-        // This triggers your beautiful certificate!
+        // Automatically redirects to your beautiful certificate
         window.location.href = "certificate.html";
       }
     };
   }
 
-  /* ===== RESET GAME ===== */
+  /* ===== RESET STATE ===== */
   function stopGame() {
     if (leafInterval) {
       clearInterval(leafInterval);
@@ -193,8 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("scoreBoard").textContent = "Score: 0";
     document.getElementById("relaxText").style.display = "block";
     document.getElementById("leafBtn").style.display = "inline-block";
-    document.getElementById("gamesBtn").style.display = "inline-block";
     document.getElementById("snakeBtn").style.display = "none";
+    document.getElementById("gamesBtn").style.display = "none";
   }
 
 });

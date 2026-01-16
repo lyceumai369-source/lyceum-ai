@@ -82,24 +82,7 @@ relaxBtn.addEventListener("click", () => {
   if (!leafInterval) spawnLeaves(); // ✅ prevent duplicate starts
 });
 
-    // RESET UI STATE
-    document.getElementById("relaxText").style.display = "block";
-    document.getElementById("gamesBtn").style.display = "inline-block";
-    document.getElementById("snakeBtn").style.display = "none";
-    document.getElementById("scoreBoard").style.display = "block";
-
-    // stop leaves
-    if (leafInterval) {
-      clearInterval(leafInterval);
-      leafInterval = null;
-    }
-    document.getElementById("leafLayer").innerHTML = "";
-
-    overlay.style.display = "flex";
-  });
-
-
-
+ 
   /* ===== EXIT CONFIRM ===== */
   document.getElementById("exitRelax").onclick = () => {
     document.getElementById("exitConfirm").style.display = "flex";
@@ -213,6 +196,7 @@ document.getElementById("snakeBtn").onclick = () => {
   }
 
 });
+
 
 
 

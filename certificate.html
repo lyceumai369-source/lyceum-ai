@@ -2,73 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lyceum AI Certificate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lyceum Intelligence | Official Certification</title>
   <link rel="stylesheet" href="certificate.css">
 </head>
 <body>
 
-  <div class="certificate">
-    <div class="border"></div>
-
-    <h1>Certificate of Completion</h1>
-    <h2>Lyceum AI – Relaxation Challenge</h2>
-    <p class="subtitle">Developed by Ananthu Shaji</p>
-
-    <p class="subtitle">This certificate is proudly presented to</p>
-
-    <p class="username" id="userName">Valued User</p>
-
-    <p class="content">
-      For successfully completing the <b>Lyceum AI Relaxation Challenge</b>.<br><br>
-      This certificate is awarded in recognition of focus, patience,
-      emotional balance, and consistent participation in the Lyceum AI system.
-    </p>
-
-    <p class="content">
-      Issued by <b>Lyceum AI</b>, developed and maintained by
-      <b>Ananthu Shaji</b>, as a mark of successful completion.
-    </p>
-
-    <div class="footer">
-      <div>
-        <p class="label">Certificate ID</p>
-        <p id="certId"></p>
+  <div class="certificate-container">
+    <div class="outer-border"></div>
+    <div class="inner-border"></div>
+    
+    <div class="content-wrapper">
+      <div class="header">
+        <img src="logo.png" alt="Lyceum Intelligence Logo" class="corp-logo">
+        <div class="brand-name">LYCEUM INTELLIGENCE</div>
+        <div class="brand-division">Cognitive & Behavioral Research Division</div>
       </div>
 
-      <div>
-        <p class="label">Date</p>
-        <p id="certDate"></p>
+      <div class="main-title">CERTIFICATE OF COMPLETION</div>
+      
+      <p class="declaration">By the authority vested in the Lyceum Intelligence Board of Directors, it is hereby certified that</p>
+
+      <h1 class="username" id="userName">Gava</h1>
+
+      <p class="achievement-text">
+        Has successfully navigated the <strong>Relaxation Challenge</strong> and demonstrated exceptional proficiency in 
+        cognitive regulation and mental endurance within the Lyceum AI Neural Framework.
+      </p>
+
+      <div class="curriculum-details">
+        <span>Verification ID: <strong id="certId"></strong></span>
+        <span>Issued: <strong id="certDate"></strong></span>
       </div>
 
-      <div>
-        <p class="label">Authorized By</p>
-        <p class="sign">Lyceum AI</p>
+      <div class="signatures">
+        <div class="signature-box">
+          <div class="sign-line">Ananthu Shaji</div>
+          <p>Founder & Chief Architect</p>
+        </div>
+        <div class="seal-box">
+          <div class="official-seal">
+            <span class="seal-inner">LI</span>
+          </div>
+        </div>
+        <div class="signature-box">
+          <div class="sign-line">Lyceum AI</div>
+          <p>Core Intelligence Unit</p>
+        </div>
       </div>
     </div>
 
-    <div class="seal">✔ Official</div>
-
-    <button id="downloadCert" class="download-btn">
-      ⬇ Download PDF
-    </button>
+    <button id="downloadCert" class="download-btn">DOWNLOAD OFFICIAL RECORD</button>
   </div>
 
   <script>
-    // ===== AUTO FILL DATA =====
-
-    // User Name
-    const userName = localStorage.getItem("lyceumUser") || "Valued User";
+    // Pull name from storage or default
+    const userName = localStorage.getItem("lyceumUser") || "Valued Candidate";
     document.getElementById("userName").textContent = userName;
 
-    // Certificate ID
-    const certId = "LYC-" + Math.random().toString(36).substr(2, 8).toUpperCase();
+    // Generate Corporate Verification ID
+    const certId = "LI-SYS-" + Math.random().toString(36).substr(2, 9).toUpperCase();
     document.getElementById("certId").textContent = certId;
 
     // Date
-    document.getElementById("certDate").textContent =
-      new Date().toLocaleDateString();
+    document.getElementById("certDate").textContent = new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', month: 'long', day: 'numeric' 
+    });
 
-    // Download PDF
     document.getElementById("downloadCert").addEventListener("click", () => {
       window.print();
     });
@@ -76,4 +76,3 @@
 
 </body>
 </html>
-

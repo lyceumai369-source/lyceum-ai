@@ -8,27 +8,27 @@ document.addEventListener("DOMContentLoaded", () => {
     50: {
       title: "Bronze Badge 🥉",
       icon: "🥉",
-      msg: "Nice start 🌱\nRelaxation begins with small steps.\nKeep going… something special awaits."
+      msg: "Nice start 🌱\nKeep going... Reach 500 for your Official Certificate!"
     },
     100: {
       title: "Silver Badge 🥈",
       icon: "🥈",
-      msg: "You're building calm and focus ✨\nFew people reach this state.\nStay with it."
+      msg: "You're building calm and focus ✨\nThe 500-point Certificate is getting closer."
     },
     200: {
       title: "Gold Badge 🥇",
       icon: "🥇",
-      msg: "Impressive 💛\nYour mind is slowing down beautifully.\nOnly dedicated users reach what's next."
+      msg: "Impressive 💛\nYou are halfway to earning your Lyceum Achievement!"
     },
     300: {
       title: "Diamond Badge 💎",
       icon: "💎",
-      msg: "Elite level 💎\nYou're among the most patient Lyceum users.\nOne final milestone remains…"
+      msg: "Elite level 💎\nOnly 200 more points until your downloadable certificate is ready!"
     },
     500: {
       title: "Lyceum AI Completion Certificate 📜",
       icon: "📜",
-      msg: "Congratulations! 🎉\n\nYou completed the Lyceum AI Relaxation Challenge.\n\nThis certificate represents focus, patience, and balance.\n\nA small surprise from Lyceum AI awaits you 🌿"
+      msg: "Congratulations! 🎉\n\nYou completed the Challenge.\n\nClick 'Continue' to enter your name and claim your Premium Certificate! 🌿"
     }
   };
 
@@ -39,10 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
     <button id="exitRelax" class="exit-btn">✖</button>
 
     <div class="relax-card">
-      <div class="relax-text" id="relaxText">Take a deep breath 🌬️</div>
-      <button class="games-btn" id="leafBtn">🍃 Relax</button>
-      <button class="games-btn" id="gamesBtn" style="display:none;">🎮 Games</button>
+      <div class="relax-text" id="relaxText">Choose your game 🌿</div>
+      <p id="cert-notice" style="color: #d4af37; font-size: 0.8rem; margin-bottom: 10px;">🏆 Reach 500 points for a Premium Certificate</p>
+      <button class="games-btn" id="leafBtn">🍃 Leaf Fall</button>
       <button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
+      <button class="games-btn" id="gamesBtn" style="display:none;">🎮 Games</button>
     </div>
 
     <div id="scoreBoard" class="score-only">Score: 0</div>
@@ -76,17 +77,15 @@ document.addEventListener("DOMContentLoaded", () => {
   leafLayer.id = "leafLayer";
   overlay.appendChild(leafLayer);
 
-  /* ===== OPEN RELAX (Triggered by your Chatbot Button) ===== */
+  /* ===== OPEN RELAX ===== */
   const relaxBtn = document.getElementById("relaxBtn");
   if (relaxBtn) {
     relaxBtn.addEventListener("click", () => {
       overlay.style.display = "flex";
-      // Show both choices immediately
       document.getElementById("relaxText").style.display = "block";
-      document.getElementById("relaxText").innerText = "Choose your game 🌿";
+      document.getElementById("cert-notice").style.display = "block";
       document.getElementById("leafBtn").style.display = "inline-block";
       document.getElementById("snakeBtn").style.display = "inline-block";
-      document.getElementById("gamesBtn").style.display = "none";
       document.getElementById("scoreBoard").style.display = "none";
     });
   }
@@ -107,10 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   /* ===== BUTTON ACTIONS ===== */
-
-  // 1. LEAF GAME BUTTON
   document.getElementById("leafBtn").onclick = () => {
     document.getElementById("relaxText").style.display = "none";
+    document.getElementById("cert-notice").style.display = "none";
     document.getElementById("leafBtn").style.display = "none";
     document.getElementById("snakeBtn").style.display = "none";
     document.getElementById("scoreBoard").style.display = "block";
@@ -118,10 +116,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!leafInterval) spawnLeaves();
   };
 
-  // 2. SNAKE GAME BUTTON
   document.getElementById("snakeBtn").onclick = () => {
     overlay.style.display = "none"; 
-    window.location.href = "./snake-game/"; // Redirects to your snake game folder
+    window.location.href = "./snake-game/";
   };
 
   /* ===== LEAF GAME ENGINE ===== */
@@ -164,7 +161,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("celeIcon").textContent = r.icon;
     document.getElementById("celeTitle").textContent = r.title;
     document.getElementById("celeMsg").textContent = r.msg;
-
     document.getElementById("celebration").style.display = "flex";
 
     document.getElementById("closeCele").onclick = () => {
@@ -172,8 +168,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (value === 500) {
         stopGame();
-        // Redirect to your premium Lyceum Intelligence certificate
-        window.location.href = "certificate.html";
+        // ASKING FOR USER NAME FOR THE CERTIFICATE
+        let userName = prompt("Please enter your name for the certificate:");
+        if (!userName) userName = "Valued User"; // Fallback name
+
+        // Redirect with name as a URL parameter
+        window.location.href = `certificate.html?name=${encodeURIComponent(userName)}`;
       }
     };
   }
@@ -191,7 +191,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("relaxText").style.display = "block";
     document.getElementById("leafBtn").style.display = "inline-block";
     document.getElementById("snakeBtn").style.display = "none";
-    document.getElementById("gamesBtn").style.display = "none";
   }
-
 });

@@ -201,12 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
-
-});
-
 /* ===== WIKIPEDIA LOADING TOGGLE ===== */
 function toggleWikiLoading(show) {
   const loader = document.getElementById("wiki-loading");
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+

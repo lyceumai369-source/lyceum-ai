@@ -17,19 +17,11 @@ const EngineState = {
 function googleButton(query) {
   const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
   return `
-  <a href="${url}" target="_blank" style="
-    display:inline-block;
-    margin-top:8px;
-    padding:8px 14px;
-    background:#4285F4;
-    color:#fff;
-    text-decoration:none;
-    border-radius:6px;
-    font-weight:600;
-  ">
-    🔎 Search on Google
-  </a>`;
+🔎 Open this link in your browser:
+${url}
+`;
 }
+
 
 /* ================= INTENT ================= */
 
@@ -210,3 +202,4 @@ ${googleButton(userText)}
 
   return `📘 ${wiki.title}\n\n${answer}`;
 }
+

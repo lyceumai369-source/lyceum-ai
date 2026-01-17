@@ -1,11 +1,11 @@
 /* =========================================================
-   ZENITH OMNI KNOWLEDGE ENGINE (FINAL MERGED VERSION)
-   Features:
-   - Wikidata-first disambiguation
-   - Wikipedia explanation
+   OMNI GLOBAL KNOWLEDGE ENGINE (FINAL)
+   Covers:
+   - Global current affairs (ANY country)
+   - Wikidata role resolution
+   - Wikipedia summaries
    - DuckDuckGo fallback
-   - Context memory (last 8)
-   - Semantic follow-up handling
+   - Context memory & follow-ups
    - Topic switching
    - Certificate generation
    ========================================================= */
@@ -20,8 +20,7 @@ const EngineState = {
   currentTopic: null,
   currentEntityId: null,
   currentData: null,
-  logoUrl: "https://your-site.com/logo.png"
-
+  logoUrl: "logo.png"
 };
 
 /* ================= MEMORY ================= */
@@ -38,13 +37,13 @@ function getLastTopic() {
   return EngineState.currentTopic;
 }
 
-/* ================= QUERY HELPERS ================= */
+/* ================= QUERY NORMALIZATION ================= */
 
-function cleanQuery(q) {
-  return q
+function cleanQuery(text) {
+  return text
     .toLowerCase()
     .replace(
-      /(please|pls|tell me|tell|show|explain|find|search|information about|details of|who is|what is|when did|when was|where is|how did|how was)/g,
+      /(please|pls|tell me|tell|show|explain|find|search|information about|details of|who is|what is|when did|when was|where is|how did|how was|current|present|now)/g,
       ""
     )
     .replace(/[^\w\s]/g, "")
@@ -62,35 +61,76 @@ function detectTopicSwitch(text) {
   return true;
 }
 
-function resolveQuery(userText) {
-  const cleaned = cleanQuery(userText);
-  const lower = userText.toLowerCase();
-  const switchTopic = detectTopicSwitch(userText);
+/* ================= ROLE + COUNTRY EXTRACTION ================= */
 
-  if (!switchTopic && EngineState.currentTopic) {
-    if (/born|birthday|age/i.test(lower))
-      return `${EngineState.currentTopic} birth date`;
+function extractRoleAndCountry(text) {
+  const q = text.toLowerCase();
 
-    if (/death|died|passed away/i.test(lower))
-      return `${EngineState.currentTopic} death`;
+  const roleMap = {
+    president: "P35",        // head of state
+    "prime minister": "P6",  // head of government
+    king: "P35",
+    queen: "P35",
+    chancellor: "P6"
+  };
 
-    if (/when/i.test(lower))
-      return `${EngineState.currentTopic} birth`;
+  let roleProp = null;
+  let roleName = null;
 
-    if (/who/i.test(lower))
-      return EngineState.currentTopic;
-
-    if (/where/i.test(lower))
-      return `${EngineState.currentTopic} place`;
-
-    return EngineState.currentTopic;
+  for (const role in roleMap) {
+    if (q.includes(role)) {
+      roleProp = roleMap[role];
+      roleName = role;
+      break;
+    }
   }
 
-  return cleaned || userText;
+  if (!roleProp) return null;
+
+  const country = q
+    .replace(/current|present|woman|female|male|first|of|the|who|is|was|now/g, "")
+    .replace(roleName, "")
+    .trim();
+
+  if (!country) return null;
+
+  return { roleProp, country };
 }
 
+/* ================= WIKIDATA ROLE RESOLUTION ================= */
 
-/* ================= WIKIDATA ================= */
+async function fetchCurrentRoleHolder(roleProp, countryName) {
+  try {
+    const countryRes = await fetch(
+      `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(countryName)}&language=en&format=json&origin=*`
+    );
+    const countryData = await countryRes.json();
+    if (!countryData.search?.length) return null;
+
+    const countryId = countryData.search[0].id;
+
+    const claimsRes = await fetch(
+      `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${countryId}&property=${roleProp}&format=json&origin=*`
+    );
+    const claimsData = await claimsRes.json();
+
+    const claims = claimsData.claims?.[roleProp];
+    if (!claims?.length) return null;
+
+    const holderId = claims[0].mainsnak.datavalue.value.id;
+
+    const entityRes = await fetch(
+      `https://www.wikidata.org/wiki/Special:EntityData/${holderId}.json`
+    );
+    const entityData = await entityRes.json();
+
+    return entityData.entities[holderId].labels.en.value;
+  } catch {
+    return null;
+  }
+}
+
+/* ================= WIKIDATA ENTITY ================= */
 
 async function fetchFromWikidata(query) {
   try {
@@ -101,19 +141,25 @@ async function fetchFromWikidata(query) {
     if (!sData.search?.length) return null;
 
     const best = sData.search[0];
-    const entityId = best.id;
-
-    const claimsRes = await fetch(
-      `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${entityId}&format=json&origin=*`
-    );
-    const claimsData = await claimsRes.json();
-
     return {
-      id: entityId,
+      id: best.id,
       label: best.label,
-      description: best.description,
-      claims: claimsData.claims || {}
+      description: best.description
     };
+  } catch {
+    return null;
+  }
+}
+
+/* ================= WIKIPEDIA ================= */
+
+async function fetchFromWikipedia(title) {
+  try {
+    const res = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`
+    );
+    if (!res.ok) return null;
+    return await res.json();
   } catch {
     return null;
   }
@@ -134,20 +180,6 @@ async function fetchFromDuckDuckGo(query) {
       };
     }
     return null;
-  } catch {
-    return null;
-  }
-}
-
-/* ================= WIKIPEDIA ================= */
-
-async function fetchFromWikipedia(title) {
-  try {
-    const res = await fetch(
-      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`
-    );
-    if (!res.ok) return null;
-    return await res.json();
   } catch {
     return null;
   }
@@ -183,7 +215,7 @@ function printCertificate() {
     <div class="topic">${data.title}</div>
     <div class="content">${data.extract}</div>
     <div class="footer">
-      Generated on ${new Date().toLocaleDateString()} • Powered by Zenith Engine
+      Generated on ${new Date().toLocaleDateString()} • Powered by Omni Engine
     </div>
     <script>window.print();</script>
   </body>
@@ -200,36 +232,51 @@ async function getKnowledge(userText, onLoading) {
   if (onLoading) onLoading(true);
 
   try {
-    const query = resolveQuery(userText);
+    // 1️⃣ Global current affairs (ANY country)
+    const roleInfo = extractRoleAndCountry(userText);
+    if (roleInfo) {
+      const holder = await fetchCurrentRoleHolder(roleInfo.roleProp, roleInfo.country);
+      if (holder) {
+        return await getKnowledge(holder, onLoading);
+      }
+    }
+
+    // 2️⃣ Resolve follow-ups
+    let query;
+    if (!detectTopicSwitch(userText) && EngineState.currentTopic) {
+      const lower = userText.toLowerCase();
+      if (/born|birth|age|when/i.test(lower)) query = `${EngineState.currentTopic} birth date`;
+      else if (/death|died/i.test(lower)) query = `${EngineState.currentTopic} death`;
+      else if (/where/i.test(lower)) query = `${EngineState.currentTopic} place`;
+      else query = EngineState.currentTopic;
+    } else {
+      query = cleanQuery(userText);
+    }
+
     if (!query) return "Please ask something specific.";
 
     if (wikiCache.has(query)) return wikiCache.get(query);
 
-    // 1️⃣ Wikidata grounding
+    // 3️⃣ Wikidata grounding
     const data = await fetchFromWikidata(query);
-
     if (data) {
-      EngineState.currentEntityId = data.id;
       remember(userText, data.label);
 
-      // 2️⃣ Wikipedia using verified label
+      // 4️⃣ Wikipedia
       const wiki = await fetchFromWikipedia(data.label);
-
       if (wiki && wiki.extract) {
         EngineState.currentData = {
           title: wiki.title,
           extract: wiki.extract
         };
 
-        let answer = `📘 ${wiki.title}\n\n${wiki.extract}\n\n`;
-        answer += `---\n**Action:** Generate Certificate (call printCertificate())`;
-
+        const answer = `📘 ${wiki.title}\n\n${wiki.extract}`;
         wikiCache.set(query, answer);
         return answer;
       }
     }
 
-    // 3️⃣ DuckDuckGo fallback
+    // 5️⃣ DuckDuckGo fallback
     const ddg = await fetchFromDuckDuckGo(query);
     if (ddg) {
       const answer = `🦆 ${ddg.title}\n\n${ddg.text}`;
@@ -239,10 +286,9 @@ async function getKnowledge(userText, onLoading) {
 
     return "I couldn't find reliable information. Try rephrasing.";
 
-  } catch (e) {
+  } catch {
     return "⚠️ Something went wrong. Please try again.";
   } finally {
     if (onLoading) onLoading(false);
   }
 }
-

@@ -1,73 +1,117 @@
 /* =========================================================
-   LYCEUM AI – SMART WIKIPEDIA ENGINE
-   Features:
-   - Keyword extraction
-   - Loading state
-   - Caching
+   ADVANCED WIKIPEDIA ENGINE
+   - Full Wikipedia access
+   - Last 10 message memory
+   - Follow-up understanding
    ========================================================= */
 
 const wikiCache = {};
+const conversationMemory = [];
+const MAX_MEMORY = 10;
 
-/* 🔹 SMART KEYWORD EXTRACTOR */
-function extractKeyword(question) {
-  return question
-    .toLowerCase()
-    .replace(/what is|who is|tell me about|explain|define|give me|details of|information about/g, "")
-    .replace(/[^\w\s]/g, "")
-    .trim();
+/* 🧠 SAVE MEMORY */
+function saveToMemory(text) {
+  conversationMemory.push(text);
+  if (conversationMemory.length > MAX_MEMORY) {
+    conversationMemory.shift();
+  }
 }
 
-/* 🔹 MAIN SEARCH FUNCTION */
-async function searchWikipediaSmart(userQuestion, onLoading) {
-  const keyword = extractKeyword(userQuestion);
+/* 🧠 GET LAST MEANINGFUL TOPIC */
+function getLastTopic() {
+  return conversationMemory
+    .slice()
+    .reverse()
+    .find(t => t.length > 3);
+}
 
-  if (!keyword) return null;
+/* 🧠 CLEAN & NORMALIZE QUESTION */
+function normalizeQuestion(q) {
+  q = q.toLowerCase();
 
-  /* 🔹 CACHE CHECK */
-  if (wikiCache[keyword]) {
-    return wikiCache[keyword] + "\n\n⚡ (Loaded from cache)";
+  q = q.replace(
+    /(when|where|who|why|how|what|tell me about|explain|define|details of|information about|give me)/g,
+    ""
+  );
+
+  q = q.replace(
+    /\b(is|was|were|are|did|does|happen|happened|occur|occurred|start|started)\b/g,
+    ""
+  );
+
+  q = q.replace(/[^\w\s]/g, "").trim();
+
+  return q;
+}
+
+/* 🧠 BUILD SEARCH QUERY */
+function buildSearchQuery(userText) {
+  let query = normalizeQuestion(userText);
+
+  // Follow-up detection
+  if (
+    /this|that|it|they|movie|film|hit|flop|success|actor|actress|director|year|date/i.test(userText)
+  ) {
+    const last = getLastTopic();
+    if (last) query = last;
   }
 
-  /* 🔹 LOADING CALLBACK */
+  // Intent boosters
+  if (/movement|andolan/i.test(userText)) query += " movement";
+  if (/act|law|amendment/i.test(userText)) query += " act";
+  if (/river/i.test(userText)) query += " river";
+  if (/movie|film/i.test(userText)) query += " film";
+
+  return query.trim();
+}
+
+/* 🌍 MAIN WIKIPEDIA SEARCH */
+async function searchWikipediaAdvanced(userText, onLoading) {
+  saveToMemory(userText);
+
+  const query = buildSearchQuery(userText);
+  if (!query) return null;
+
+  // Cache
+  if (wikiCache[query]) {
+    return wikiCache[query] + "\n\n⚡ (from memory)";
+  }
+
   if (onLoading) onLoading(true);
 
   try {
-    /* STEP 1: SEARCH */
     const searchUrl =
       `https://en.wikipedia.org/w/api.php?action=query&list=search` +
-      `&srsearch=${encodeURIComponent(keyword)}` +
+      `&srsearch=${encodeURIComponent(query)}` +
       `&format=json&origin=*`;
 
-    const searchRes = await fetch(searchUrl);
-    const searchData = await searchRes.json();
+    const res = await fetch(searchUrl);
+    const data = await res.json();
 
-    if (!searchData.query.search.length) return null;
+    if (!data.query.search.length) return null;
 
-    const title = searchData.query.search[0].title;
+    const bestTitle = data.query.search[0].title;
 
-    /* STEP 2: SUMMARY */
     const summaryUrl =
-      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(bestTitle)}`;
 
-    const summaryRes = await fetch(summaryUrl);
-    if (!summaryRes.ok) return null;
+    const sRes = await fetch(summaryUrl);
+    if (!sRes.ok) return null;
 
-    const data = await summaryRes.json();
+    const summary = await sRes.json();
 
     const answer = `
-📘 ${data.title}
+📘 ${summary.title}
 
-${data.extract}
+${summary.extract}
 
 🔗 Source: Wikipedia
     `.trim();
 
-    /* SAVE TO CACHE */
-    wikiCache[keyword] = answer;
-
+    wikiCache[query] = answer;
     return answer;
 
-  } catch (err) {
+  } catch (e) {
     return null;
   } finally {
     if (onLoading) onLoading(false);

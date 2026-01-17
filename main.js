@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       /* 🌍 WIKIPEDIA FALLBACK (ONLY ADDITION) */
       if (!response) {
-        response = await searchWikipediaSmart(
+        response = await searchWikipediaAdvanced(
           text,
           toggleWikiLoading
         );
@@ -204,3 +204,4 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+

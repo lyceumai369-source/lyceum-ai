@@ -1,145 +1,236 @@
 /* =========================================================
-   KNOWLEDGE ENGINE ELITE (v3.0 - Semantic Topic Switching)
+   ZENITH OMNI KNOWLEDGE ENGINE (FINAL MERGED VERSION)
+   Features:
+   - Wikidata-first disambiguation
+   - Wikipedia explanation
+   - DuckDuckGo fallback
+   - Context memory (last 8)
+   - Semantic follow-up handling
+   - Topic switching
+   - Certificate generation
    ========================================================= */
 
-const wikiCache = new Map();
-const memory = [];
-const MAX_MEMORY = 10;
+/* ================= GLOBAL STATE ================= */
 
-// Internal state to track "Current Active Subject"
-let currentSubject = {
-    topic: null,
-    category: null,
-    confidence: 0
+const wikiCache = new Map();
+const MAX_MEMORY = 8;
+
+const EngineState = {
+  memory: [],
+  currentTopic: null,
+  currentEntityId: null,
+  currentData: null,
+  logoUrl: "https://your-site.com/logo.png"
+
 };
 
-/* ================= TOPIC SWITCHING LOGIC ================= */
+/* ================= MEMORY ================= */
 
-function detectTopicSwitch(newQuery, lastTopic) {
-    if (!lastTopic) return true;
-    
-    // Keywords that suggest we are still talking about the same thing
-    const followUpIndicators = /\b(it|he|she|they|its|the|this|that|there|yes|no|more|tell me more|detail|born|died|where|when)\b/i;
-    
-    // If the new query is very short or contains follow-up pronouns, keep the topic
-    if (newQuery.split(" ").length <= 2 && followUpIndicators.test(newQuery)) {
-        return false; // No switch
+function remember(userText, topic) {
+  EngineState.memory.push({ userText, topic, time: Date.now() });
+  if (EngineState.memory.length > MAX_MEMORY) {
+    EngineState.memory.shift();
+  }
+  EngineState.currentTopic = topic;
+}
+
+function getLastTopic() {
+  return EngineState.currentTopic;
+}
+
+/* ================= QUERY HELPERS ================= */
+
+function cleanQuery(q) {
+  return q
+    .toLowerCase()
+    .replace(
+      /(please|pls|tell me|tell|show|explain|find|search|information about|details of|who is|what is|when did|when was|where is|how did|how was)/g,
+      ""
+    )
+    .replace(/[^\w\s]/g, "")
+    .trim();
+}
+
+function isFollowUp(text) {
+  return /\b(it|this|that|he|she|they|them|its|his|her|who|when|where|born|death|population|capital|leader|started)\b/i.test(text);
+}
+
+function detectTopicSwitch(text) {
+  if (!EngineState.currentTopic) return true;
+  if (isFollowUp(text)) return false;
+  if (text.split(" ").length <= 2) return false;
+  return true;
+}
+
+function resolveQuery(userText) {
+  const cleaned = cleanQuery(userText);
+  const switchTopic = detectTopicSwitch(userText);
+
+  if (!switchTopic && EngineState.currentTopic) {
+    if (/born|birthday|age/i.test(userText)) return `${EngineState.currentTopic} birth`;
+    if (/death|died/i.test(userText)) return `${EngineState.currentTopic} death`;
+    if (/population/i.test(userText)) return `${EngineState.currentTopic} population`;
+    if (/capital/i.test(userText)) return `${EngineState.currentTopic} capital`;
+    if (/who/i.test(userText)) return EngineState.currentTopic;
+    if (/when/i.test(userText)) return EngineState.currentTopic;
+    return EngineState.currentTopic;
+  }
+
+  return cleaned || userText;
+}
+
+/* ================= WIKIDATA ================= */
+
+async function fetchFromWikidata(query) {
+  try {
+    const sRes = await fetch(
+      `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=en&format=json&origin=*`
+    );
+    const sData = await sRes.json();
+    if (!sData.search?.length) return null;
+
+    const best = sData.search[0];
+    const entityId = best.id;
+
+    const claimsRes = await fetch(
+      `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${entityId}&format=json&origin=*`
+    );
+    const claimsData = await claimsRes.json();
+
+    return {
+      id: entityId,
+      label: best.label,
+      description: best.description,
+      claims: claimsData.claims || {}
+    };
+  } catch {
+    return null;
+  }
+}
+
+/* ================= DUCKDUCKGO ================= */
+
+async function fetchFromDuckDuckGo(query) {
+  try {
+    const res = await fetch(
+      `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`
+    );
+    const data = await res.json();
+    if (data.AbstractText) {
+      return {
+        title: data.Heading,
+        text: data.AbstractText
+      };
     }
-    
-    // If query is long and contains new nouns, it's likely a switch
-    return true; 
+    return null;
+  } catch {
+    return null;
+  }
 }
 
-/* ================= ENHANCED QUERY PARSER ================= */
+/* ================= WIKIPEDIA ================= */
 
-function cleanText(text) {
-    return text.toLowerCase()
-        .replace(/(pls|please|can you|tell me|who is|what is|search for|find)\b/gi, "")
-        .replace(/[^\w\s]/g, "")
-        .trim();
+async function fetchFromWikipedia(title) {
+  try {
+    const res = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`
+    );
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
-function buildAdvancedQuery(userText) {
-    const clean = cleanText(userText);
-    const isSwitch = detectTopicSwitch(clean, currentSubject.topic);
+/* ================= CERTIFICATE ================= */
 
-    if (!isSwitch && currentSubject.topic) {
-        // Advanced Context Merging: "When was he born?" -> "Elon Musk birth date"
-        if (/\b(born|birthday|age)\b/i.test(userText)) return `${currentSubject.topic} birth`;
-        if (/\b(died|death|passed away)\b/i.test(userText)) return `${currentSubject.topic} death`;
-        if (/\b(location|where|place|city|country)\b/i.test(userText)) return `${currentSubject.topic} location`;
-        return currentSubject.topic;
-    }
+function printCertificate() {
+  if (!EngineState.currentData) {
+    alert("Search for a topic first!");
+    return;
+  }
 
-    return clean;
+  const data = EngineState.currentData;
+  const win = window.open("", "_blank");
+
+  const html = `
+  <html>
+  <head>
+    <title>Knowledge Certificate - ${data.title}</title>
+    <style>
+      body { font-family: Georgia, serif; text-align: center; padding: 50px; border: 18px solid #2c3e50; }
+      .logo { width: 140px; margin-bottom: 20px; }
+      .title { font-size: 38px; color: #2c3e50; }
+      .topic { font-size: 28px; margin: 20px 0; color: #e67e22; }
+      .content { font-size: 18px; text-align: justify; margin: 30px; }
+      .footer { margin-top: 40px; font-size: 14px; color: #7f8c8d; }
+    </style>
+  </head>
+  <body>
+    ${EngineState.logoUrl ? `<img src="${EngineState.logoUrl}" class="logo">` : ""}
+    <div class="title">Certificate of Knowledge</div>
+    <div class="topic">${data.title}</div>
+    <div class="content">${data.extract}</div>
+    <div class="footer">
+      Generated on ${new Date().toLocaleDateString()} • Powered by Zenith Engine
+    </div>
+    <script>window.print();</script>
+  </body>
+  </html>
+  `;
+
+  win.document.write(html);
+  win.document.close();
 }
 
-/* ================= WIKIDATA SEMANTICS ================= */
-
-async function getDeepFacts(query) {
-    try {
-        const search = await fetch(`https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=en&format=json&origin=*`);
-        const searchData = await search.json();
-        if (!searchData.search.length) return null;
-
-        const item = searchData.search[0];
-        const id = item.id;
-        
-        // Fetch specific properties: P569 (birth), P570 (death), P18 (image), P1082 (pop), P625 (coords)
-        const entity = await fetch(`https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${id}&format=json&origin=*`);
-        const claims = (await entity.json()).claims;
-
-        let facts = [];
-        if (claims.P569) facts.push(`🗓️ Date: ${claims.P569[0].mainsnak.datavalue.value.time.substring(1, 11)}`);
-        if (claims.P625) facts.push(`📍 Coords: Found`);
-        if (claims.P1082) facts.push(`👥 Pop: ${Math.round(claims.P1082[0].mainsnak.datavalue.value.amount).toLocaleString()}`);
-
-        return {
-            id,
-            label: item.label,
-            description: item.description,
-            factString: facts.join(" | ")
-        };
-    } catch (e) { return null; }
-}
-
-/* ================= ENGINE CORE ================= */
+/* ================= MAIN ENGINE ================= */
 
 async function getKnowledge(userText, onLoading) {
-    const query = buildAdvancedQuery(userText);
-    if (!query) return "I need a bit more info to search that up!";
+  if (onLoading) onLoading(true);
 
-    // Check Cache
+  try {
+    const query = resolveQuery(userText);
+    if (!query) return "Please ask something specific.";
+
     if (wikiCache.has(query)) return wikiCache.get(query);
 
-    if (onLoading) onLoading(true);
+    // 1️⃣ Wikidata grounding
+    const data = await fetchFromWikidata(query);
 
-    try {
-        // 1. Get Wikidata (Contextual Foundation)
-        const data = await getDeepFacts(query);
-        
-        // Update Global Topic State
-        if (data) {
-            currentSubject = { topic: data.label, category: data.description, confidence: 1 };
-        }
+    if (data) {
+      EngineState.currentEntityId = data.id;
+      remember(userText, data.label);
 
-        // 2. Get Wikipedia Summary
-        const wikiTarget = data ? data.label : query;
-        const wikiRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTarget)}`);
-        const wiki = wikiRes.ok ? await wikiRes.json() : null;
+      // 2️⃣ Wikipedia using verified label
+      const wiki = await fetchFromWikipedia(data.label);
 
-        // 3. Get DuckDuckGo as Fallback/Bonus
-        let ddg = null;
-        if (!wiki || wiki.type === 'disambiguation') {
-            const ddgRes = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1`);
-            ddg = await ddgRes.json();
-        }
+      if (wiki && wiki.extract) {
+        EngineState.currentData = {
+          title: wiki.title,
+          extract: wiki.extract
+        };
 
-        // 4. Construct Ultimate Response
-        let response = "";
+        let answer = `📘 ${wiki.title}\n\n${wiki.extract}\n\n`;
+        answer += `---\n**Action:** Generate Certificate (call printCertificate())`;
 
-        if (wiki && wiki.extract) {
-            response = `### 📘 ${wiki.title}\n${wiki.extract}\n\n`;
-            if (data && data.factString) response += `> **Data Points:** ${data.factString}\n`;
-            response += `\n*Context: ${data?.description || "General Knowledge"}*`;
-        } 
-        else if (ddg && ddg.AbstractText) {
-            response = `### 🦆 ${ddg.Heading}\n${ddg.AbstractText}\n\n*Source: DuckDuckGo*`;
-        } 
-        else {
-            response = "I couldn't find a deep match. Could you specify if you mean a person, place, or thing?";
-        }
-
-        // Store Memory
-        memory.push({ user: userText, bot: response, topic: currentSubject.topic });
-        if (memory.length > MAX_MEMORY) memory.shift();
-        
-        wikiCache.set(query, response);
-        return response;
-
-    } catch (err) {
-        return "I encountered a digital hiccup. Try again?";
-    } finally {
-        if (onLoading) onLoading(false);
+        wikiCache.set(query, answer);
+        return answer;
+      }
     }
+
+    // 3️⃣ DuckDuckGo fallback
+    const ddg = await fetchFromDuckDuckGo(query);
+    if (ddg) {
+      const answer = `🦆 ${ddg.title}\n\n${ddg.text}`;
+      wikiCache.set(query, answer);
+      return answer;
+    }
+
+    return "I couldn't find reliable information. Try rephrasing.";
+
+  } catch (e) {
+    return "⚠️ Something went wrong. Please try again.";
+  } finally {
+    if (onLoading) onLoading(false);
+  }
 }

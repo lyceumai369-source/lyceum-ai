@@ -20,22 +20,23 @@ const UI = {
     msg.appendChild(timestamp);
     this.messagesArea.appendChild(msg);
 
-   if (type === 'bot') {
-  // If message contains a link, render directly (no typing effect)
-  if (text.includes("http")) {
-    content.innerHTML = text.replace(
-      /(https?:\/\/[^\s]+)/g,
-      '<a href="$1" target="_blank">$1</a>'
-    );
-    this.scrollToBottom();
-  } else {
-    this.typeEffect(content, text);
-  }
-} else {
-  content.textContent = text;
-  this.scrollToBottom();
-}
+    // ✅ USER MESSAGE (SAFE)
+    if (type !== 'bot') {
+      content.textContent = text;
+      this.scrollToBottom();
+      return;
+    }
 
+    // ✅ BOT MESSAGE
+    // If message contains a URL → render directly (NO typing)
+    if (this.containsLink(text)) {
+      content.innerHTML = this.linkify(text);
+      this.scrollToBottom();
+    } else {
+      // Normal typing animation
+      this.typeEffect(content, text);
+    }
+  },
 
   typeEffect(element, text) {
     let i = 0;
@@ -55,9 +56,19 @@ const UI = {
     type();
   },
 
+  containsLink(text) {
+    return /(https?:\/\/[^\s]+)/i.test(text);
+  },
+
+  linkify(text) {
+    return text.replace(
+      /(https?:\/\/[^\s]+)/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+  },
+
   showTyping(show) {
     if (!this.typingInd) return;
-
     this.typingInd.classList.toggle('hidden', !show);
     this.scrollToBottom();
   },
@@ -73,14 +84,15 @@ const UI = {
     });
   }
 };
-// ===== MOBILE MENU TOGGLE (STABLE) =====
+
+// ===== MOBILE MENU TOGGLE =====
 const sidebar = document.getElementById('sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 
 menuToggle?.addEventListener('click', () => {
   sidebar.classList.toggle('active');
 });
-// ===== MOBILE HAMBURGER FIX =====
+
 document.addEventListener("DOMContentLoaded", () => {
   const menuToggle = document.getElementById("menu-toggle");
   const sidebar = document.getElementById("sidebar");
@@ -91,9 +103,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-
-
-
-
-

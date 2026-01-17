@@ -1,24 +1,37 @@
 /* =========================================================
    FINAL USER-FRIENDLY KNOWLEDGE ENGINE
-   - Intent aware (what/when/where/who/how/points)
-   - Topic extraction (911, Plassey, Quit India)
+   - Intent aware (what / when / where / who / how / points)
+   - Topic extraction (911, Plassey, Quit India, etc.)
    - Historical events
-   - Global current affairs (ANY country)
+   - Global current affairs (president / PM / king)
    - Follow-up understanding
-   - Safe fallback with Google link
+   - Safe fallback with clickable Google button
    ========================================================= */
 
 const EngineState = {
   lastTopic: null
 };
 
-/* ================= GOOGLE FALLBACK ================= */
+/* ================= GOOGLE BUTTON ================= */
 
-function googleLink(query) {
-  return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+function googleButton(query) {
+  const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+  return `
+  <a href="${url}" target="_blank" style="
+    display:inline-block;
+    margin-top:8px;
+    padding:8px 14px;
+    background:#4285F4;
+    color:#fff;
+    text-decoration:none;
+    border-radius:6px;
+    font-weight:600;
+  ">
+    🔎 Search on Google
+  </a>`;
 }
 
-/* ================= INTENT DETECTION ================= */
+/* ================= INTENT ================= */
 
 function detectIntent(text) {
   const q = text.toLowerCase();
@@ -45,7 +58,7 @@ function extractTopic(text) {
     .trim();
 }
 
-/* ================= FOLLOW-UP HANDLING ================= */
+/* ================= FOLLOW-UP ================= */
 
 function resolveTopic(text) {
   const lower = text.toLowerCase();
@@ -141,46 +154,46 @@ async function fetchWikipedia(topic) {
 /* ================= MAIN ENGINE ================= */
 
 async function getKnowledge(userText) {
-  // 1️⃣ Global current affairs
+  // 1️⃣ Current affairs
   const roleResolved = await resolveRoleQuestion(userText);
   if (roleResolved) {
     return await getKnowledge(roleResolved);
   }
 
-  // 2️⃣ Intent & topic
+  // 2️⃣ Intent + topic
   const intent = detectIntent(userText);
   const topic = resolveTopic(userText);
 
   if (!topic) {
-    return `🤔 I couldn’t clearly understand the topic.
+    return `
+🤔 I couldn’t clearly understand the topic.
 
-🔎 Try searching here:
-${googleLink(userText)}`;
+${googleButton(userText)}
+`;
   }
 
   // 3️⃣ Wikipedia
   const wiki = await fetchWikipedia(topic);
 
   if (!wiki || !wiki.extract) {
-    return `🤔 I don’t have a confirmed answer for this right now.
+    return `
+🤔 I don’t have a confirmed answer for this right now.
 
-🔎 You can search this exact topic on Google:
-${googleLink(userText)}
+${googleButton(userText)}
 
-💡 Tip: Try adding words like "when", "who", "history", or "definition".`;
+💡 Tip: Try adding words like "when", "who", "history", or "definition".
+`;
   }
 
   EngineState.lastTopic = wiki.title;
   let answer = wiki.extract;
 
-  // 4️⃣ Intent-based filtering
+  // 4️⃣ Intent filtering
   if (intent === "WHEN") {
     const date =
       wiki.extract.match(/\b\d{1,2}\s\w+\s\d{4}\b/) ||
       wiki.extract.match(/\b\d{4}\b/);
-    if (date) {
-      answer = `📅 ${wiki.title} happened in ${date[0]}.`;
-    }
+    if (date) answer = `📅 ${wiki.title} happened in ${date[0]}.`;
   }
 
   if (intent === "WHERE") {
@@ -195,25 +208,5 @@ ${googleLink(userText)}
       .join("\n");
   }
 
-  if (intent === "DESCRIBE" || intent === "GENERAL") {
-    answer = wiki.extract;
-  }
-
   return `📘 ${wiki.title}\n\n${answer}`;
-}
-function googleButton(query) {
-  const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  return `
-  <a href="${url}" target="_blank" style="
-    display:inline-block;
-    margin-top:8px;
-    padding:8px 14px;
-    background:#4285F4;
-    color:#fff;
-    text-decoration:none;
-    border-radius:6px;
-    font-weight:600;
-  ">
-    🔎 Search on Google
-  </a>`;
 }

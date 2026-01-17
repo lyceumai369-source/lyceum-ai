@@ -64,20 +64,31 @@ function detectTopicSwitch(text) {
 
 function resolveQuery(userText) {
   const cleaned = cleanQuery(userText);
+  const lower = userText.toLowerCase();
   const switchTopic = detectTopicSwitch(userText);
 
   if (!switchTopic && EngineState.currentTopic) {
-    if (/born|birthday|age/i.test(userText)) return `${EngineState.currentTopic} birth`;
-    if (/death|died/i.test(userText)) return `${EngineState.currentTopic} death`;
-    if (/population/i.test(userText)) return `${EngineState.currentTopic} population`;
-    if (/capital/i.test(userText)) return `${EngineState.currentTopic} capital`;
-    if (/who/i.test(userText)) return EngineState.currentTopic;
-    if (/when/i.test(userText)) return EngineState.currentTopic;
+    if (/born|birthday|age/i.test(lower))
+      return `${EngineState.currentTopic} birth date`;
+
+    if (/death|died|passed away/i.test(lower))
+      return `${EngineState.currentTopic} death`;
+
+    if (/when/i.test(lower))
+      return `${EngineState.currentTopic} birth`;
+
+    if (/who/i.test(lower))
+      return EngineState.currentTopic;
+
+    if (/where/i.test(lower))
+      return `${EngineState.currentTopic} place`;
+
     return EngineState.currentTopic;
   }
 
   return cleaned || userText;
 }
+
 
 /* ================= WIKIDATA ================= */
 
@@ -234,3 +245,4 @@ async function getKnowledge(userText, onLoading) {
     if (onLoading) onLoading(false);
   }
 }
+

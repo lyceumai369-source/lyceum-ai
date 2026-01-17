@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===== SEND MESSAGE ===== */
-  async function handleSend() {
+  function handleSend() {
     const text = userInput.value.trim();
     if (!text) return;
 
@@ -101,30 +101,41 @@ document.addEventListener('DOMContentLoaded', () => {
     userInput.value = '';
     UI.showTyping(true);
 
-  UI.showTyping(true);
-let response = Brain.getResponse(text);
+    (async () => {
+      let response = Brain.getResponse(text);
 
-if (!response) {
-  response = await getKnowledge(text, toggleWikiLoading);
-}
+      // 🧠 If preprogrammed brain reply exists → reply instantly
+      if (response) {
+        UI.showTyping(false);
+        const botTime = new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        if (text.includes('?')) speak(response);
+        UI.renderMessage(response, 'bot', botTime);
+        return;
+      }
 
-if (!response) {
-  response = getFallbackReply();
-}
+      // 🌍 Wikipedia / knowledge engine
+      response = await getKnowledge(text, toggleWikiLoading);
 
-UI.showTyping(false);
+      // 🧠 Final fallback
+      if (!response) {
+        response = getFallbackReply();
+      }
 
-const botTime = new Date().toLocaleTimeString([], {
-  hour: '2-digit',
-  minute: '2-digit'
-});
+      UI.showTyping(false);
+      const botTime = new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
 
-if (text.includes('?')) speak(response);
-UI.renderMessage(response, 'bot', botTime);
+      if (text.includes('?')) speak(response);
+      UI.renderMessage(response, 'bot', botTime);
+    })();
+  } // <--- This bracket was missing, it closes handleSend properly
 
-
- 
-
+  /* ===== EVENT LISTENERS ===== */
   sendBtn.addEventListener('click', handleSend);
   userInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') handleSend();
@@ -193,14 +204,9 @@ UI.renderMessage(response, 'bot', botTime);
 
 });
 
-/* ===== WIKIPEDIA LOADING TOGGLE (ONLY ADDITION) ===== */
+/* ===== WIKIPEDIA LOADING TOGGLE ===== */
 function toggleWikiLoading(show) {
   const loader = document.getElementById("wiki-loading");
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
-
-
-
-
-

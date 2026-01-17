@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===== SEND MESSAGE ===== */
-  function handleSend() {
+  async function handleSend() {
     const text = userInput.value.trim();
     if (!text) return;
 
@@ -102,43 +102,28 @@ document.addEventListener('DOMContentLoaded', () => {
     UI.showTyping(true);
 
   UI.showTyping(true);
+let response = Brain.getResponse(text);
 
-(async () => {
-  let response = Brain.getResponse(text);
-
-  // 🧠 If preprogrammed brain reply exists → reply instantly
-  if (response) {
-    UI.showTyping(false);
-
-    const botTime = new Date().toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
-    if (text.includes('?')) speak(response);
-    UI.renderMessage(response, 'bot', botTime);
-    return;
-  }
-
-  // 🌍 Wikipedia / knowledge engine (may take time)
+if (!response) {
   response = await getKnowledge(text, toggleWikiLoading);
+}
 
-  // 🧠 Final fallback
-  if (!response) {
-    response = getFallbackReply();
-  }
+if (!response) {
+  response = getFallbackReply();
+}
 
-  UI.showTyping(false);
+UI.showTyping(false);
 
-  const botTime = new Date().toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+const botTime = new Date().toLocaleTimeString([], {
+  hour: '2-digit',
+  minute: '2-digit'
+});
 
-  if (text.includes('?')) speak(response);
-  UI.renderMessage(response, 'bot', botTime);
-})();
+if (text.includes('?')) speak(response);
+UI.renderMessage(response, 'bot', botTime);
 
+
+ 
 
   sendBtn.addEventListener('click', handleSend);
   userInput.addEventListener('keydown', e => {
@@ -214,6 +199,7 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+
 
 
 

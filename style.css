@@ -392,3 +392,14 @@ body::before {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
+#wiki-loading {
+  font-size: 14px;
+  color: #888;
+  margin: 8px;
+  font-style: italic;
+}
+
+.hidden {
+  display: none;
+}
+

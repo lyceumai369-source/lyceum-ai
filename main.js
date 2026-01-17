@@ -101,36 +101,44 @@ document.addEventListener('DOMContentLoaded', () => {
     userInput.value = '';
     UI.showTyping(true);
 
-    setTimeout(async () => {
-      UI.showTyping(false);
+  UI.showTyping(true);
 
-      let response = Brain.getResponse(text);
+(async () => {
+  let response = Brain.getResponse(text);
 
-      /* 🌍 WIKIPEDIA FALLBACK (ONLY ADDITION) */
-      if (!response) {
-       response = await getKnowledge(
-  text,
-  toggleWikiLoading
-);
+  // 🧠 If preprogrammed brain reply exists → reply instantly
+  if (response) {
+    UI.showTyping(false);
 
+    const botTime = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
 
-      }
-
-      /* 🧠 FINAL FALLBACK */
-      if (!response) {
-        response = getFallbackReply();
-      }
-
-      const botTime = new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-
-      if (text.includes('?')) speak(response);
-      UI.renderMessage(response, 'bot', botTime);
-
-    }, 900);
+    if (text.includes('?')) speak(response);
+    UI.renderMessage(response, 'bot', botTime);
+    return;
   }
+
+  // 🌍 Wikipedia / knowledge engine (may take time)
+  response = await getKnowledge(text, toggleWikiLoading);
+
+  // 🧠 Final fallback
+  if (!response) {
+    response = getFallbackReply();
+  }
+
+  UI.showTyping(false);
+
+  const botTime = new Date().toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  if (text.includes('?')) speak(response);
+  UI.renderMessage(response, 'bot', botTime);
+})();
+
 
   sendBtn.addEventListener('click', handleSend);
   userInput.addEventListener('keydown', e => {
@@ -206,6 +214,7 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+
 
 
 

@@ -188,3 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+function toggleWikiLoading(show) {
+  const loader = document.getElementById("wiki-loading");
+  if (!loader) return;
+  loader.classList.toggle("hidden", !show);
+}
+

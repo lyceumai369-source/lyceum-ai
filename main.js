@@ -28,52 +28,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ===== SPEECH OUTPUT ===== */
   let voices = [];
-
   function loadVoices() {
     voices = speechSynthesis.getVoices();
   }
-
   loadVoices();
   speechSynthesis.onvoiceschanged = loadVoices;
 
   function speak(text) {
     if (!('speechSynthesis' in window)) return;
-
     const utterance = new SpeechSynthesisUtterance(text);
-    const male = voices.find(v =>
-      /male|david|google us english/i.test(v.name)
-    );
-
+    const male = voices.find(v => /male|david|google us english/i.test(v.name));
     if (male) utterance.voice = male;
     utterance.pitch = 0.9;
     utterance.rate = 1;
-
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }
 
   /* ===== SPEECH INPUT ===== */
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (SpeechRecognition && micBtn) {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
-
     micBtn.addEventListener('click', () => {
       recognition.start();
       micBtn.textContent = '🛑';
     });
-
     recognition.onresult = e => {
       userInput.value = e.results[0][0].transcript;
       micBtn.textContent = '🎤';
       handleSend();
     };
-
-    recognition.onerror = () => {
-      micBtn.textContent = '🎤';
-    };
+    recognition.onerror = () => { micBtn.textContent = '🎤'; };
   } else if (micBtn) {
     micBtn.style.display = 'none';
   }
@@ -83,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = userInput.value.trim();
     if (!text) return;
 
-    // 🔐 SECRET PASSWORD → OPEN ANJU UI
     if (text === "april8!") {
       window.open("anju/index.html", "_blank");
       userInput.value = "";
@@ -91,49 +76,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.body.classList.add('chat-active');
-
-    const userTime = new Date().toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-
+    const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     UI.renderMessage(text, 'user', userTime);
     userInput.value = '';
     UI.showTyping(true);
 
     (async () => {
       let response = Brain.getResponse(text);
-
-      // 🧠 If preprogrammed brain reply exists → reply instantly
       if (response) {
         UI.showTyping(false);
-        const botTime = new Date().toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit'
-        });
+        const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         if (text.includes('?')) speak(response);
         UI.renderMessage(response, 'bot', botTime);
         return;
       }
 
-      // 🌍 Wikipedia / knowledge engine
       response = await getKnowledge(text, toggleWikiLoading);
-
-      // 🧠 Final fallback
-      if (!response) {
-        response = getFallbackReply();
-      }
+      if (!response) { response = getFallbackReply(); }
 
       UI.showTyping(false);
-      const botTime = new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-
+      const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       if (text.includes('?')) speak(response);
       UI.renderMessage(response, 'bot', botTime);
     })();
-  } // <--- This bracket was missing, it closes handleSend properly
+  } 
 
   /* ===== EVENT LISTENERS ===== */
   sendBtn.addEventListener('click', handleSend);
@@ -146,24 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
     e.stopPropagation();
     sidebar.classList.toggle('active');
   });
-
   sidebar.addEventListener('click', e => e.stopPropagation());
-
-  document.addEventListener('click', () => {
-    sidebar.classList.remove('active');
-  });
+  document.addEventListener('click', () => { sidebar.classList.remove('active'); });
 
   /* ===== SETTINGS MODAL ===== */
   sBtn.addEventListener('click', () => sModal.classList.remove('hidden'));
   cBtn.addEventListener('click', () => sModal.classList.add('hidden'));
-
-  sModal.addEventListener('click', e => {
-    if (e.target === sModal) sModal.classList.add('hidden');
-  });
-
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') sModal.classList.add('hidden');
-  });
+  sModal.addEventListener('click', e => { if (e.target === sModal) sModal.classList.add('hidden'); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') sModal.classList.add('hidden'); });
 
   tabAbout.addEventListener('click', () => {
     contentAbout.classList.remove('hidden');
@@ -183,28 +139,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const dot = document.createElement('div');
         dot.className = 'color-dot';
         dot.style.background = color;
-
         dot.onclick = () => {
           document.documentElement.style.setProperty('--accent', color);
-
           const light = ['#ffffff','#eccc68','#7bed9f','#ff9ff3','#d1ccc0'];
-          document.documentElement.style.setProperty(
-            '--user-text',
-            light.includes(color.toLowerCase()) ? '#000' : '#fff'
-          );
-
+          document.documentElement.style.setProperty('--user-text', light.includes(color.toLowerCase()) ? '#000' : '#fff');
           const tint = color + '1a';
           document.documentElement.style.setProperty('--sidebar-bg', tint);
         };
-
         colorGrid.appendChild(dot);
       });
     }
   });
+
+}); 
+
 /* ===== WIKIPEDIA LOADING TOGGLE ===== */
 function toggleWikiLoading(show) {
   const loader = document.getElementById("wiki-loading");
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
-

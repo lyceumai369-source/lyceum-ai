@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
 
   /* ===== ELEMENTS ===== */
@@ -83,12 +82,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleSend() {
     const text = userInput.value.trim();
     if (!text) return;
-      // 🔐 SECRET PASSWORD → OPEN ANJU UI
-  if (text === "april8!") {
-    window.open("anju/index.html", "_blank");
-    userInput.value = "";
-    return; // stop normal bot flow
-  }
+
+    // 🔐 SECRET PASSWORD → OPEN ANJU UI
+    if (text === "april8!") {
+      window.open("anju/index.html", "_blank");
+      userInput.value = "";
+      return;
+    }
 
     document.body.classList.add('chat-active');
 
@@ -101,11 +101,20 @@ document.addEventListener('DOMContentLoaded', () => {
     userInput.value = '';
     UI.showTyping(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       UI.showTyping(false);
 
-      // 🧠 Brain → Fallback (ONLY ADDITION)
       let response = Brain.getResponse(text);
+
+      /* 🌍 WIKIPEDIA FALLBACK (ONLY ADDITION) */
+      if (!response) {
+        response = await searchWikipediaSmart(
+          text,
+          toggleWikiLoading
+        );
+      }
+
+      /* 🧠 FINAL FALLBACK */
       if (!response) {
         response = getFallbackReply();
       }
@@ -188,9 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+
+/* ===== WIKIPEDIA LOADING TOGGLE (ONLY ADDITION) ===== */
 function toggleWikiLoading(show) {
   const loader = document.getElementById("wiki-loading");
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
-

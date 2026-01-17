@@ -20,13 +20,22 @@ const UI = {
     msg.appendChild(timestamp);
     this.messagesArea.appendChild(msg);
 
-    if (type === 'bot') {
-      this.typeEffect(content, text);
-    } else {
-      content.textContent = text;
-      this.scrollToBottom();
-    }
-  },
+   if (type === 'bot') {
+  // If message contains a link, render directly (no typing effect)
+  if (text.includes("http")) {
+    content.innerHTML = text.replace(
+      /(https?:\/\/[^\s]+)/g,
+      '<a href="$1" target="_blank">$1</a>'
+    );
+    this.scrollToBottom();
+  } else {
+    this.typeEffect(content, text);
+  }
+} else {
+  content.textContent = text;
+  this.scrollToBottom();
+}
+
 
   typeEffect(element, text) {
     let i = 0;
@@ -82,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
 
 

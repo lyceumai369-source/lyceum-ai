@@ -1,10 +1,10 @@
 /* =========================================================
-   KNOWLEDGE ENGINE ELITE (v11.0 - The Controller)
+   KNOWLEDGE ENGINE ELITE (v12.0 - Direct Image + Watermark)
    ========================================================= */
 
 const wikiCache = new Map();
 
-// Track Context for Follow-up questions
+// Track Context
 let currentSubject = {
     topic: null,
     category: null
@@ -24,15 +24,68 @@ function detectFollowUp(userText) {
     return pronouns.test(userText) && currentSubject.topic;
 }
 
-/* ================= 1. LIVE WEATHER API ================= */
+/* ================= 1. VISION ENGINE (Direct Image + Watermark) ================= */
+
+async function generateImage(userText) {
+    // EXPANDED TRIGGERS: Now works with "create", "pic", "photo", "draw", "make"
+    const triggers = ["imagine", "generate", "draw", "create", "picture of", "photo of", "image of", "make a pic", "make a picture"];
+    
+    const lowerText = userText.toLowerCase();
+    const isImageRequest = triggers.some(trigger => lowerText.includes(trigger));
+
+    if (!isImageRequest) return null; 
+
+    // Clean text to get the prompt
+    let prompt = lowerText;
+    triggers.forEach(trigger => {
+        prompt = prompt.replace(trigger, "");
+    });
+    prompt = prompt.trim();
+
+    if (prompt.length < 2) return "Please describe what you want me to create! (e.g., 'Create a cyberpunk city')";
+
+    // Generate Image URL (Pollinations AI - Free)
+    // We use a random seed to make sure every image is unique
+    const seed = Math.floor(Math.random() * 10000);
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${seed}&width=1024&height=1024`;
+
+    // === THE HTML TRICK ===
+    // We use raw HTML to enforce a DIRECT image and a WATERMARK overlay
+    return `
+    <div style="margin-bottom: 5px;">
+        <em>🎨 Generating: "${prompt}"...</em>
+    </div>
+    
+    <div style="position: relative; display: inline-block; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+        <img src="${imageUrl}" alt="${prompt}" style="width: 100%; height: auto; display: block;">
+        
+        <div style="
+            position: absolute; 
+            bottom: 10px; 
+            right: 10px; 
+            background: rgba(0, 0, 0, 0.6); 
+            color: white; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            font-weight: bold; 
+            font-family: sans-serif;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(4px);
+        ">
+            ✨ LYCEUM AI
+        </div>
+    </div>`;
+}
+
+/* ================= 2. LIVE WEATHER API ================= */
 
 async function getWeather(userText) {
     const lower = userText.toLowerCase();
     if (!lower.includes("weather") && !lower.includes("temperature")) return null;
 
-    // Clean up city name (Fixes "current weather" bug)
     let city = lower.replace(/weather|temperature|current|today|now|right now| in | at /gi, "").trim();
-    if (!city || city === "") city = ""; // Auto-detect location
+    if (!city || city === "") city = ""; 
 
     try {
         const res = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
@@ -51,9 +104,8 @@ async function getWeather(userText) {
     } catch (e) { return null; }
 }
 
-/* ================= 2. SEARCH LAYERS ================= */
+/* ================= 3. SEARCH LAYERS ================= */
 
-// Layer A: Wikipedia
 async function searchWikipediaTitle(query) {
     try {
         const url = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=1&namespace=0&format=json&origin=*`;
@@ -72,7 +124,6 @@ async function getWikiSummary(title) {
     } catch (e) { return null; }
 }
 
-// Layer B: DuckDuckGo
 async function askDuckDuckGo(query) {
     try {
         const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1`);
@@ -89,14 +140,11 @@ async function askDuckDuckGo(query) {
 
 async function getKnowledge(userText, onLoading) {
     
-    // === STEP 1: VISION HOOK ===
-    // We check if your "vision.js" file is loaded and has the function
-    if (typeof generateImage === "function") {
-        const imageResult = await generateImage(userText);
-        if (imageResult) return imageResult;
-    }
+    // STEP 1: VISION CHECK (Internal Function)
+    const imageResult = await generateImage(userText);
+    if (imageResult) return imageResult;
 
-    // === STEP 2: WEATHER CHECK ===
+    // STEP 2: WEATHER CHECK
     if (userText.toLowerCase().includes("weather") || userText.toLowerCase().includes("temperature")) {
         if (onLoading) onLoading(true);
         const weather = await getWeather(userText);
@@ -106,13 +154,13 @@ async function getKnowledge(userText, onLoading) {
 
     let query = cleanText(userText);
     
-    // Smart Follow-up Logic
+    // Smart Follow-up
     if (detectFollowUp(userText)) {
         const queryNoPronoun = query.replace(/\b(he|she|it|they|him|her|his)\b/gi, "").trim();
         query = `${currentSubject.topic} ${queryNoPronoun}`;
     }
 
-    if (!query) return null; // Let fallback.js handle "empty" queries
+    if (!query) return null; // Triggers fallback.js
     
     // Check Cache
     if (wikiCache.has(query)) return wikiCache.get(query);
@@ -135,7 +183,7 @@ async function getKnowledge(userText, onLoading) {
             }
         }
 
-        // === LAYER 2: DUCKDUCKGO (If Wiki Failed) ===
+        // === LAYER 2: DUCKDUCKGO ===
         if (!foundAnswer) {
             const ddgAnswer = await askDuckDuckGo(query);
             if (ddgAnswer) {
@@ -144,15 +192,13 @@ async function getKnowledge(userText, onLoading) {
             }
         }
 
-        // === LAYER 3: GOOGLE LINK (If both Failed) ===
+        // === LAYER 3: GOOGLE LINK ===
         if (!foundAnswer) {
             const googleLink = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
             response = `I couldn't find a direct answer in my database for "**${query}**".\n\n[🔎 Tap here to search Google](${googleLink})`;
             foundAnswer = true;
         }
 
-        // If for some reason even the Google Link logic failed (rare), return null
-        // This allows your 'fallback.js' ("I'm still learning") to take over.
         if (!foundAnswer) return null;
 
         wikiCache.set(query, response);
@@ -160,7 +206,7 @@ async function getKnowledge(userText, onLoading) {
 
     } catch (err) {
         console.error(err);
-        return null; // Triggers fallback.js on error
+        return null; 
     } finally {
         if (onLoading) onLoading(false);
     }

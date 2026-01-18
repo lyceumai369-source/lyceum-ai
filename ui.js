@@ -186,3 +186,17 @@ document.addEventListener("DOMContentLoaded", () => {
     menuToggle.addEventListener("click", () => sidebar.classList.toggle("active"));
   }
 });
+/* === PASTE AT BOTTOM OF UI.JS === */
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("menu-toggle");
+    const bar = document.getElementById("sidebar");
+
+    // Force click listener
+    if(btn) {
+        btn.onclick = function(e) {
+            e.preventDefault(); // Stop screen jumping
+            bar.classList.toggle("active");
+            console.log("Menu Toggled!"); // Check console to see if this prints
+        };
+    }
+});

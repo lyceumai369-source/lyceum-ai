@@ -27,13 +27,12 @@ const UI = {
       return;
     }
 
-    // ✅ BOT MESSAGE (The Fix)
-    // We check for Images OR Links. If found, we render HTML immediately.
+    // ✅ BOT MESSAGE
+    // Check for Images OR Links
     if (this.containsMarkdownImage(text) || this.containsLink(text)) {
-      content.innerHTML = this.parseContent(text); // <--- This is the new Magic Function
+      content.innerHTML = this.parseContent(text); 
       this.scrollToBottom();
     } else {
-      // Normal typing animation for text
       this.typeEffect(content, text);
     }
   },
@@ -54,33 +53,44 @@ const UI = {
     type();
   },
 
-  // Helper: Detects if text contains ![Image](url)
   containsMarkdownImage(text) {
     return /!\[.*?\]\(.*?\)/.test(text);
   },
 
-  // Helper: Detects standard links
   containsLink(text) {
     return /(https?:\/\/[^\s]+)/i.test(text);
   },
 
-  // === THE NEW PARSER (This turns code into Pictures) ===
+  // === 🛠️ THE FIX: PROTECTED PARSER ===
   parseContent(text) {
     let html = text;
+    const placeholders = [];
 
-    // 1. Convert IMAGE Code: ![Alt](URL) -> <img src="...">
+    // 1. EXTRACT IMAGES & HIDE THEM
+    // We replace the image code with a safe placeholder (e.g., __IMG_0__)
+    // This prevents the Link Parser from breaking the image URL.
     html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
-        return `<img src="${url}" alt="${alt}" style="width: 100%; border-radius: 12px; display: block; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">`;
+        const id = placeholders.length;
+        placeholders.push(`
+            <div style="margin-bottom: 8px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                <img src="${url}" alt="${alt}" style="width: 100%; display: block;">
+            </div>
+        `);
+        return `__IMG_PLACEHOLDER_${id}__`;
     });
 
-    // 2. Convert BOLD Text: **text** -> <b>text</b> (For your "Lyceum AI" signature)
+    // 2. CONVERT LINKS (Now safe to run!)
+    html = html.replace(/(https?:\/\/[^\s]+)/g, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+
+    // 3. RESTORE IMAGES
+    // We swap the placeholders back to the real image HTML
+    html = html.replace(/__IMG_PLACEHOLDER_(\d+)__/g, (match, id) => placeholders[id]);
+
+    // 4. FORMAT "Created by Lyceum AI" (Bold & Box)
     html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-
-    // 3. Convert Blockquotes: > text -> Stylish Note
-    html = html.replace(/^>\s?(.*)/gm, '<div style="opacity: 0.8; font-size: 0.9em; border-left: 3px solid var(--accent); padding-left: 10px; margin-top: 5px;">$1</div>');
-
-    // 4. Convert Standard Links (Safe check to not break images)
-    html = html.replace(/((?<!src=")https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+    html = html.replace(/^>\s?(.*)/gm, '<div style="opacity: 0.8; font-size: 0.85em; border-left: 3px solid #4facfe; padding-left: 10px; margin-top: 4px;">$1</div>');
 
     return html;
   },

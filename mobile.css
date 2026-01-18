@@ -20,17 +20,17 @@
     position: relative;
   }
 
-  /* Header - No Logo Text */
+  /* Header */
   .mobile-nav {
     display: flex;
     align-items: center;
     gap: 15px; 
     padding: 12px;
     height: 60px;
-    z-index: 50; /* Ensure menu stays on top */
+    z-index: 50;
   }
 
-  /* Hamburger Menu Button */
+  /* Hamburger Menu */
   #menu-toggle {
     background: rgba(255,255,255,0.1);
     padding: 10px;
@@ -47,15 +47,17 @@
     display: block;
   }
 
-  /* Hero Section (The Cube Area) */
+  /* === HERO SECTION (Cube Area) === */
+  /* Default: Centered in the middle */
   #hero-section {
     height: 120px;
     flex: none;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: center;     /* Horizontal Center */
+    justify-content: center; /* Vertical Center */
     transition: all 0.3s ease;
+    width: 100%;
   }
 
   .cube-wrapper {
@@ -63,38 +65,43 @@
     margin: 0 auto;
   }
 
-  /* Chat Container - Takes up all available space */
+  /* Chat Container */
   #chat-container {
     flex: 1;
     overflow-y: auto;
     width: 100%;
-    padding: 10px 5% 100px !important; /* Bottom padding for input */
+    /* Add padding at bottom so text doesn't hide behind the input box */
+    padding: 10px 5% 120px !important; 
     -webkit-overflow-scrolling: touch;
   }
 
-  /* === INPUT AREA: CENTERED & FLOATING === */
+  /* === INPUT AREA: FLOATING CAPSULE === */
+  /* This makes it float above the bottom */
   #input-area {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    /* Transparent background so it looks floating */
-    background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0)); 
-    padding: 15px 5% calc(15px + env(safe-area-inset-bottom));
+    position: fixed;
+    bottom: 30px; /* Lifts it up from the bottom edge */
+    left: 20px;   /* Space from left side */
+    right: 20px;  /* Space from right side */
+    
+    background: transparent; /* Removes the dark bar background */
+    padding: 0; 
     z-index: 9999;
     
-    /* Flexbox to center the bar */
     display: flex;
-    justify-content: center; 
-    align-items: flex-end;
+    justify-content: center; /* Centers the box horizontally */
+    pointer-events: none; /* Allows you to touch the screen behind the empty space */
   }
 
-  /* Force the input box to be a centered capsule */
+  /* The actual input box style */
   #input-area .input-wrapper {
     width: 100%;
-    max-width: 450px; /* Limits width so it looks like a pill */
-    margin: 0 auto;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5); /* Nice shadow */
+    max-width: 500px;
+    pointer-events: auto; /* Makes the box clickable again */
+    
+    background: #121212; 
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 30px; /* Makes it very round (Pill shape) */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* Adds a shadow */
   }
 
   /* Sidebar Animation */
@@ -119,20 +126,19 @@
     display: none;
   }
   
-  /* 2. Move Cube to TOP LEFT (Like Gemini) */
+  /* 2. Move Cube to TOP LEFT */
   body.chat-active #hero-section {
     height: 60px !important;
     display: flex;
-    flex-direction: row; /* Horizontal alignment */
+    flex-direction: row; 
     align-items: center;
-    justify-content: flex-start !important; /* Force Left Alignment */
-    padding-left: 20px; /* Space from the edge */
-    background: transparent;
+    justify-content: flex-start !important; /* Forces it to the Left */
+    padding-left: 20px;
   }
 
-  /* 3. Make cube smaller when in top-left */
+  /* 3. Make cube smaller */
   body.chat-active .cube-wrapper {
-    transform: scale(0.35); /* Smaller size */
-    margin: 0; /* Remove auto margins */
+    transform: scale(0.35);
+    margin: 0; 
   }
 }

@@ -141,8 +141,7 @@ async function getKnowledge(userText, onLoading) {
             response = `### 🔍 Answer\n${ddgAnswer}\n\n*Source: Knowledge Web*`;
         } 
         else {
-            // === NEW: GOOGLE SEARCH LINK ===
-            // Since we can't read Google directly, we give the user a direct link
+            // === SMART FALLBACK: GOOGLE LINK ===
             const googleLink = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
             response = `I couldn't find a direct answer in my database. \n\n[Tap here to search Google for "${query}"](${googleLink})`;
         }

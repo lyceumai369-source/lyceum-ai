@@ -18,6 +18,8 @@
     flex-direction: column;
     height: 100dvh;
     position: relative;
+    /* Uses the variable so it changes color in Light Mode */
+    background: var(--bg);
   }
 
   /* Header */
@@ -32,7 +34,7 @@
 
   /* Hamburger Menu Button */
   #menu-toggle {
-    background: rgba(255,255,255,0.1);
+    background: var(--panel-bg); /* Adapts to theme */
     padding: 10px;
     border-radius: 10px;
     flex-shrink: 0;
@@ -42,12 +44,12 @@
   #menu-toggle .bar {
     width: 22px;
     height: 2px;
-    background: #fff;
+    background: var(--text-main); /* White in Dark Mode, Black in Light Mode */
     margin: 4px 0;
     display: block;
   }
 
-  /* === HERO SECTION (The Cube) === */
+  /* === HERO SECTION === */
   #hero-section {
     height: 120px;
     flex: none;
@@ -73,16 +75,14 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* === INPUT AREA: THE ANIMATION FIX === */
-  
-  /* 1. INITIAL STATE: Floating in the Center */
+  /* === INPUT AREA: CENTER -> BOTTOM ANIMATION === */
   #input-area {
     position: fixed;
-    top: 50%;                 /* Push to middle */
-    bottom: auto;             /* Ignore bottom */
+    top: 50%;
+    bottom: auto;
     left: 20px;
     right: 20px;
-    transform: translateY(-50%); /* Perfect vertical center */
+    transform: translateY(-50%);
     
     background: transparent;
     padding: 0;
@@ -90,29 +90,28 @@
     
     display: flex;
     justify-content: center;
-    pointer-events: none;     /* Lets you touch behind it */
+    pointer-events: none;
     
-    /* Smooth slide animation */
     transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* 2. ACTIVE STATE: Slides to Bottom (When you chat) */
+  /* ACTIVE STATE */
   body.chat-active #input-area {
-    top: auto;          /* Release from top */
-    bottom: 30px;       /* Stick to bottom */
-    transform: none;    /* Reset transform */
+    top: auto;
+    bottom: 30px;
+    transform: none;
   }
 
-  /* The Round "Pill" Shape */
+  /* The Pill Shape Box */
   #input-area .input-wrapper {
     width: 100%;
     max-width: 500px;
-    pointer-events: auto; /* Make it clickable */
+    pointer-events: auto;
     
-    background: #121212; 
-    border: 1px solid rgba(255,255,255,0.2);
+    background: var(--input-bg); /* White in Light Mode */
+    border: 1px solid var(--border-color);
     border-radius: 30px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 20px var(--shadow);
   }
 
   /* Sidebar */
@@ -131,13 +130,10 @@
   }
 
   /* === CUBE MOVING ANIMATION === */
-  
-  /* Hide title when chatting */
   body.chat-active #hero-section .bot-name-title {
     display: none;
   }
   
-  /* Move Cube to Top Left when chatting */
   body.chat-active #hero-section {
     height: 60px !important;
     display: flex;

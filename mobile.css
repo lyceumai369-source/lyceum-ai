@@ -2,7 +2,7 @@
 @media (max-width: 768px) {
 
   html, body {
-    height: 100dvh; /* Dynamic height for mobile browsers */
+    height: 100dvh;
     margin: 0;
     overflow: hidden;
   }
@@ -30,7 +30,7 @@
     z-index: 50;
   }
 
-  /* Hamburger Menu */
+  /* Hamburger Menu Button */
   #menu-toggle {
     background: rgba(255,255,255,0.1);
     padding: 10px;
@@ -47,15 +47,14 @@
     display: block;
   }
 
-  /* === HERO SECTION (Cube Area) === */
-  /* Default: Centered in the middle */
+  /* === HERO SECTION (The Cube) === */
   #hero-section {
     height: 120px;
     flex: none;
     display: flex;
     flex-direction: column;
-    align-items: center;     /* Horizontal Center */
-    justify-content: center; /* Vertical Center */
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
     width: 100%;
   }
@@ -65,46 +64,58 @@
     margin: 0 auto;
   }
 
-  /* Chat Container */
+  /* Chat Area */
   #chat-container {
     flex: 1;
     overflow-y: auto;
     width: 100%;
-    /* Add padding at bottom so text doesn't hide behind the input box */
     padding: 10px 5% 120px !important; 
     -webkit-overflow-scrolling: touch;
   }
 
-  /* === INPUT AREA: FLOATING CAPSULE === */
-  /* This makes it float above the bottom */
+  /* === INPUT AREA: THE ANIMATION FIX === */
+  
+  /* 1. INITIAL STATE: Floating in the Center */
   #input-area {
     position: fixed;
-    bottom: 30px; /* Lifts it up from the bottom edge */
-    left: 20px;   /* Space from left side */
-    right: 20px;  /* Space from right side */
+    top: 50%;                 /* Push to middle */
+    bottom: auto;             /* Ignore bottom */
+    left: 20px;
+    right: 20px;
+    transform: translateY(-50%); /* Perfect vertical center */
     
-    background: transparent; /* Removes the dark bar background */
-    padding: 0; 
+    background: transparent;
+    padding: 0;
     z-index: 9999;
     
     display: flex;
-    justify-content: center; /* Centers the box horizontally */
-    pointer-events: none; /* Allows you to touch the screen behind the empty space */
+    justify-content: center;
+    pointer-events: none;     /* Lets you touch behind it */
+    
+    /* Smooth slide animation */
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  /* The actual input box style */
+  /* 2. ACTIVE STATE: Slides to Bottom (When you chat) */
+  body.chat-active #input-area {
+    top: auto;          /* Release from top */
+    bottom: 30px;       /* Stick to bottom */
+    transform: none;    /* Reset transform */
+  }
+
+  /* The Round "Pill" Shape */
   #input-area .input-wrapper {
     width: 100%;
     max-width: 500px;
-    pointer-events: auto; /* Makes the box clickable again */
+    pointer-events: auto; /* Make it clickable */
     
     background: #121212; 
     border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 30px; /* Makes it very round (Pill shape) */
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* Adds a shadow */
+    border-radius: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
   }
 
-  /* Sidebar Animation */
+  /* Sidebar */
   #sidebar {
     position: fixed;
     left: -100%;
@@ -119,24 +130,23 @@
     left: 0;
   }
 
-  /* === ACTIVE CHAT STATE (When you are messaging) === */
+  /* === CUBE MOVING ANIMATION === */
   
-  /* 1. Hide the big title text */
+  /* Hide title when chatting */
   body.chat-active #hero-section .bot-name-title {
     display: none;
   }
   
-  /* 2. Move Cube to TOP LEFT */
+  /* Move Cube to Top Left when chatting */
   body.chat-active #hero-section {
     height: 60px !important;
     display: flex;
     flex-direction: row; 
     align-items: center;
-    justify-content: flex-start !important; /* Forces it to the Left */
+    justify-content: flex-start !important; 
     padding-left: 20px;
   }
 
-  /* 3. Make cube smaller */
   body.chat-active .cube-wrapper {
     transform: scale(0.35);
     margin: 0; 

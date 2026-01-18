@@ -127,16 +127,28 @@
   </div>
 
   <!-- SCRIPTS -->
-  <script src="wikiEngine.js"></script>
- <script src="brain.js" defer></script>
-<script src="ui.js" defer></script>
-<script src="fallback.js" defer></script>
-<script src="main.js" defer></script>
-<script src="relax.js" defer></script>
+ <script src="wikiEngine.js"></script>
+  <script src="brain.js" defer></script>
+  <script src="ui.js" defer></script>
+  <script src="fallback.js" defer></script>
+  <script src="main.js" defer></script>
+  <script src="relax.js" defer></script>
 
+  <script>
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      
+      if (document.body.classList.contains('light-mode')) {
+        themeBtn.innerText = "🌙 Dark Mode";
+      } else {
+        themeBtn.innerText = "☀️ Light Mode";
+      }
+    });
+  </script>
 
-</body>
-</html>
+</body> </html>
+
 
 
 

@@ -1,9 +1,29 @@
-/* ================= ROOT VARIABLES ================= */
+/* ================= ROOT VARIABLES (Themes) ================= */
 :root {
-  --accent: #ffffff;
-  --bg: #050505;
-  --sidebar-bg: #0a0a0a;
+  /* --- DEFAULT DARK MODE --- */
+  --accent: #ffffff;           /* This changes when you pick colors */
+  --bg: #050505;               /* Main background */
+  --sidebar-bg: #0a0a0a;       /* Sidebar background */
+  --text-main: #ffffff;        /* Main text color */
+  --text-secondary: #aaaaaa;   /* Gray text */
+  --panel-bg: rgba(0,0,0,0.55);/* Glass effect background */
+  --input-bg: #121212;         /* Input box background */
+  --border-color: rgba(255,255,255,0.2);
+  --shadow: rgba(0,0,0,0.5);
   --user-text: #000000;
+}
+
+/* --- LIGHT MODE OVERRIDES --- */
+body.light-mode {
+  --bg: #ffffff;               /* White Background */
+  --sidebar-bg: #f0f4f9;       /* Light Gray Sidebar */
+  --text-main: #1f1f1f;        /* Dark Text */
+  --text-secondary: #444746;
+  --panel-bg: rgba(255,255,255,0.9); /* White Glass */
+  --input-bg: #ffffff;
+  --border-color: #e1e3e1;
+  --shadow: rgba(0,0,0,0.1);
+  /* Note: --accent stays the same so your 20 colors still work! */
 }
 
 /* ================= GLOBAL RESET ================= */
@@ -13,7 +33,7 @@
   box-sizing: border-box;
 }
 
-/* === GLOBAL IMAGE SAFETY (LOGO FIX) === */
+/* === GLOBAL IMAGE SAFETY === */
 img {
   max-width: 100%;
   height: auto;
@@ -23,9 +43,10 @@ img {
 /* ================= BODY ================= */
 body {
   background-color: var(--bg);
-  color: white;
+  color: var(--text-main); /* FIX: Uses variable now */
   font-family: Inter, system-ui, sans-serif;
   overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ================= APP LAYOUT ================= */
@@ -39,15 +60,15 @@ body {
 #sidebar {
   width: 260px;
   background: var(--sidebar-bg);
-  border-right: 1px solid rgba(255,255,255,0.05);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 20px;
   flex-shrink: 0;
+  color: var(--text-main);
 }
 
-/* Sidebar Bottom Container to fix long buttons */
 .sidebar-bottom {
   display: flex;
   flex-direction: column;
@@ -57,10 +78,10 @@ body {
 .new-chat-btn,
 .secondary-btn,
 .relax-btn {
-  width: 100%; /* Keeps them all same width */
-  background: var(--accent);
-  color: var(--user-text);
-  border: none;
+  width: 100%;
+  background: var(--panel-bg); /* Adapts to theme */
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
   padding: 12px;
   border-radius: 10px;
   cursor: pointer;
@@ -75,6 +96,9 @@ body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  background: var(--panel-bg); /* Glass effect */
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 /* ================= HERO SECTION ================= */
@@ -92,6 +116,7 @@ body {
   font-size: 2.5rem;
   letter-spacing: 5px;
   margin-top: 20px;
+  color: var(--text-main);
 }
 
 /* ================= 3D CUBE LOGO ================= */
@@ -116,7 +141,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.6);
+  background: var(--panel-bg);
   border: 1px solid var(--accent);
 }
 
@@ -151,23 +176,25 @@ body {
   font-size: 14.8px;
   line-height: 1.45;
   word-wrap: break-word;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--panel-bg);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
 }
 
 .user {
   align-self: flex-end;
-  background: color-mix(in srgb, var(--accent) 35%, rgba(255,255,255,0.12));
-  color: var(--user-text);
+  /* Mix accent color with panel background */
+  background: color-mix(in srgb, var(--accent) 35%, var(--panel-bg));
+  color: var(--text-main);
   border-bottom-right-radius: 5px;
 }
 
 .bot {
   align-self: flex-start;
-  background: #1a1a1a;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
 }
 
 .timestamp {
@@ -175,6 +202,7 @@ body {
   opacity: 0.7;
   margin-top: 5px;
   display: block;
+  color: var(--text-secondary);
 }
 
 /* ================= INPUT AREA ================= */
@@ -183,7 +211,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--panel-bg);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   padding: 12px 10%;
@@ -192,9 +220,9 @@ body {
 }
 
 .input-wrapper {
-  background: #121212;
+  background: var(--input-bg);
   border-radius: 15px;
-  border: 1px solid var(--accent);
+  border: 1px solid var(--accent); /* Uses your chosen color */
   padding: 8px 12px;
 }
 
@@ -207,10 +235,14 @@ body {
   flex: 1;
   background: none;
   border: none;
-  color: white;
+  color: var(--text-main); /* Adapts to theme */
   outline: none;
   padding: 10px;
   font-size: 16px;
+}
+
+#user-input::placeholder {
+  color: var(--text-secondary);
 }
 
 #send-btn {
@@ -220,6 +252,9 @@ body {
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #send-btn svg {
@@ -247,67 +282,16 @@ body.chat-active .bot-name-title {
   letter-spacing: 2px;
 }
 
-/* ================= MOBILE STYLES ================= */
+/* ================= MOBILE STYLES (Base) ================= */
 #menu-toggle {
   display: none;
 }
 
 @media (max-width: 768px) {
+  /* Note: Most mobile specifics are in mobile.css, this is just base */
   html, body {
     height: 100%;
     overflow: hidden;
-  }
-
-  #app, #main-content {
-    height: 100%;
-    overflow: hidden;
-  }
-
-  #sidebar {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    height: 100vh;
-    width: 280px;
-    z-index: 4000;
-    transition: left 0.3s ease;
-  }
-
-  #sidebar.active {
-    left: 0;
-  }
-
-  #menu-toggle {
-    display: block;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 5000;
-    background: var(--accent);
-    border: none;
-    padding: 10px;
-    border-radius: 8px;
-  }
-
-  #chat-container {
-    position: fixed;
-    top: 90px;
-    left: 0;
-    right: 0;
-    bottom: calc(70px + env(safe-area-inset-bottom));
-    overflow-y: auto;
-    padding: 15px 5%;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  #input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
-    padding: 10px 5% calc(12px + env(safe-area-inset-bottom));
-    z-index: 9999;
   }
 }
 
@@ -323,13 +307,14 @@ body.chat-active .bot-name-title {
 }
 
 .modal-content {
-  background: #111;
+  background: var(--bg); /* Adapts to theme */
   border: 1px solid var(--accent);
   padding: 30px;
   border-radius: 20px;
   width: 90%;
   max-width: 400px;
   text-align: center;
+  color: var(--text-main);
 }
 
 .modal-logo {
@@ -340,6 +325,7 @@ body.chat-active .bot-name-title {
   opacity: 0.95;
 }
 
+/* --- COLOR PICKER (This is your 20+ colors support) --- */
 .color-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -352,13 +338,13 @@ body.chat-active .bot-name-title {
   height: 32px;
   border-radius: 50%;
   cursor: pointer;
-  border: 2px solid rgba(255,255,255,0.4);
+  border: 2px solid var(--text-secondary); /* Visible in both modes */
   transition: transform 0.2s ease;
 }
 
 .color-dot:hover {
   transform: scale(1.15);
-  border-color: white;
+  border-color: var(--accent);
 }
 
 /* ================= ANIMATIONS ================= */
@@ -366,7 +352,6 @@ body.chat-active .bot-name-title {
   from { transform: rotateX(0) rotateY(0); }
   to { transform: rotateX(360deg) rotateY(360deg); }
 }
-
 .front  { transform: translateZ(30px); }
 .back   { transform: rotateY(180deg) translateZ(30px); }
 .right  { transform: rotateY(90deg) translateZ(30px); }
@@ -374,7 +359,7 @@ body.chat-active .bot-name-title {
 .top    { transform: rotateX(90deg) translateZ(30px); }
 .bottom { transform: rotateX(-90deg) translateZ(30px); }
 
-/* ================= DYNAMIC PREMIUM ACCENT UI ================= */
+/* ================= DYNAMIC BACKGROUND ================= */
 body::before {
   content: "";
   position: fixed;
@@ -386,20 +371,6 @@ body::before {
   z-index: -1;
 }
 
-/* Glass Panels */
-#main-content, #sidebar, #input-area {
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
-#wiki-loading {
-  font-size: 14px;
-  color: #888;
-  margin: 8px;
-  font-style: italic;
-}
-
 .hidden {
   display: none;
 }
-

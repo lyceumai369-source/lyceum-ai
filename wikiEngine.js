@@ -1,205 +1,147 @@
 /* =========================================================
-   FINAL USER-FRIENDLY KNOWLEDGE ENGINE
-   - Intent aware (what / when / where / who / how / points)
-   - Topic extraction (911, Plassey, Quit India, etc.)
-   - Historical events
-   - Global current affairs (president / PM / king)
-   - Follow-up understanding
-   - Safe fallback with clickable Google button
+   KNOWLEDGE ENGINE ELITE (v5.0 - Deep Search & QA)
    ========================================================= */
 
-const EngineState = {
-  lastTopic: null
+const wikiCache = new Map();
+const memory = [];
+const MAX_MEMORY = 10;
+
+// Track Context
+let currentSubject = {
+    topic: null,
+    category: null
 };
 
-/* ================= GOOGLE BUTTON ================= */
+/* ================= UTILITY: CLEANING ================= */
 
-function googleButton(query) {
-  const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  return `
-🔎 Open this link in your browser:
-${url}
-`;
+function cleanText(text) {
+    return text.toLowerCase()
+        .replace(/(pls|please|can you|tell me|who is|what is|how many|search for|find|hey|bro|lyceum)\b/gi, "")
+        .replace(/[?.,!]/g, "")
+        .trim();
 }
 
-
-/* ================= INTENT ================= */
-
-function detectIntent(text) {
-  const q = text.toLowerCase();
-
-  if (q.startsWith("when")) return "WHEN";
-  if (q.startsWith("where")) return "WHERE";
-  if (q.startsWith("who")) return "WHO";
-  if (q.startsWith("why")) return "WHY";
-  if (q.startsWith("how")) return "HOW";
-  if (q.includes("points") || q.includes("list")) return "POINTS";
-  if (q.includes("describe") || q.includes("explain") || q.includes("detail"))
-    return "DESCRIBE";
-
-  return "GENERAL";
+function detectFollowUp(userText) {
+    // If the user uses pronouns, they are asking about the PREVIOUS topic
+    const pronouns = /\b(he|she|it|they|him|her|his|its)\b/i;
+    return pronouns.test(userText) && currentSubject.topic;
 }
 
-/* ================= TOPIC EXTRACTION ================= */
+/* ================= 1. WIKIPEDIA SMART SEARCH (The Fix) ================= */
 
-function extractTopic(text) {
-  return text
-    .replace(/^(when|where|who|what|why|how|which)\b/gi, "")
-    .replace(/(happen|happened|did|does|is|are|was|were|about|the|of|in)/gi, "")
-    .replace(/[^\w\s/]/g, "")
-    .trim();
-}
-
-/* ================= FOLLOW-UP ================= */
-
-function resolveTopic(text) {
-  const lower = text.toLowerCase();
-  if (
-    EngineState.lastTopic &&
-    /\b(it|this|that|he|she|they|when|where|who)\b/.test(lower)
-  ) {
-    return EngineState.lastTopic;
-  }
-  return extractTopic(text);
-}
-
-/* ================= CURRENT AFFAIRS (GLOBAL) ================= */
-
-async function resolveRoleQuestion(text) {
-  const q = text.toLowerCase();
-
-  const roles = {
-    president: "P35",
-    "prime minister": "P6",
-    king: "P35",
-    queen: "P35"
-  };
-
-  let roleProp = null;
-  let roleWord = null;
-
-  for (const r in roles) {
-    if (q.includes(r)) {
-      roleProp = roles[r];
-      roleWord = r;
-      break;
+// This function searches for the BEST article title instead of guessing
+async function searchWikipediaTitle(query) {
+    try {
+        const url = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=1&namespace=0&format=json&origin=*`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        // data[1] contains the list of titles found. We take the first one.
+        if (data && data[1] && data[1].length > 0) {
+            return data[1][0]; // Return the correct title (e.g., "Pratibha Patil")
+        }
+        return null;
+    } catch (e) {
+        return null;
     }
-  }
-
-  if (!roleProp) return null;
-
-  const country = q
-    .replace(/current|present|woman|female|of|the|who|is|now/g, "")
-    .replace(roleWord, "")
-    .trim();
-
-  if (!country) return null;
-
-  try {
-    const countryRes = await fetch(
-      `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(
-        country
-      )}&language=en&format=json&origin=*`
-    );
-    const countryData = await countryRes.json();
-    if (!countryData.search?.length) return null;
-
-    const countryId = countryData.search[0].id;
-
-    const claimsRes = await fetch(
-      `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${countryId}&property=${roleProp}&format=json&origin=*`
-    );
-    const claimsData = await claimsRes.json();
-
-    const claims = claimsData.claims?.[roleProp];
-    if (!claims?.length) return null;
-
-    const holderId = claims[0].mainsnak.datavalue.value.id;
-
-    const entityRes = await fetch(
-      `https://www.wikidata.org/wiki/Special:EntityData/${holderId}.json`
-    );
-    const entityData = await entityRes.json();
-
-    return entityData.entities[holderId].labels.en.value;
-  } catch {
-    return null;
-  }
 }
 
-/* ================= WIKIPEDIA ================= */
+/* ================= 2. FETCH SUMMARY ================= */
 
-async function fetchWikipedia(topic) {
-  try {
-    const res = await fetch(
-      `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
-        topic
-      )}`
-    );
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+async function getWikiSummary(title) {
+    try {
+        const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        return await res.json();
+    } catch (e) {
+        return null;
+    }
+}
+
+/* ================= 3. DUCKDUCKGO FALLBACK ================= */
+
+async function askDuckDuckGo(query) {
+    try {
+        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1`);
+        const data = await res.json();
+        
+        // If DDG has a direct "Abstract", use it
+        if (data.AbstractText) return data.AbstractText;
+        
+        // If DDG has "RelatedTopics", use the first one (often the answer)
+        if (data.RelatedTopics && data.RelatedTopics.length > 0 && data.RelatedTopics[0].Text) {
+            return data.RelatedTopics[0].Text;
+        }
+        
+        return null;
+    } catch (e) {
+        return null;
+    }
 }
 
 /* ================= MAIN ENGINE ================= */
 
-async function getKnowledge(userText) {
-  // 1️⃣ Current affairs
-  const roleResolved = await resolveRoleQuestion(userText);
-  if (roleResolved) {
-    return await getKnowledge(roleResolved);
-  }
+async function getKnowledge(userText, onLoading) {
+    let query = cleanText(userText);
+    
+    // === SMART CONTEXT SWITCHING ===
+    // If user asks "How tall is he?", combine it with previous topic
+    if (detectFollowUp(userText)) {
+        // Remove the pronoun from the new query
+        const queryNoPronoun = query.replace(/\b(he|she|it|they|him|her|his)\b/gi, "").trim();
+        query = `${currentSubject.topic} ${queryNoPronoun}`;
+    }
 
-  // 2️⃣ Intent + topic
-  const intent = detectIntent(userText);
-  const topic = resolveTopic(userText);
+    if (!query) return "I'm listening... what do you want to know?";
+    
+    // Check Cache
+    if (wikiCache.has(query)) return wikiCache.get(query);
+    if (onLoading) onLoading(true);
 
-  if (!topic) {
-    return `
-🤔 I couldn’t clearly understand the topic.
+    try {
+        let response = "";
+        
+        // STEP 1: Search Wikipedia for the BEST matching title
+        // (This fixes the "how many women presidents" issue by finding the real list)
+        const bestTitle = await searchWikipediaTitle(query);
+        
+        let wikiData = null;
+        if (bestTitle) {
+            // If we found a title, get its summary
+            wikiData = await getWikiSummary(bestTitle);
+            
+            // Update Context (So "how old is she" works next time)
+            currentSubject = { topic: bestTitle };
+        }
 
-${googleButton(userText)}
-`;
-  }
+        // STEP 2: Try DuckDuckGo if Wikipedia was weak
+        // (DDG is better for direct answers like "height", "net worth")
+        let ddgAnswer = null;
+        if (!wikiData || wikiData.type === "disambiguation") {
+            ddgAnswer = await askDuckDuckGo(query);
+        }
 
-  // 3️⃣ Wikipedia
-  const wiki = await fetchWikipedia(topic);
+        // STEP 3: Construct the final answer
+        if (wikiData && wikiData.extract) {
+            response = `### 📖 ${wikiData.title}\n${wikiData.extract}\n\n`;
+            if (wikiData.description) response += `> *${wikiData.description}*`;
+        } 
+        else if (ddgAnswer) {
+            response = `### 🔍 Answer\n${ddgAnswer}\n\n*Source: Knowledge Web*`;
+        } 
+        else {
+            response = `I searched deep for "**${query}**" but couldn't find a clear answer. Try rephrasing?`;
+        }
 
-  if (!wiki || !wiki.extract) {
-    return `
-🤔 I don’t have a confirmed answer for this right now.
+        // Save to memory
+        wikiCache.set(query, response);
+        return response;
 
-${googleButton(userText)}
-
-💡 Tip: Try adding words like "when", "who", "history", or "definition".
-`;
-  }
-
-  EngineState.lastTopic = wiki.title;
-  let answer = wiki.extract;
-
-  // 4️⃣ Intent filtering
-  if (intent === "WHEN") {
-    const date =
-      wiki.extract.match(/\b\d{1,2}\s\w+\s\d{4}\b/) ||
-      wiki.extract.match(/\b\d{4}\b/);
-    if (date) answer = `📅 ${wiki.title} happened in ${date[0]}.`;
-  }
-
-  if (intent === "WHERE") {
-    answer = wiki.extract.split(".")[0] + ".";
-  }
-
-  if (intent === "POINTS") {
-    answer = wiki.extract
-      .split(". ")
-      .slice(0, 5)
-      .map((p, i) => `${i + 1}. ${p}`)
-      .join("\n");
-  }
-
-  return `📘 ${wiki.title}\n\n${answer}`;
+    } catch (err) {
+        console.error(err);
+        return "I'm having trouble connecting to the knowledge base.";
+    } finally {
+        if (onLoading) onLoading(false);
+    }
 }
-

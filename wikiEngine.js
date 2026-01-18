@@ -1,5 +1,5 @@
 /* =========================================================
-   KNOWLEDGE ENGINE ELITE (v12.0 - Direct Image + Watermark)
+   KNOWLEDGE ENGINE ELITE (v13.0 - Instant Image Fix)
    ========================================================= */
 
 const wikiCache = new Map();
@@ -24,10 +24,10 @@ function detectFollowUp(userText) {
     return pronouns.test(userText) && currentSubject.topic;
 }
 
-/* ================= 1. VISION ENGINE (Direct Image + Watermark) ================= */
+/* ================= 1. VISION ENGINE (Markdown Mode) ================= */
 
 async function generateImage(userText) {
-    // EXPANDED TRIGGERS: Now works with "create", "pic", "photo", "draw", "make"
+    // Triggers: "imagine", "generate", "draw", "create", "pic", "photo"
     const triggers = ["imagine", "generate", "draw", "create", "picture of", "photo of", "image of", "make a pic", "make a picture"];
     
     const lowerText = userText.toLowerCase();
@@ -35,7 +35,7 @@ async function generateImage(userText) {
 
     if (!isImageRequest) return null; 
 
-    // Clean text to get the prompt
+    // Clean text to get prompt
     let prompt = lowerText;
     triggers.forEach(trigger => {
         prompt = prompt.replace(trigger, "");
@@ -44,38 +44,15 @@ async function generateImage(userText) {
 
     if (prompt.length < 2) return "Please describe what you want me to create! (e.g., 'Create a cyberpunk city')";
 
-    // Generate Image URL (Pollinations AI - Free)
-    // We use a random seed to make sure every image is unique
+    // Generate URL (Random seed ensures a new image every time)
     const seed = Math.floor(Math.random() * 10000);
+    // We add 'nologo=true' to hide the API logo, so we can add YOURS
     const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${seed}&width=1024&height=1024`;
 
-    // === THE HTML TRICK ===
-    // We use raw HTML to enforce a DIRECT image and a WATERMARK overlay
-    return `
-    <div style="margin-bottom: 5px;">
-        <em>🎨 Generating: "${prompt}"...</em>
-    </div>
-    
-    <div style="position: relative; display: inline-block; width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-        <img src="${imageUrl}" alt="${prompt}" style="width: 100%; height: auto; display: block;">
-        
-        <div style="
-            position: absolute; 
-            bottom: 10px; 
-            right: 10px; 
-            background: rgba(0, 0, 0, 0.6); 
-            color: white; 
-            padding: 4px 10px; 
-            border-radius: 20px; 
-            font-size: 11px; 
-            font-weight: bold; 
-            font-family: sans-serif;
-            border: 1px solid rgba(255,255,255,0.3);
-            backdrop-filter: blur(4px);
-        ">
-            ✨ LYCEUM AI
-        </div>
-    </div>`;
+    // === THE FIX ===
+    // We use standard Markdown `![Title](URL)` which FORCES the image to render.
+    // We add a "Blockquote" watermark below it.
+    return `![Generated Art](${imageUrl})\n\n> **✨ Created by Lyceum AI**`;
 }
 
 /* ================= 2. LIVE WEATHER API ================= */
@@ -140,7 +117,7 @@ async function askDuckDuckGo(query) {
 
 async function getKnowledge(userText, onLoading) {
     
-    // STEP 1: VISION CHECK (Internal Function)
+    // STEP 1: VISION CHECK
     const imageResult = await generateImage(userText);
     if (imageResult) return imageResult;
 
@@ -160,9 +137,8 @@ async function getKnowledge(userText, onLoading) {
         query = `${currentSubject.topic} ${queryNoPronoun}`;
     }
 
-    if (!query) return null; // Triggers fallback.js
+    if (!query) return null; 
     
-    // Check Cache
     if (wikiCache.has(query)) return wikiCache.get(query);
     if (onLoading) onLoading(true);
 

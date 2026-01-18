@@ -1,21 +1,8 @@
+/* NOTE: I removed the .relax-btn section. 
+   Now it will use the style from style.css automatically! 
+*/
 
-/* ===== RELAX BUTTON ===== */
-.relax-btn {
-  position: fixed;
-  bottom: 90px;
-  right: 20px;
-  background: linear-gradient(135deg, #6ee7b7, #3b82f6);
-  border: none;
-  color: white;
-  padding: 12px 18px;
-  border-radius: 30px;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-  z-index: 999;
-}
-
-/* ===== RELAX OVERLAY ===== */
+/* ===== RELAX OVERLAY (The Game Screen) ===== */
 #relaxOverlay {
   position: fixed;
   inset: 0;
@@ -28,7 +15,7 @@
   touch-action: none;
 }
 
-/* ===== EXIT BUTTON ===== */
+/* ===== EXIT BUTTON (X) ===== */
 .exit-btn {
   position: fixed;
   top: 16px;
@@ -133,7 +120,7 @@
   animation: pop 0.5s ease;
 }
 
-/* ===== CELEBRATION TEXT (IMPORTANT FIX) ===== */
+/* ===== CELEBRATION TEXT ===== */
 #celebration h2 {
   color: #111;
   margin: 12px 0;

@@ -109,3 +109,24 @@
 
   body.chat-active .cube-wrapper { transform: scale(0.35); margin: 0; }
 }
+/* === PASTE THIS AT THE BOTTOM OF MOBILE.CSS === */
+
+/* 1. We use #app #sidebar to make this rule STRONGER than your desktop code */
+#app #sidebar {
+    display: flex !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: -100% !important; /* Start hidden */
+    height: 100vh !important;
+    width: 280px !important;
+    
+    /* 2. IMPORTANT: Give it a dark background so you can actually see it */
+    background-color: #111 !important; 
+    z-index: 99999 !important;
+    transition: left 0.3s ease !important;
+}
+
+/* 3. When the button is clicked, this slides it in */
+#app #sidebar.active {
+    left: 0 !important; 
+}

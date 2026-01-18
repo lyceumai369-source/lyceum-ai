@@ -20,7 +20,7 @@ const UI = {
     msg.appendChild(timestamp);
     this.messagesArea.appendChild(msg);
 
-    // ✅ USER MESSAGE (SAFE)
+    // ✅ USER MESSAGE
     if (type !== 'bot') {
       content.textContent = text;
       this.scrollToBottom();
@@ -28,12 +28,12 @@ const UI = {
     }
 
     // ✅ BOT MESSAGE
-    // If message contains a URL → render directly (NO typing)
-    if (this.containsLink(text)) {
-      content.innerHTML = this.linkify(text);
+    // If message has an Image Code (![...]) OR a Link, show it instantly (No Typing Effect)
+    if (this.containsMarkdownImage(text) || this.containsLink(text)) {
+      content.innerHTML = this.parseContent(text); // <--- NEW INTELLIGENT PARSER
       this.scrollToBottom();
     } else {
-      // Normal typing animation
+      // Normal text? Use typing animation
       this.typeEffect(content, text);
     }
   },
@@ -56,15 +56,35 @@ const UI = {
     type();
   },
 
+  containsMarkdownImage(text) {
+    return /!\[.*?\]\(.*?\)/.test(text);
+  },
+
   containsLink(text) {
     return /(https?:\/\/[^\s]+)/i.test(text);
   },
 
-  linkify(text) {
-    return text.replace(
-      /(https?:\/\/[^\s]+)/g,
-      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
+  // === NEW: MAGIC PARSER ===
+  // This turns code into real HTML (Images, Bold Text, Quotes)
+  parseContent(text) {
+    let html = text;
+
+    // 1. Convert IMAGE Code: ![Alt](URL) -> <img src="...">
+    html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+        return `<img src="${url}" alt="${alt}" style="width: 100%; border-radius: 12px; display: block; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">`;
+    });
+
+    // 2. Convert BOLD Text: **text** -> <b>text</b> (For your "Lyceum AI" name)
+    html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+
+    // 3. Convert QUOTES: > text -> Stylish Blockquote
+    html = html.replace(/^>\s?(.*)/gm, '<div style="opacity: 0.8; font-size: 0.9em; border-left: 3px solid var(--accent); padding-left: 10px; margin-top: 5px;">$1</div>');
+
+    // 4. Convert Normal Links (that are NOT images)
+    // We use a negative lookbehind to avoid breaking the img tag we just made
+    html = html.replace(/((?<!src=")https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    return html;
   },
 
   showTyping(show) {
@@ -86,13 +106,6 @@ const UI = {
 };
 
 // ===== MOBILE MENU TOGGLE =====
-const sidebar = document.getElementById('sidebar');
-const menuToggle = document.getElementById('menu-toggle');
-
-menuToggle?.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
-});
-
 document.addEventListener("DOMContentLoaded", () => {
   const menuToggle = document.getElementById("menu-toggle");
   const sidebar = document.getElementById("sidebar");

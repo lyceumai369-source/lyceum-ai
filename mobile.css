@@ -1,127 +1,59 @@
 /* ================= MOBILE BASE RESET ================= */
 @media (max-width: 768px) {
-
   html, body {
-    height: 100dvh; /* Modern mobile fix */
+    height: 100dvh; 
     margin: 0;
     overflow: hidden;
   }
-
-  #app { 
-    height: 100dvh; 
-    display: flex; 
-    flex-direction: column; 
-  }
-  
-  #main-content {
-    display: flex; 
-    flex-direction: column; 
-    height: 100dvh; 
-    position: relative;
-    background: var(--bg);
-  }
+  #app { height: 100dvh; display: flex; flex-direction: column; }
+  #main-content { display: flex; flex-direction: column; height: 100dvh; position: relative; background: var(--bg); }
 
   /* Header */
-  .mobile-nav {
-    display: flex; align-items: center; gap: 15px; 
-    padding: 12px; height: 60px; z-index: 50;
-  }
+  .mobile-nav { display: flex; align-items: center; gap: 15px; padding: 12px; height: 60px; z-index: 50; }
 
-  /* === MENU BUTTON === */
-  #menu-toggle {
-    display: block !important;
-    background: var(--panel-bg);
-    padding: 10px; border-radius: 10px; flex-shrink: 0; border: none;
-    cursor: pointer;
-  }
+  /* Menu Button */
+  #menu-toggle { display: block !important; background: var(--panel-bg); padding: 10px; border-radius: 10px; flex-shrink: 0; border: none; cursor: pointer; }
+  #menu-toggle .bar { width: 22px; height: 2px; background: var(--text-main, #fff); margin: 4px 0; display: block; }
 
-  #menu-toggle .bar {
-    width: 22px; height: 2px;
-    background: var(--text-main, #fff);
-    margin: 4px 0; display: block;
-  }
-
-  /* === FIXED SIDEBAR (FIXED SCROLL & PADDING) === */
+  /* === FIXED SIDEBAR === */
   #sidebar {
     position: fixed; 
-    left: -100%; /* Hidden to the left */
+    left: -100%; 
     top: 0;
     height: 100dvh; 
     width: 280px; 
-    
     background-color: var(--sidebar-bg); 
     display: flex !important;
     flex-direction: column;
-    justify-content: flex-start; /* Stacks items from top */
-    gap: 15px; /* Space between buttons */
-    
+    justify-content: flex-start;
+    gap: 15px;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10000;
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-    
-    /* CRITICAL FIXES FOR HIDDEN BUTTONS: */
     padding: 20px;
-    padding-bottom: 150px !important; /* Huge buffer for bottom safety */
-    overflow-y: auto; /* Adds scroll if screen is too small */
+    padding-bottom: 150px !important; /* CRITICAL FIX for Relax Button */
+    overflow-y: auto; 
   }
 
-  /* Force Relax button to be visible */
-  .sidebar-bottom {
-    margin-top: auto; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px;
-    padding-bottom: 20px;
-  }
-
+  .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
   #sidebar.active { left: 0; }
 
-  /* === HERO SECTION === */
-  #hero-section {
-    height: 120px; flex: none; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    transition: all 0.3s ease; width: 100%;
-  }
-
-  .cube-wrapper { transform: scale(0.6); margin: 0 auto; }
-
   /* Chat Area */
-  #chat-container {
-    flex: 1; overflow-y: auto; width: 100%;
-    padding: 10px 5% 120px !important; 
-    -webkit-overflow-scrolling: touch;
-  }
+  #chat-container { flex: 1; overflow-y: auto; width: 100%; padding: 10px 5% 120px !important; -webkit-overflow-scrolling: touch; }
 
-  /* === INPUT AREA === */
+  /* Input Area */
   #input-area {
-    position: fixed;
-    top: 50%; bottom: auto; left: 20px; right: 20px;
-    transform: translateY(-50%);
-    background: transparent; padding: 0; z-index: 9999;
-    display: flex; justify-content: center; pointer-events: none;
+    position: fixed; top: 50%; bottom: auto; left: 20px; right: 20px; transform: translateY(-50%);
+    background: transparent; padding: 0; z-index: 9999; display: flex; justify-content: center; pointer-events: none;
     transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  body.chat-active #input-area { top: auto; bottom: 30px; transform: none; }
+  #input-area .input-wrapper { width: 100%; max-width: 500px; pointer-events: auto; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 30px; box-shadow: 0 5px 20px var(--shadow); }
 
-  body.chat-active #input-area {
-    top: auto; bottom: 30px; transform: none;
-  }
-
-  #input-area .input-wrapper {
-    width: 100%; max-width: 500px; pointer-events: auto;
-    background: var(--input-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 30px;
-    box-shadow: 0 5px 20px var(--shadow);
-  }
-
-  /* === ANIMATIONS === */
+  /* Animations */
   body.chat-active #hero-section .bot-name-title { display: none; }
-  
-  body.chat-active #hero-section {
-    height: 60px !important; display: flex; flex-direction: row; 
-    align-items: center; justify-content: flex-start !important; 
-    padding-left: 20px;
-  }
-
+  body.chat-active #hero-section { height: 60px !important; display: flex; flex-direction: row; align-items: center; justify-content: flex-start !important; padding-left: 20px; }
   body.chat-active .cube-wrapper { transform: scale(0.35); margin: 0; }
+  #hero-section { height: 120px; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: all 0.3s ease; width: 100%; }
+  .cube-wrapper { transform: scale(0.6); margin: 0 auto; }
 }

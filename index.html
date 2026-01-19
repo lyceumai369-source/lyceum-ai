@@ -125,6 +125,27 @@
   <script src="fallback.js" defer></script>
   <script src="main.js" defer></script>
   <script src="relax.js" defer></script>
+<script>
+    // 1. Get the button and sidebar
+    const menuBtn = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
 
-  </body> 
+    // 2. Add a "Direct" Click Listener
+    if (menuBtn) {
+      menuBtn.addEventListener('click', function(e) {
+        // Stop any other code from blocking this
+        e.preventDefault();
+        e.stopPropagation(); 
+        
+        // Toggle the class
+        sidebar.classList.toggle('active');
+        
+        // Debug: Shows in console if it worked
+        console.log("Hamburger Clicked! Sidebar is now active.");
+      });
+    }
+  </script>
+
+</body> ```
 </html>
+

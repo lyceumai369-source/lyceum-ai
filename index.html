@@ -12,7 +12,9 @@
   <link rel="stylesheet" href="animations.css" />
 
   <style>
-    /* 1. FORCE SIDEBAR ON LAPTOP (Screens bigger than 768px) */
+    /* =========================
+       DESKTOP / LAPTOP VIEW
+       ========================= */
     @media (min-width: 769px) {
       body, #app {
         display: flex !important;
@@ -21,27 +23,43 @@
         width: 100vw !important;
         overflow: hidden !important;
       }
+
       #sidebar {
         display: flex !important;
-        position: relative !important; /* Sit next to chat, not floating */
-        left: 0 !important; /* Always visible */
-        top: 0 !important;
+        flex-direction: column !important;
+        position: relative !important;
         width: 260px !important;
         height: 100vh !important;
         background: #000 !important;
-        z-index: 10 !important;
         border-right: 1px solid #333 !important;
+        overflow-y: auto !important; /* 🔥 FIX */
       }
-      .mobile-nav, #menu-toggle { display: none !important; } /* Hide mobile button */
-      #main-content { width: calc(100vw - 260px) !important; }
+
+      .sidebar-bottom {
+        margin-top: auto !important; /* 🔥 PUSH BUTTONS TO BOTTOM */
+        padding-bottom: 20px;
+      }
+
+      .mobile-nav,
+      #menu-toggle {
+        display: none !important;
+      }
+
+      #main-content {
+        width: calc(100vw - 260px) !important;
+        height: 100vh;
+        overflow: hidden;
+      }
     }
 
-    /* 2. FORCE MOBILE MENU (Screens smaller than 768px) */
+    /* =========================
+       MOBILE VIEW
+       ========================= */
     @media (max-width: 768px) {
       #sidebar {
         position: fixed !important;
-        left: -100% !important; /* Hidden */
-        top: 0 !important;
+        left: -100% !important;
+        top: 0;
         width: 280px !important;
         height: 100vh !important;
         background: #111 !important;
@@ -49,134 +67,111 @@
         display: flex !important;
         flex-direction: column !important;
         transition: left 0.3s ease !important;
+        overflow-y: auto;
       }
-      #sidebar.active { left: 0 !important; } /* Show when active */
-      
-      /* Make sure settings modal is ON TOP of sidebar */
-      #settings-modal { z-index: 1000000 !important; }
+
+      #sidebar.active {
+        left: 0 !important;
+      }
+
+      #settings-modal {
+        z-index: 1000000 !important;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div id="app">
+<div id="app">
 
-    <aside id="sidebar">
-      <div class="sidebar-top">
-        <button type="button" class="new-chat-btn" onclick="location.reload(); closeMobileMenu()">
-          <span>+</span> New Chat
-        </button>
-      </div>
-
-      <div class="sidebar-bottom">
-        <button type="button" id="settings-btn" class="secondary-btn" onclick="closeMobileMenu()">
-          ⚙️ Settings
-        </button>
-        <button type="button" id="theme-toggle-btn" class="secondary-btn" onclick="closeMobileMenu()">
-          ☀️ Light Mode
-        </button>
-        <button id="relaxBtn" class="relax-btn" onclick="closeMobileMenu()">🌿 Relax</button>
-      </div>
-    </aside>
-
-    <div id="main-content">
-
-      <header class="mobile-nav">
-        <button type="button" id="menu-toggle" onclick="toggleSidebar()" style="z-index: 200000;">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-        </button>      
-      </header>
-
-      <section id="hero-section">
-        <div class="cube-wrapper">
-          <div class="cube">
-            <div class="face front"><img src="logo.png" alt="Lyceum AI logo"></div>
-            <div class="face back"><img src="logo.png" alt="Lyceum AI logo"></div>
-            <div class="face right"><img src="logo.png" alt="Lyceum AI logo"></div>
-            <div class="face left"><img src="logo.png" alt="Lyceum AI logo"></div>
-            <div class="face top"><img src="logo.png" alt="Lyceum AI logo"></div>
-            <div class="face bottom"><img src="logo.png" alt="Lyceum AI logo"></div>
-          </div>
-        </div>
-        <h1 class="bot-name-title">LYCEUM AI</h1>
-      </section>
-
-      <main id="chat-container">
-        <div id="chat-messages"></div>
-        <div id="wiki-loading" class="hidden">🔍 Searching Wikipedia...</div>
-        <div id="typing-indicator" class="hidden"><span></span><span></span><span></span></div>
-      </main>
-
-      <footer id="input-area">
-        <div class="input-wrapper">
-          <div class="footer-input">
-            <input type="text" id="user-input" placeholder="Type to Lyceum..." autocomplete="off" />
-            <button type="button" id="mic-btn" class="icon-btn">🎤</button>
-            <button type="button" id="send-btn">➤</button>
-          </div>
-        </div>
-      </footer>
-
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sidebar-top">
+      <button class="new-chat-btn" onclick="location.reload(); closeMobileMenu()">
+        <span>+</span> New Chat
+      </button>
     </div>
-  </div>
 
-  <div id="settings-modal" class="modal hidden">
-    <div class="modal-content">
-      <div class="modal-tabs">
-        <button type="button" id="tab-about" class="tab-btn active">About</button>
-        <button type="button" id="tab-colors" class="tab-btn">Themes</button>
-      </div>
-      <div id="content-about" class="tab-content">
-        <img src="logo.png" alt="Lyceum AI Logo" class="modal-logo">
-        <h2>Lyceum AI v2</h2>
-        <p><strong>Developer:</strong> Ananthu Shaji</p>
-      </div>
-      <div id="content-colors" class="tab-content hidden">
-        <h3>Select Accent Color</h3>
-        <div id="color-grid" class="color-grid"></div>
-      </div>
-      <button type="button" id="close-settings" class="close-btn">Done</button>
+    <div class="sidebar-bottom">
+      <button id="settings-btn" class="secondary-btn" onclick="closeMobileMenu()">⚙️ Settings</button>
+      <button id="theme-toggle-btn" class="secondary-btn" onclick="closeMobileMenu()">☀️ Light Mode</button>
+      <button id="relaxBtn" class="relax-btn" onclick="closeMobileMenu()">🌿 Relax</button>
     </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main-content">
+
+    <header class="mobile-nav">
+      <button id="menu-toggle" onclick="toggleSidebar()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </button>
+    </header>
+
+    <section id="hero-section">
+      <div class="cube-wrapper">
+        <div class="cube">
+          <div class="face front"><img src="logo.png"></div>
+          <div class="face back"><img src="logo.png"></div>
+          <div class="face right"><img src="logo.png"></div>
+          <div class="face left"><img src="logo.png"></div>
+          <div class="face top"><img src="logo.png"></div>
+          <div class="face bottom"><img src="logo.png"></div>
+        </div>
+      </div>
+      <h1 class="bot-name-title">LYCEUM AI</h1>
+    </section>
+
+    <main id="chat-container">
+      <div id="chat-messages"></div>
+      <div id="wiki-loading" class="hidden">🔍 Searching Wikipedia...</div>
+      <div id="typing-indicator" class="hidden"><span></span><span></span><span></span></div>
+    </main>
+
+    <footer id="input-area">
+      <input id="user-input" placeholder="Type to Lyceum..." />
+      <button id="mic-btn">🎤</button>
+      <button id="send-btn">➤</button>
+    </footer>
+
   </div>
+</div>
 
-  <script src="vision.js"></script>
-  <script src="wikiEngine.js"></script>
-  <script src="brain.js" defer></script>
-  <script src="ui.js" defer></script>
-  <script src="fallback.js" defer></script>
-  <script src="main.js" defer></script>
-  <script src="relax.js" defer></script>
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-tabs">
+      <button class="tab-btn active">About</button>
+      <button class="tab-btn">Themes</button>
+    </div>
+    <img src="logo.png" class="modal-logo">
+    <h2>Lyceum AI v2</h2>
+    <p><strong>Developer:</strong> Ananthu Shaji</p>
+    <button id="close-settings">Done</button>
+  </div>
+</div>
 
-  <script>
-    // 1. OPEN SIDEBAR
-    function toggleSidebar() {
-      const s = document.getElementById('sidebar');
-      s.classList.toggle('active');
+<script>
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+  }
+
+  function closeMobileMenu() {
+    if (window.innerWidth <= 768) {
+      document.getElementById("sidebar").classList.remove("active");
     }
+  }
 
-    // 2. CLOSE SIDEBAR (Called by every button)
-    function closeMobileMenu() {
-      // Only run this on mobile phones
-      if (window.innerWidth <= 768) {
-        const s = document.getElementById('sidebar');
-        s.classList.remove('active');
-        s.style.left = "-100%"; // Force close
-        
-        // Slight delay to reset the style so it can open again later
-        setTimeout(() => { s.style.left = ""; }, 300);
-      }
-    }
+  const themeBtn = document.getElementById("theme-toggle-btn");
+  themeBtn.onclick = () => {
+    document.body.classList.toggle("light-mode");
+    themeBtn.innerText = document.body.classList.contains("light-mode")
+      ? "🌙 Dark Mode"
+      : "☀️ Light Mode";
+  };
+</script>
 
-    // 3. THEME TOGGLE LOGIC
-    const themeBtn = document.getElementById('theme-toggle-btn');
-    if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        themeBtn.innerText = document.body.classList.contains('light-mode') ? "🌙 Dark Mode" : "☀️ Light Mode";
-      });
-    }
-  </script>
 </body>
 </html>

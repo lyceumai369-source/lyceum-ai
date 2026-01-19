@@ -130,3 +130,29 @@
 #app #sidebar.active {
     left: 0 !important; 
 }
+/* === FIX FOR HIDDEN RELAX BUTTON === */
+
+#sidebar {
+  /* 1. Organize layout: Top stuff at top, bottom stuff at bottom */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  
+  /* 2. Fix the height so the bottom isn't cut off by the phone's address bar */
+  height: 100vh !important; 
+  height: 100dvh !important; /* This is the special fix for mobile browsers */
+  
+  /* 3. Add breathing room so buttons don't touch the edge */
+  padding-bottom: 40px !important; 
+  box-sizing: border-box !important;
+}
+
+/* 4. Make sure the bottom area doesn't get squashed into a line */
+.sidebar-bottom {
+  margin-top: auto !important;
+  flex-shrink: 0 !important; /* This forces it to stay full size */
+  padding-bottom: 20px !important; 
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important; /* Space between the buttons */
+}

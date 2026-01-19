@@ -2,7 +2,7 @@
 @media (max-width: 768px) {
 
   html, body {
-    height: 100dvh;
+    height: 100dvh; /* Fix for mobile browsers */
     margin: 0;
     overflow: hidden;
   }
@@ -30,34 +30,39 @@
 
   #menu-toggle .bar {
     width: 22px; height: 2px;
-    background: var(--text-main, #fff); /* Fallback to white if variable fails */
+    background: var(--text-main, #fff);
     margin: 4px 0; display: block;
   }
 
-  /* === FIXED SIDEBAR (The Important Part) === */
+  /* === FIXED SIDEBAR (FIXED) === */
   #sidebar {
     position: fixed; 
     left: -100%; /* Hidden to the left */
     top: 0;
     height: 100dvh; 
-    width: 260px; 
+    width: 280px; 
     
-    /* 1. Give it a background so we can see it! */
-    background-color: #1a1a1a; 
-    background: var(--panel-bg, #1a1a1a); 
-
-    /* 2. Force it to display, overriding any desktop "display: none" */
+    background-color: var(--sidebar-bg); 
     display: flex !important;
     flex-direction: column;
+    justify-content: flex-start; /* Changed from space-between to prevent cutoff */
+    gap: 20px;
     
-    /* 3. Animation and Layering */
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10000;
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-    padding-top: 20px; /* Space at top */
+    padding: 20px;
+    padding-bottom: 120px !important; /* EXTRA SPACE FOR RELAX BUTTON */
+    overflow-y: auto; /* ALLOW SCROLLING IF PHONE IS SMALL */
   }
 
-  /* When the 'active' class is added by JS, slide it in */
+  /* Fix for sidebar internal layout */
+  .sidebar-top { flex: 0; }
+  .sidebar-bottom { 
+    margin-top: auto; /* Pushes buttons to bottom safely */
+    display: flex; flex-direction: column; gap: 10px; 
+  }
+
   #sidebar.active { left: 0; }
 
   /* === HERO SECTION === */
@@ -109,43 +114,3 @@
 
   body.chat-active .cube-wrapper { transform: scale(0.35); margin: 0; }
 }
-/* === PASTE THIS AT THE BOTTOM OF MOBILE.CSS === */
-
-/* 1. We use #app #sidebar to make this rule STRONGER than your desktop code */
-#app #sidebar {
-    display: flex !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: -100% !important; /* Start hidden */
-    height: 100vh !important;
-    width: 280px !important;
-    
-    /* 2. IMPORTANT: Give it a dark background so you can actually see it */
-    background-color: #111 !important; 
-    z-index: 99999 !important;
-    transition: left 0.3s ease !important;
-}
-
-/* 3. When the button is clicked, this slides it in */
-#app #sidebar.active {
-    left: 0 !important; 
-}
-/* === FIX FOR HIDDEN RELAX BUTTON === */
-
-#sidebar {
-  /* 1. Organize layout: Top stuff at top, bottom stuff at bottom */
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  
-  /* 2. Fix the height so the bottom isn't cut off by the phone's address bar */
-  height: 100vh !important; 
-  height: 100dvh !important; /* This is the special fix for mobile browsers */
-  
-  /* 3. Add breathing room so buttons don't touch the edge */
-  padding-bottom: 40px !important; 
-  box-sizing: border-box !important;
-}
-
-
-

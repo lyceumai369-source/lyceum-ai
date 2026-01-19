@@ -205,3 +205,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+/* === PASTE AT THE VERY BOTTOM OF UI.JS === */
+// Force Mobile Menu Fix
+window.onload = function() {
+    const btn = document.getElementById("menu-toggle");
+    const bar = document.getElementById("sidebar");
+    if(btn && bar) {
+        console.log("Mobile Menu Hooked!");
+        btn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation(); // Stop anything else from blocking it
+            bar.classList.toggle("active");
+        }
+    }
+};

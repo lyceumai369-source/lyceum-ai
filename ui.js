@@ -1,5 +1,5 @@
 /* =========================================================
-   UI MANAGER (v6.0 - Fully Fixed & Functional)
+   UI MANAGER (v7.0 - Animation Trigger & Mobile Fix)
    ========================================================= */
 
 // 1. INJECT LOADER STYLES
@@ -21,6 +21,12 @@ const UI = {
   typingInd: document.getElementById('typing-indicator'),
 
   renderMessage(text, type, time = "") {
+    // --- FIX 1: TRIGGER THE ANIMATION ---
+    // This tells CSS: "The chat has started! Move the logo!"
+    if (!document.body.classList.contains('chat-active')) {
+        document.body.classList.add('chat-active');
+    }
+
     if (!this.messagesArea) return;
     const msg = document.createElement('div');
     msg.className = `message ${type}`;
@@ -105,7 +111,7 @@ const UI = {
 };
 
 /* =========================================================
-   EVENT MANAGERS (Menu, Settings, Colors)
+   EVENT MANAGERS (Mobile Fix & Settings)
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
     // --- ELEMENTS ---
@@ -115,52 +121,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const themeBtn = document.getElementById("theme-toggle-btn");
     const closeSettings = document.getElementById("close-settings");
     const settingsModal = document.getElementById("settings-modal");
-
-    // Tabs & Content
+    
+    // Tabs
     const tabAbout = document.getElementById("tab-about");
     const tabColors = document.getElementById("tab-colors");
     const contentAbout = document.getElementById("content-about");
     const contentColors = document.getElementById("content-colors");
     const colorGrid = document.getElementById("color-grid");
 
-    // --- 1. SIDEBAR LOGIC ---
+    // --- HELPER: Close Sidebar ---
     const closeSidebar = () => {
         if (sidebar && sidebar.classList.contains("active")) {
             sidebar.classList.remove("active");
         }
     };
 
+    // --- FIX 2: ROBUST MOBILE MENU ---
+    // We use .onclick = ... to ensure no duplicate listeners and hard binding
     if (menuToggle) {
-        menuToggle.onclick = (e) => {
-            e.preventDefault();
+        menuToggle.onclick = function(e) {
+            e.preventDefault(); 
+            e.stopPropagation(); // Prevents other clicks from interfering
             sidebar.classList.toggle("active");
         };
     }
 
-    // --- 2. SETTINGS OPEN/CLOSE ---
+    // --- SETTINGS ---
     if (settingsBtn) {
         settingsBtn.onclick = () => {
             if(settingsModal) settingsModal.classList.remove("hidden");
-            closeSidebar(); // Forces menu to close
+            closeSidebar();
         };
     }
-
     if (closeSettings) {
         closeSettings.onclick = () => {
             if(settingsModal) settingsModal.classList.add("hidden");
         };
     }
 
-    // --- 3. THEME TOGGLE ---
+    // --- THEME ---
     if (themeBtn) {
         themeBtn.onclick = () => {
             document.body.classList.toggle("light-mode");
             themeBtn.innerText = document.body.classList.contains("light-mode") ? "🌙 Dark Mode" : "☀️ Light Mode";
-            closeSidebar(); // Forces menu to close
+            closeSidebar();
         };
     }
 
-    // --- 4. TAB SWITCHING LOGIC (New!) ---
+    // --- TABS ---
     if(tabAbout && tabColors) {
         tabAbout.onclick = () => {
             tabAbout.classList.add("active");
@@ -168,7 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
             contentAbout.classList.remove("hidden");
             contentColors.classList.add("hidden");
         };
-
         tabColors.onclick = () => {
             tabColors.classList.add("active");
             tabAbout.classList.remove("active");
@@ -177,26 +184,19 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // --- 5. COLOR PICKER GENERATOR (New!) ---
+    // --- COLORS ---
     if(colorGrid && colorGrid.children.length === 0) {
-        const colors = [
-            "#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", 
-            "#ec4899", "#6366f1", "#14b8a6", "#f97316", "#06b6d4",
-            "#84cc16", "#d946ef", "#e11d48", "#ffffff", "#ff00ff"
-        ];
-        
+        const colors = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#6366f1", "#14b8a6", "#f97316", "#06b6d4"];
         colors.forEach(color => {
             const dot = document.createElement("div");
             dot.className = "color-dot";
             dot.style.backgroundColor = color;
-            dot.onclick = () => {
-                document.documentElement.style.setProperty('--accent', color);
-            };
+            dot.onclick = () => { document.documentElement.style.setProperty('--accent', color); };
             colorGrid.appendChild(dot);
         });
     }
-    
-    // --- 6. CLOSE ON OUTSIDE CLICK ---
+
+    // --- CLOSE ON OUTSIDE CLICK ---
     document.addEventListener('click', (e) => {
         if (sidebar && sidebar.classList.contains('active') && 
             !sidebar.contains(e.target) && 

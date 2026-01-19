@@ -2,15 +2,22 @@
 @media (max-width: 768px) {
 
   html, body {
-    height: 100dvh; /* Fix for mobile browsers */
+    height: 100dvh; /* Modern mobile fix */
     margin: 0;
     overflow: hidden;
   }
 
-  #app { height: 100dvh; display: flex; flex-direction: column; }
+  #app { 
+    height: 100dvh; 
+    display: flex; 
+    flex-direction: column; 
+  }
   
   #main-content {
-    display: flex; flex-direction: column; height: 100dvh; position: relative;
+    display: flex; 
+    flex-direction: column; 
+    height: 100dvh; 
+    position: relative;
     background: var(--bg);
   }
 
@@ -34,7 +41,7 @@
     margin: 4px 0; display: block;
   }
 
-  /* === FIXED SIDEBAR (FIXED) === */
+  /* === FIXED SIDEBAR (FIXED SCROLL & PADDING) === */
   #sidebar {
     position: fixed; 
     left: -100%; /* Hidden to the left */
@@ -45,22 +52,26 @@
     background-color: var(--sidebar-bg); 
     display: flex !important;
     flex-direction: column;
-    justify-content: flex-start; /* Changed from space-between to prevent cutoff */
-    gap: 20px;
+    justify-content: flex-start; /* Stacks items from top */
+    gap: 15px; /* Space between buttons */
     
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10000;
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
+    
+    /* CRITICAL FIXES FOR HIDDEN BUTTONS: */
     padding: 20px;
-    padding-bottom: 120px !important; /* EXTRA SPACE FOR RELAX BUTTON */
-    overflow-y: auto; /* ALLOW SCROLLING IF PHONE IS SMALL */
+    padding-bottom: 150px !important; /* Huge buffer for bottom safety */
+    overflow-y: auto; /* Adds scroll if screen is too small */
   }
 
-  /* Fix for sidebar internal layout */
-  .sidebar-top { flex: 0; }
-  .sidebar-bottom { 
-    margin-top: auto; /* Pushes buttons to bottom safely */
-    display: flex; flex-direction: column; gap: 10px; 
+  /* Force Relax button to be visible */
+  .sidebar-bottom {
+    margin-top: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px;
+    padding-bottom: 20px;
   }
 
   #sidebar.active { left: 0; }

@@ -123,3 +123,67 @@
     box-shadow: 0 5px 20px var(--shadow);
   }
 }
+/* ================= MOBILE FOOTER & ANIMATION FIX ================= */
+
+/* 1. Watermark Styling */
+#mobile-footer {
+  display: none; /* Hidden on laptop */
+}
+
+@media (max-width: 768px) {
+  #mobile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: fixed;
+    bottom: 10px; 
+    left: 0; right: 0;
+    font-size: 10px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    pointer-events: none; /* Allows clicks to pass through */
+    z-index: 5;
+  }
+
+  #mobile-footer strong {
+    color: var(--accent);
+  }
+
+  .footer-logo img {
+    width: 14px; height: 14px;
+    animation: spinFooter 4s linear infinite;
+  }
+  @keyframes spinFooter { to { transform: rotate(360deg); } }
+
+  /* Move input up slightly so it doesn't cover footer */
+  body.chat-active #input-area { bottom: 35px; }
+
+
+  /* 2. FIX: KEEP NAME VISIBLE & MOVE RIGHT */
+  
+  /* Force Name to Appear */
+  body.chat-active #hero-section .bot-name-title { 
+    display: block !important; 
+    font-size: 1.1rem; 
+    margin: 0;
+    margin-right: 12px;
+  }
+
+  /* Move container to the RIGHT */
+  body.chat-active #hero-section {
+    height: 60px !important;
+    display: flex; 
+    flex-direction: row; 
+    align-items: center; 
+    justify-content: flex-end !important; /* Right side */
+    padding-right: 20px;
+  }
+
+  /* Shrink Cube */
+  body.chat-active .cube-wrapper { 
+    transform: scale(0.35); 
+    margin: 0; 
+    order: 2; /* Logo stays on the far right */
+  }
+}

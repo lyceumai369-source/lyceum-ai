@@ -9,15 +9,91 @@
   <title>Lyceum AI v2</title>
 
   <link rel="stylesheet" href="style.css" />
- <link rel="stylesheet" href="relax.css">
- <link rel="stylesheet" href="mobile.css" />
+  <link rel="stylesheet" href="relax.css">
+  <link rel="stylesheet" href="mobile.css" />
   <link rel="stylesheet" href="animations.css" />
+
+  <style>
+    /* --- MOBILE FIXES --- */
+    @media (max-width: 768px) {
+        /* Force Sidebar Visibility & Layout */
+        #sidebar {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important; /* Pushes bottom buttons down */
+            position: fixed !important;
+            top: 0 !important;
+            left: -100% !important; /* Start hidden */
+            width: 280px !important;
+            height: 100dvh !important; /* Fixes hidden bottom buttons on phones */
+            background-color: #111 !important; /* Dark background */
+            z-index: 99999 !important;
+            transition: left 0.3s ease !important;
+            padding-bottom: 40px !important; /* Space for Relax button */
+            box-sizing: border-box !important;
+        }
+
+        #sidebar.active {
+            left: 0 !important; /* Slide in */
+        }
+
+        /* Ensure Hamburger Button is Visible */
+        #menu-toggle {
+            display: block !important;
+            cursor: pointer !important;
+            z-index: 100000 !important;
+        }
+
+        /* Fix Sidebar Bottom Area */
+        .sidebar-bottom {
+            margin-top: auto !important;
+            padding-bottom: 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+    }
+
+    /* --- COMPUTER / DESKTOP FIXES --- */
+    @media (min-width: 769px) {
+        #app {
+            display: flex !important;
+            flex-direction: row !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+        }
+
+        #sidebar {
+            display: flex !important;
+            flex-direction: column !important;
+            width: 260px !important;
+            height: 100vh !important;
+            background: #000 !important;
+            border-right: 1px solid #333 !important;
+            position: relative !important;
+            left: 0 !important; /* Always visible */
+            top: 0 !important;
+            z-index: 10 !important;
+        }
+
+        /* Hide Hamburger on Desktop */
+        .mobile-nav, #menu-toggle {
+            display: none !important;
+        }
+
+        #main-content {
+            flex-grow: 1 !important;
+            height: 100vh !important;
+            width: auto !important;
+        }
+    }
+  </style>
 </head>
 
 <body>
   <div id="app">
 
-    <!-- SIDEBAR -->
     <aside id="sidebar">
       <div class="sidebar-top">
         <button type="button" class="new-chat-btn" onclick="location.reload()">
@@ -32,24 +108,20 @@
         <button type="button" id="theme-toggle-btn" class="secondary-btn">
           ☀️ Light Mode
         </button>
-      <button id="relaxBtn" class="relax-btn">🌿 Relax</button>
-
+        <button id="relaxBtn" class="relax-btn">🌿 Relax</button>
       </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <div id="main-content">
 
-      <!-- MOBILE NAV -->
       <header class="mobile-nav">
-        <button type="button" id="menu-toggle" aria-label="Menu">
+        <button type="button" id="menu-toggle" onclick="toggleSidebar()" style="cursor: pointer; z-index: 100000;">
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
         </button>      
       </header>
 
-      <!-- HERO -->
       <section id="hero-section">
         <div class="cube-wrapper">
           <div class="cube">
@@ -65,18 +137,16 @@
         <h1 class="bot-name-title">LYCEUM AI</h1>
       </section>
 
-      <!-- CHAT -->
       <main id="chat-container">
         <div id="chat-messages"></div>
-<div id="wiki-loading" class="hidden">
-    🔍 Searching Wikipedia...
-  </div>
+        <div id="wiki-loading" class="hidden">
+           🔍 Searching Wikipedia...
+        </div>
         <div id="typing-indicator" class="hidden">
           <span></span><span></span><span></span>
         </div>
       </main>
 
-      <!-- INPUT -->
       <footer id="input-area">
         <div class="input-wrapper">
           <div class="footer-input">
@@ -101,7 +171,6 @@
     </div>
   </div>
 
-  <!-- SETTINGS MODAL (MOVED OUT – VERY IMPORTANT) -->
   <div id="settings-modal" class="modal hidden">
     <div class="modal-content">
 
@@ -126,9 +195,8 @@
     </div>
   </div>
 
-  <!-- SCRIPTS -->
   <script src="vision.js"></script>
- <script src="wikiEngine.js"></script>
+  <script src="wikiEngine.js"></script>
   <script src="brain.js" defer></script>
   <script src="ui.js" defer></script>
   <script src="fallback.js" defer></script>
@@ -136,6 +204,26 @@
   <script src="relax.js" defer></script>
 
   <script>
+    // 1. HAMBURGER MENU FUNCTION
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+    }
+
+    // 2. AUTO-CLOSE MENU WHEN CLICKING BUTTONS
+    const allSidebarButtons = document.querySelectorAll('#sidebar button');
+    const mySidebar = document.getElementById('sidebar');
+
+    allSidebarButtons.forEach(button => {
+        button.addEventListener('click', () => {
+             // If on mobile (screen smaller than 768), close menu after click
+            if (window.innerWidth <= 768) {
+                mySidebar.classList.remove('active');
+            }
+        });
+    });
+
+    // 3. THEME TOGGLE
     const themeBtn = document.getElementById('theme-toggle-btn');
     themeBtn.addEventListener('click', () => {
       document.body.classList.toggle('light-mode');
@@ -148,13 +236,5 @@
     });
   </script>
 
-</body> </html>
-
-
-
-
-
-
-
-
-
+</body> 
+</html>

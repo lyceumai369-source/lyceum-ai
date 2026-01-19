@@ -1,4 +1,4 @@
-/* ================= ROOT VARIABLES ================= */
+/* ================= ROOT VARIABLES (Themes) ================= */
 :root { --accent: #ffffff; --bg: #050505; --sidebar-bg: #0a0a0a; --text-main: #ffffff; --text-secondary: #aaaaaa; --panel-bg: rgba(0,0,0,0.55); --input-bg: #121212; --border-color: rgba(255,255,255,0.2); --shadow: rgba(0,0,0,0.5); --user-text: #000000; }
 body.light-mode { --bg: #ffffff; --sidebar-bg: #f0f4f9; --text-main: #1f1f1f; --text-secondary: #444746; --panel-bg: rgba(255,255,255,0.9); --input-bg: #ffffff; --border-color: #e1e3e1; --shadow: rgba(0,0,0,0.1); }
 
@@ -8,20 +8,20 @@ img { max-width: 100%; height: auto; display: block; }
 body { background-color: var(--bg); color: var(--text-main); font-family: Inter, system-ui, sans-serif; overflow-x: hidden; transition: background 0.3s ease, color 0.3s ease; }
 #app { display: flex; width: 100vw; height: 100vh; }
 
-/* ================= SIDEBAR (Laptop Fix) ================= */
-#sidebar {
-  width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 20px; flex-shrink: 0; color: var(--text-main);
-  /* SCROLL FIX */
-  overflow-y: auto; max-height: 100vh;
-}
+/* ================= SIDEBAR ================= */
+#sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 20px; flex-shrink: 0; color: var(--text-main); overflow-y: auto; max-height: 100vh; }
 .sidebar-bottom { display: flex; flex-direction: column; gap: 10px; }
 .new-chat-btn, .secondary-btn, .relax-btn { width: 100%; background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; }
 
-/* ================= MAIN ================= */
+/* ================= MAIN CONTENT ================= */
 #main-content { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; background: var(--panel-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
-#hero-section { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
-.bot-name-title { font-size: 2.5rem; letter-spacing: 5px; margin-top: 20px; color: var(--text-main); }
-.cube-wrapper { width: 60px; height: 60px; perspective: 1000px; }
+
+/* HERO SECTION (Original Center) */
+#hero-section { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; transition: all 0.5s ease; }
+.bot-name-title { font-size: 2.5rem; letter-spacing: 5px; margin-top: 20px; color: var(--text-main); transition: all 0.5s ease; }
+
+/* CUBE */
+.cube-wrapper { width: 60px; height: 60px; perspective: 1000px; transition: all 0.5s ease; }
 .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateCube 10s infinite linear; }
 .face { position: absolute; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: var(--panel-bg); border: 1px solid var(--accent); }
 .face img { width: 70%; height: 70%; object-fit: contain; }
@@ -43,7 +43,7 @@ body { background-color: var(--bg); color: var(--text-main); font-family: Inter,
 #send-btn svg { width: 20px; height: 20px; fill: var(--user-text); }
 
 /* ================= MODAL & COLORS ================= */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 10001; /* Higher than sidebar */ }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 10001; }
 .modal-content { background: var(--bg); border: 1px solid var(--accent); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; color: var(--text-main); }
 .modal-logo { width: 70px !important; margin: 0 auto 15px; display: block; opacity: 0.95; }
 .modal-tabs { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
@@ -55,7 +55,28 @@ body { background-color: var(--bg); color: var(--text-main); font-family: Inter,
 .color-dot:hover { transform: scale(1.15); border-color: var(--accent); }
 .close-btn { margin-top: 20px; width: 100%; padding: 10px; background: var(--accent); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: var(--user-text); }
 
-/* ================= ANIMATIONS ================= */
+/* ================= ANIMATION LOGIC (FIXED) ================= */
+
+/* When Chat is Active, Move Hero to Top Right */
+body.chat-active #hero-section {
+  height: 70px;
+  flex: none; /* Stop taking up whole screen */
+  flex-direction: row;
+  justify-content: flex-end; /* RIGHT SIDE */
+  padding-right: 40px; /* Spacing from edge */
+}
+
+body.chat-active .cube-wrapper {
+  transform: scale(0.4);
+  margin-right: 15px; /* Spacing between cube and text */
+}
+
+body.chat-active .bot-name-title {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  margin-top: 0;
+}
+
 @keyframes rotateCube { from { transform: rotateX(0) rotateY(0); } to { transform: rotateX(360deg) rotateY(360deg); } }
 .front { transform: translateZ(30px); } .back { transform: rotateY(180deg) translateZ(30px); }
 .right { transform: rotateY(90deg) translateZ(30px); } .left { transform: rotateY(-90deg) translateZ(30px); }

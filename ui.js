@@ -1,66 +1,17 @@
 /* =========================================================
-   UI MANAGER (v5.0 - Smart Loader + Internal Watermark)
+   UI MANAGER (Fixed - Menu Closes on Click)
    ========================================================= */
 
-// 1. INJECT STYLES AUTOMATICALLY (No need to edit CSS file)
+// 1. INJECT STYLES AUTOMATICALLY
 const style = document.createElement('style');
 style.innerHTML = `
-  /* Loader Animation */
-  .img-loading-spinner {
-    width: 40px; height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #4facfe;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-  }
+  .img-loading-spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: #4facfe; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Image Container */
-  .smart-image-box {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #000; /* Dark bg while loading */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    margin-bottom: 10px;
-    min-height: 200px; /* Space for loader */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* The Image Itself */
-  .smart-image-box img {
-    width: 100%;
-    height: auto;
-    display: block;
-    opacity: 0; /* Hidden initially */
-    transition: opacity 0.8s ease;
-  }
-  
-  /* When Loaded */
+  .smart-image-box { position: relative; width: 100%; max-width: 400px; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.4); margin-bottom: 10px; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+  .smart-image-box img { width: 100%; height: auto; display: block; opacity: 0; transition: opacity 0.8s ease; }
   .smart-image-box.loaded img { opacity: 1; }
   .smart-image-box.loaded .loader-wrapper { display: none; }
-
-  /* Watermark Overlay */
-  .watermark-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 8px 12px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    color: white;
-    font-size: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .watermark-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 12px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); color: white; font-size: 10px; font-weight: bold; text-transform: uppercase; pointer-events: none; }
 `;
 document.head.appendChild(style);
 
@@ -71,7 +22,6 @@ const UI = {
 
   renderMessage(text, type, time = "") {
     if (!this.messagesArea) return;
-
     const msg = document.createElement('div');
     msg.className = `message ${type}`;
     const content = document.createElement('div');
@@ -90,10 +40,9 @@ const UI = {
       return;
     }
 
-    // Check for Image Code or Link
     if (this.containsMarkdownImage(text) || this.containsLink(text)) {
       content.innerHTML = this.parseContent(text);
-      this.activateImageLoaders(content); // <--- NEW: Turns on the magic
+      this.activateImageLoaders(content);
       this.scrollToBottom();
     } else {
       this.typeEffect(content, text);
@@ -108,7 +57,7 @@ const UI = {
         element.textContent += text.charAt(i);
         i++;
         this.scrollToBottom(false);
-        setTimeout(type, 25);
+        setTimeout(type, 15); // Made typing slightly faster
       } else {
         this.scrollToBottom();
       }
@@ -119,44 +68,21 @@ const UI = {
   containsMarkdownImage(text) { return /!\[.*?\]\(.*?\)/.test(text); },
   containsLink(text) { return /(https?:\/\/[^\s]+)/i.test(text); },
 
-  // === SMART PARSER ===
   parseContent(text) {
     let html = text;
-
-    // Convert Image Markdown to Smart HTML Structure
     html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
-        return `
-        <div class="smart-image-box">
-            <div class="loader-wrapper">
-                <div class="img-loading-spinner"></div>
-                <div style="color:white; font-size:10px; margin-top:5px;">Creating Art...</div>
-            </div>
-            <img src="${url}" alt="${alt}" loading="lazy">
-            <div class="watermark-overlay">
-                ✨ Lyceum AI
-            </div>
-        </div>`;
+        return `<div class="smart-image-box"><div class="loader-wrapper"><div class="img-loading-spinner"></div><div style="color:white; font-size:10px; margin-top:5px;">Creating Art...</div></div><img src="${url}" alt="${alt}" loading="lazy"><div class="watermark-overlay">✨ Lyceum AI</div></div>`;
     });
-
-    // Convert Links
     html = html.replace(/((?<!src=")https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
-    
-    // Formatting
     html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
     html = html.replace(/^>\s?(.*)/gm, '<div style="border-left:3px solid #4facfe; padding-left:10px; opacity:0.8;">$1</div>');
-
     return html;
   },
 
-  // === NEW: ACTIVATOR ===
-  // This waits for the image to download, then reveals it
   activateImageLoaders(container) {
     const images = container.querySelectorAll('.smart-image-box img');
     images.forEach(img => {
-        img.onload = () => {
-            img.closest('.smart-image-box').classList.add('loaded');
-        };
-        // If cached, trigger immediately
+        img.onload = () => { img.closest('.smart-image-box').classList.add('loaded'); };
         if (img.complete) img.onload();
     });
   },
@@ -178,25 +104,56 @@ const UI = {
   }
 };
 
-// Mobile Menu Hook
-document.addEventListener("DOMContentLoaded", () => {
-  const menuToggle = document.getElementById("menu-toggle");
-  const sidebar = document.getElementById("sidebar");
-  if (menuToggle && sidebar) {
-    menuToggle.addEventListener("click", () => sidebar.classList.toggle("active"));
-  }
-});
-/* === PASTE AT BOTTOM OF UI.JS === */
-document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("menu-toggle");
-    const bar = document.getElementById("sidebar");
+// ================= BUTTON LOGIC FIXES =================
 
-    // Force click listener
-    if(btn) {
-        btn.onclick = function(e) {
-            e.preventDefault(); // Stop screen jumping
-            bar.classList.toggle("active");
-            console.log("Menu Toggled!"); // Check console to see if this prints
+document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menu-toggle");
+    const settingsBtn = document.getElementById("settings-btn");
+    const settingsModal = document.getElementById("settings-modal");
+    const closeSettings = document.getElementById("close-settings");
+    const themeBtn = document.getElementById("theme-toggle-btn");
+
+    // 1. HELPER: Close Sidebar Function
+    const closeSidebar = () => {
+        if(sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+    };
+
+    // 2. TOGGLE MENU (Hamburger)
+    if(menuToggle) {
+        menuToggle.onclick = (e) => {
+            e.preventDefault();
+            sidebar.classList.toggle("active");
         };
+    }
+
+    // 3. OPEN SETTINGS (And close sidebar)
+    if(settingsBtn && settingsModal) {
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden'); // Show Modal
+            closeSidebar(); // Close Menu
+        });
+    }
+
+    // 4. CLOSE SETTINGS
+    if(closeSettings && settingsModal) {
+        closeSettings.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+        });
+    }
+
+    // 5. THEME TOGGLE (And close sidebar)
+    if(themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            if (document.body.classList.contains('light-mode')) {
+                themeBtn.innerText = "🌙 Dark Mode";
+            } else {
+                themeBtn.innerText = "☀️ Light Mode";
+            }
+            closeSidebar(); // Close Menu
+        });
     }
 });

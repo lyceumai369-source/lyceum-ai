@@ -14,37 +14,38 @@
   <link rel="stylesheet" href="animations.css" />
 
   <style>
-    /* --- MOBILE FIXES --- */
+    /* --- MOBILE FIXES (Phone) --- */
     @media (max-width: 768px) {
-        /* Force Sidebar Visibility & Layout */
+        /* Force Sidebar to act like a drawer */
         #sidebar {
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important; /* Pushes bottom buttons down */
+            justify-content: space-between !important;
             position: fixed !important;
             top: 0 !important;
             left: -100% !important; /* Start hidden */
             width: 280px !important;
-            height: 100dvh !important; /* Fixes hidden bottom buttons on phones */
-            background-color: #111 !important; /* Dark background */
+            height: 100dvh !important; 
+            background-color: #111 !important; 
             z-index: 99999 !important;
             transition: left 0.3s ease !important;
-            padding-bottom: 40px !important; /* Space for Relax button */
+            padding-bottom: 40px !important; 
             box-sizing: border-box !important;
         }
 
+        /* Slide in when active */
         #sidebar.active {
-            left: 0 !important; /* Slide in */
+            left: 0 !important;
         }
 
-        /* Ensure Hamburger Button is Visible */
+        /* Show the Hamburger Button */
         #menu-toggle {
             display: block !important;
             cursor: pointer !important;
             z-index: 100000 !important;
         }
 
-        /* Fix Sidebar Bottom Area */
+        /* Fix bottom buttons layout */
         .sidebar-bottom {
             margin-top: auto !important;
             padding-bottom: 20px !important;
@@ -54,8 +55,9 @@
         }
     }
 
-    /* --- COMPUTER / DESKTOP FIXES --- */
+    /* --- LAPTOP / COMPUTER FIXES --- */
     @media (min-width: 769px) {
+        /* Layout: Sidebar on Left, Chat on Right */
         #app {
             display: flex !important;
             flex-direction: row !important;
@@ -64,6 +66,7 @@
             overflow: hidden !important;
         }
 
+        /* Force Sidebar to STAY OPEN */
         #sidebar {
             display: flex !important;
             flex-direction: column !important;
@@ -77,11 +80,12 @@
             z-index: 10 !important;
         }
 
-        /* Hide Hamburger on Desktop */
+        /* Hide Hamburger Button on Laptop */
         .mobile-nav, #menu-toggle {
             display: none !important;
         }
 
+        /* Chat fills the rest */
         #main-content {
             flex-grow: 1 !important;
             height: 100vh !important;
@@ -156,9 +160,7 @@
               placeholder="Type to Lyceum..."
               autocomplete="off"
             />
-
             <button type="button" id="mic-btn" class="icon-btn">🎤</button>
-
             <button type="button" id="send-btn">
               <svg viewBox="0 0 24 24">
                 <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
@@ -173,7 +175,6 @@
 
   <div id="settings-modal" class="modal hidden">
     <div class="modal-content">
-
       <div class="modal-tabs">
         <button type="button" id="tab-about" class="tab-btn active">About</button>
         <button type="button" id="tab-colors" class="tab-btn">Themes</button>
@@ -204,19 +205,19 @@
   <script src="relax.js" defer></script>
 
   <script>
-    // 1. HAMBURGER MENU FUNCTION
+    // 1. OPEN/CLOSE MENU
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         sidebar.classList.toggle('active');
     }
 
-    // 2. AUTO-CLOSE MENU WHEN CLICKING BUTTONS
+    // 2. AUTO-CLOSE MENU WHEN YOU CLICK A BUTTON
     const allSidebarButtons = document.querySelectorAll('#sidebar button');
     const mySidebar = document.getElementById('sidebar');
 
     allSidebarButtons.forEach(button => {
         button.addEventListener('click', () => {
-             // If on mobile (screen smaller than 768), close menu after click
+             // Only close if we are on a phone
             if (window.innerWidth <= 768) {
                 mySidebar.classList.remove('active');
             }
@@ -225,15 +226,16 @@
 
     // 3. THEME TOGGLE
     const themeBtn = document.getElementById('theme-toggle-btn');
-    themeBtn.addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      
-      if (document.body.classList.contains('light-mode')) {
-        themeBtn.innerText = "🌙 Dark Mode";
-      } else {
-        themeBtn.innerText = "☀️ Light Mode";
-      }
-    });
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+          document.body.classList.toggle('light-mode');
+          if (document.body.classList.contains('light-mode')) {
+            themeBtn.innerText = "🌙 Dark Mode";
+          } else {
+            themeBtn.innerText = "☀️ Light Mode";
+          }
+        });
+    }
   </script>
 
 </body> 

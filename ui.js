@@ -1,8 +1,8 @@
 /* =========================================================
-   UI MANAGER (Fixed - Menu Closes on Click)
+   UI MANAGER (v6.0 - Fully Fixed & Functional)
    ========================================================= */
 
-// 1. INJECT STYLES AUTOMATICALLY
+// 1. INJECT LOADER STYLES
 const style = document.createElement('style');
 style.innerHTML = `
   .img-loading-spinner { width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.1); border-top-color: #4facfe; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -57,7 +57,7 @@ const UI = {
         element.textContent += text.charAt(i);
         i++;
         this.scrollToBottom(false);
-        setTimeout(type, 15); // Made typing slightly faster
+        setTimeout(type, 15);
       } else {
         this.scrollToBottom();
       }
@@ -104,56 +104,104 @@ const UI = {
   }
 };
 
-// ================= BUTTON LOGIC FIXES =================
-
+/* =========================================================
+   EVENT MANAGERS (Menu, Settings, Colors)
+   ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
+    // --- ELEMENTS ---
     const sidebar = document.getElementById("sidebar");
     const menuToggle = document.getElementById("menu-toggle");
     const settingsBtn = document.getElementById("settings-btn");
-    const settingsModal = document.getElementById("settings-modal");
-    const closeSettings = document.getElementById("close-settings");
     const themeBtn = document.getElementById("theme-toggle-btn");
+    const closeSettings = document.getElementById("close-settings");
+    const settingsModal = document.getElementById("settings-modal");
 
-    // 1. HELPER: Close Sidebar Function
+    // Tabs & Content
+    const tabAbout = document.getElementById("tab-about");
+    const tabColors = document.getElementById("tab-colors");
+    const contentAbout = document.getElementById("content-about");
+    const contentColors = document.getElementById("content-colors");
+    const colorGrid = document.getElementById("color-grid");
+
+    // --- 1. SIDEBAR LOGIC ---
     const closeSidebar = () => {
-        if(sidebar.classList.contains('active')) {
-            sidebar.classList.remove('active');
+        if (sidebar && sidebar.classList.contains("active")) {
+            sidebar.classList.remove("active");
         }
     };
 
-    // 2. TOGGLE MENU (Hamburger)
-    if(menuToggle) {
+    if (menuToggle) {
         menuToggle.onclick = (e) => {
             e.preventDefault();
             sidebar.classList.toggle("active");
         };
     }
 
-    // 3. OPEN SETTINGS (And close sidebar)
-    if(settingsBtn && settingsModal) {
-        settingsBtn.addEventListener('click', () => {
-            settingsModal.classList.remove('hidden'); // Show Modal
-            closeSidebar(); // Close Menu
-        });
+    // --- 2. SETTINGS OPEN/CLOSE ---
+    if (settingsBtn) {
+        settingsBtn.onclick = () => {
+            if(settingsModal) settingsModal.classList.remove("hidden");
+            closeSidebar(); // Forces menu to close
+        };
     }
 
-    // 4. CLOSE SETTINGS
-    if(closeSettings && settingsModal) {
-        closeSettings.addEventListener('click', () => {
-            settingsModal.classList.add('hidden');
-        });
+    if (closeSettings) {
+        closeSettings.onclick = () => {
+            if(settingsModal) settingsModal.classList.add("hidden");
+        };
     }
 
-    // 5. THEME TOGGLE (And close sidebar)
-    if(themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            if (document.body.classList.contains('light-mode')) {
-                themeBtn.innerText = "🌙 Dark Mode";
-            } else {
-                themeBtn.innerText = "☀️ Light Mode";
-            }
-            closeSidebar(); // Close Menu
+    // --- 3. THEME TOGGLE ---
+    if (themeBtn) {
+        themeBtn.onclick = () => {
+            document.body.classList.toggle("light-mode");
+            themeBtn.innerText = document.body.classList.contains("light-mode") ? "🌙 Dark Mode" : "☀️ Light Mode";
+            closeSidebar(); // Forces menu to close
+        };
+    }
+
+    // --- 4. TAB SWITCHING LOGIC (New!) ---
+    if(tabAbout && tabColors) {
+        tabAbout.onclick = () => {
+            tabAbout.classList.add("active");
+            tabColors.classList.remove("active");
+            contentAbout.classList.remove("hidden");
+            contentColors.classList.add("hidden");
+        };
+
+        tabColors.onclick = () => {
+            tabColors.classList.add("active");
+            tabAbout.classList.remove("active");
+            contentColors.classList.remove("hidden");
+            contentAbout.classList.add("hidden");
+        };
+    }
+
+    // --- 5. COLOR PICKER GENERATOR (New!) ---
+    if(colorGrid && colorGrid.children.length === 0) {
+        const colors = [
+            "#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", 
+            "#ec4899", "#6366f1", "#14b8a6", "#f97316", "#06b6d4",
+            "#84cc16", "#d946ef", "#e11d48", "#ffffff", "#ff00ff"
+        ];
+        
+        colors.forEach(color => {
+            const dot = document.createElement("div");
+            dot.className = "color-dot";
+            dot.style.backgroundColor = color;
+            dot.onclick = () => {
+                document.documentElement.style.setProperty('--accent', color);
+            };
+            colorGrid.appendChild(dot);
         });
     }
+    
+    // --- 6. CLOSE ON OUTSIDE CLICK ---
+    document.addEventListener('click', (e) => {
+        if (sidebar && sidebar.classList.contains('active') && 
+            !sidebar.contains(e.target) && 
+            !menuToggle.contains(e.target)) {
+            closeSidebar();
+        }
+    });
 });

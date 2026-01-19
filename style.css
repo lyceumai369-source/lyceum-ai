@@ -1,7 +1,33 @@
-/* ================= ROOT VARIABLES (Themes) ================= */
-:root { --accent: #ffffff; --bg: #050505; --sidebar-bg: #0a0a0a; --text-main: #ffffff; --text-secondary: #aaaaaa; --panel-bg: rgba(0,0,0,0.55); --input-bg: #121212; --border-color: rgba(255,255,255,0.2); --shadow: rgba(0,0,0,0.5); --user-text: #000000; }
-body.light-mode { --bg: #ffffff; --sidebar-bg: #f0f4f9; --text-main: #1f1f1f; --text-secondary: #444746; --panel-bg: rgba(255,255,255,0.9); --input-bg: #ffffff; --border-color: #e1e3e1; --shadow: rgba(0,0,0,0.1); }
+/* ================= ROOT VARIABLES (With Color Tint) ================= */
+:root {
+  --accent: #ffffff;
+  --bg: #050505;
+  --sidebar-bg: #0a0a0a;
+  --text-main: #ffffff;
+  --text-secondary: #aaaaaa;
+  
+  /* THIS IS THE MAGIC FIX: Mixes 10% of your Accent Color into the Glass */
+  --panel-bg: color-mix(in srgb, var(--accent) 10%, rgba(10, 10, 10, 0.65));
+  
+  --input-bg: #121212;
+  --border-color: rgba(255,255,255,0.2);
+  --shadow: rgba(0,0,0,0.5);
+  --user-text: #000000;
+}
 
+body.light-mode {
+  --bg: #ffffff;
+  --sidebar-bg: #f0f4f9;
+  --text-main: #1f1f1f;
+  --text-secondary: #444746;
+  
+  /* Light Mode Tint */
+  --panel-bg: color-mix(in srgb, var(--accent) 15%, rgba(255, 255, 255, 0.85));
+  
+  --input-bg: #ffffff;
+  --border-color: #e1e3e1;
+  --shadow: rgba(0,0,0,0.1);
+}
 /* ================= BASICS ================= */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 img { max-width: 100%; height: auto; display: block; }
@@ -84,3 +110,4 @@ body.chat-active .bot-name-title {
 body::before { content: ""; position: fixed; inset: 0; background: radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 25%, transparent), transparent 55%), radial-gradient(circle at bottom right, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%); pointer-events: none; z-index: -1; }
 #menu-toggle { display: none; }
 @media (max-width: 768px) { html, body { height: 100%; overflow: hidden; } }
+

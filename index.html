@@ -1,177 +1,159 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
   <title>Lyceum AI v2</title>
 
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="relax.css">
-  <link rel="stylesheet" href="mobile.css" />
+ <link rel="stylesheet" href="relax.css">
+ <link rel="stylesheet" href="mobile.css" />
   <link rel="stylesheet" href="animations.css" />
-
-  <style>
-    /* =========================
-       DESKTOP / LAPTOP VIEW
-       ========================= */
-    @media (min-width: 769px) {
-      body, #app {
-        display: flex !important;
-        flex-direction: row !important;
-        height: 100vh !important;
-        width: 100vw !important;
-        overflow: hidden !important;
-      }
-
-      #sidebar {
-        display: flex !important;
-        flex-direction: column !important;
-        position: relative !important;
-        width: 260px !important;
-        height: 100vh !important;
-        background: #000 !important;
-        border-right: 1px solid #333 !important;
-        overflow-y: auto !important; /* 🔥 FIX */
-      }
-
-      .sidebar-bottom {
-        margin-top: auto !important; /* 🔥 PUSH BUTTONS TO BOTTOM */
-        padding-bottom: 20px;
-      }
-
-      .mobile-nav,
-      #menu-toggle {
-        display: none !important;
-      }
-
-      #main-content {
-        width: calc(100vw - 260px) !important;
-        height: 100vh;
-        overflow: hidden;
-      }
-    }
-
-    /* =========================
-       MOBILE VIEW
-       ========================= */
-    @media (max-width: 768px) {
-      #sidebar {
-        position: fixed !important;
-        left: -100% !important;
-        top: 0;
-        width: 280px !important;
-        height: 100vh !important;
-        background: #111 !important;
-        z-index: 99999 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        transition: left 0.3s ease !important;
-        overflow-y: auto;
-      }
-
-      #sidebar.active {
-        left: 0 !important;
-      }
-
-      #settings-modal {
-        z-index: 1000000 !important;
-      }
-    }
-  </style>
 </head>
 
 <body>
-<div id="app">
+  <div id="app">
 
-  <!-- SIDEBAR -->
-  <aside id="sidebar">
-    <div class="sidebar-top">
-      <button class="new-chat-btn" onclick="location.reload(); closeMobileMenu()">
-        <span>+</span> New Chat
-      </button>
-    </div>
-
-    <div class="sidebar-bottom">
-      <button id="settings-btn" class="secondary-btn" onclick="closeMobileMenu()">⚙️ Settings</button>
-      <button id="theme-toggle-btn" class="secondary-btn" onclick="closeMobileMenu()">☀️ Light Mode</button>
-      <button id="relaxBtn" class="relax-btn" onclick="closeMobileMenu()">🌿 Relax</button>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <div id="main-content">
-
-    <header class="mobile-nav">
-      <button id="menu-toggle" onclick="toggleSidebar()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </button>
-    </header>
-
-    <section id="hero-section">
-      <div class="cube-wrapper">
-        <div class="cube">
-          <div class="face front"><img src="logo.png"></div>
-          <div class="face back"><img src="logo.png"></div>
-          <div class="face right"><img src="logo.png"></div>
-          <div class="face left"><img src="logo.png"></div>
-          <div class="face top"><img src="logo.png"></div>
-          <div class="face bottom"><img src="logo.png"></div>
-        </div>
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+      <div class="sidebar-top">
+        <button type="button" class="new-chat-btn" onclick="location.reload()">
+          <span>+</span> New Chat
+        </button>
       </div>
-      <h1 class="bot-name-title">LYCEUM AI</h1>
-    </section>
 
-    <main id="chat-container">
-      <div id="chat-messages"></div>
-      <div id="wiki-loading" class="hidden">🔍 Searching Wikipedia...</div>
-      <div id="typing-indicator" class="hidden"><span></span><span></span><span></span></div>
-    </main>
+      <div class="sidebar-bottom">
+        <button type="button" id="settings-btn" class="secondary-btn">
+          ⚙️ Settings
+        </button>
+        <button type="button" id="theme-toggle-btn" class="secondary-btn">
+          ☀️ Light Mode
+        </button>
+      <button id="relaxBtn" class="relax-btn">🌿 Relax</button>
 
-    <footer id="input-area">
-      <input id="user-input" placeholder="Type to Lyceum..." />
-      <button id="mic-btn">🎤</button>
-      <button id="send-btn">➤</button>
-    </footer>
+      </div>
+    </aside>
 
+    <!-- MAIN CONTENT -->
+    <div id="main-content">
+
+      <!-- MOBILE NAV -->
+      <header class="mobile-nav">
+        <button type="button" id="menu-toggle" aria-label="Menu">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </button>      
+      </header>
+
+      <!-- HERO -->
+      <section id="hero-section">
+        <div class="cube-wrapper">
+          <div class="cube">
+            <div class="face front"><img src="logo.png" alt="Lyceum AI logo"></div>
+            <div class="face back"><img src="logo.png" alt="Lyceum AI logo"></div>
+            <div class="face right"><img src="logo.png" alt="Lyceum AI logo"></div>
+            <div class="face left"><img src="logo.png" alt="Lyceum AI logo"></div>
+            <div class="face top"><img src="logo.png" alt="Lyceum AI logo"></div>
+            <div class="face bottom"><img src="logo.png" alt="Lyceum AI logo"></div>
+          </div>
+        </div>
+
+        <h1 class="bot-name-title">LYCEUM AI</h1>
+      </section>
+
+      <!-- CHAT -->
+      <main id="chat-container">
+        <div id="chat-messages"></div>
+<div id="wiki-loading" class="hidden">
+    🔍 Searching Wikipedia...
   </div>
-</div>
+        <div id="typing-indicator" class="hidden">
+          <span></span><span></span><span></span>
+        </div>
+      </main>
 
-<!-- SETTINGS MODAL -->
-<div id="settings-modal" class="modal hidden">
-  <div class="modal-content">
-    <div class="modal-tabs">
-      <button class="tab-btn active">About</button>
-      <button class="tab-btn">Themes</button>
+      <!-- INPUT -->
+      <footer id="input-area">
+        <div class="input-wrapper">
+          <div class="footer-input">
+            <input
+              type="text"
+              id="user-input"
+              placeholder="Type to Lyceum..."
+              autocomplete="off"
+            />
+
+            <button type="button" id="mic-btn" class="icon-btn">🎤</button>
+
+            <button type="button" id="send-btn">
+              <svg viewBox="0 0 24 24">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </footer>
+
     </div>
-    <img src="logo.png" class="modal-logo">
-    <h2>Lyceum AI v2</h2>
-    <p><strong>Developer:</strong> Ananthu Shaji</p>
-    <button id="close-settings">Done</button>
   </div>
-</div>
 
-<script>
-  function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
-  }
+  <!-- SETTINGS MODAL (MOVED OUT – VERY IMPORTANT) -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-content">
 
-  function closeMobileMenu() {
-    if (window.innerWidth <= 768) {
-      document.getElementById("sidebar").classList.remove("active");
-    }
-  }
+      <div class="modal-tabs">
+        <button type="button" id="tab-about" class="tab-btn active">About</button>
+        <button type="button" id="tab-colors" class="tab-btn">Themes</button>
+      </div>
 
-  const themeBtn = document.getElementById("theme-toggle-btn");
-  themeBtn.onclick = () => {
-    document.body.classList.toggle("light-mode");
-    themeBtn.innerText = document.body.classList.contains("light-mode")
-      ? "🌙 Dark Mode"
-      : "☀️ Light Mode";
-  };
-</script>
+      <div id="content-about" class="tab-content">
+        <img src="logo.png" alt="Lyceum AI Logo" class="modal-logo">
+        <h2>Lyceum AI v2</h2>
+        <p><strong>Developer:</strong> Ananthu Shaji</p>
+        <p>Private architecture for visionaries.</p>
+      </div>
 
-</body>
-</html>
+      <div id="content-colors" class="tab-content hidden">
+        <h3>Select Accent Color</h3>
+        <div id="color-grid" class="color-grid"></div>
+      </div>
+
+      <button type="button" id="close-settings" class="close-btn">Done</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+ <script src="wikiEngine.js"></script>
+  <script src="brain.js" defer></script>
+  <script src="ui.js" defer></script>
+  <script src="fallback.js" defer></script>
+  <script src="main.js" defer></script>
+  <script src="relax.js" defer></script>
+
+  <script>
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      
+      if (document.body.classList.contains('light-mode')) {
+        themeBtn.innerText = "🌙 Dark Mode";
+      } else {
+        themeBtn.innerText = "☀️ Light Mode";
+      }
+    });
+  </script>
+
+</body> </html>
+
+
+
+
+
+
+
+

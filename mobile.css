@@ -19,7 +19,7 @@
     display: flex; align-items: center; gap: 15px; 
     padding: 12px; height: 60px; 
     /* SUPER HIGH Z-INDEX SO IT IS CLICKABLE */
-    z-index: 999999 !important; 
+    z-index: 2147483647 !important; 
     position: relative;
   }
 
@@ -38,10 +38,10 @@
     margin: 4px 0; display: block;
   }
 
-  /* === FIXED SIDEBAR === */
+  /* === FIXED SIDEBAR (THE FIX) === */
   #sidebar {
     position: fixed; 
-    left: -100%; 
+    left: -100% !important; /* Forces it to start hidden */
     top: 0;
     height: 100dvh; 
     width: 280px; 
@@ -51,7 +51,7 @@
     justify-content: flex-start;
     gap: 15px;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000000 !important; /* Higher than everything */
+    z-index: 2147483646 !important; /* Just below the button */
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
     padding: 20px;
     padding-bottom: 150px !important; 
@@ -59,7 +59,11 @@
   }
 
   .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
-  #sidebar.active { left: 0; }
+
+  /* !!! CRITICAL FIX: Forces Sidebar to Open !!! */
+  #sidebar.active { 
+    left: 0 !important; 
+  }
 
   /* === HERO SECTION (DEFAULT) === */
   #hero-section {
@@ -71,12 +75,13 @@
   .cube-wrapper { transform: scale(0.6); margin: 0 auto; }
 
   /* === CHAT ACTIVE ANIMATION (FIXED) === */
+  
   /* 1. Show the Name! */
   body.chat-active #hero-section .bot-name-title { 
     display: block !important; 
-    font-size: 1.2rem; /* Make it visible but smaller */
+    font-size: 1.1rem; 
     margin: 0;
-    margin-right: 15px;
+    margin-right: 12px;
   }
   
   /* 2. Move to RIGHT (Flex End) */
@@ -92,7 +97,7 @@
   body.chat-active .cube-wrapper { 
     transform: scale(0.35); 
     margin: 0; 
-    order: 2; /* Ensures Logo is on the far right if needed */
+    order: 2; /* Ensures Logo is on the far right */
   }
 
   /* === CHAT & INPUT === */
@@ -123,6 +128,7 @@
     box-shadow: 0 5px 20px var(--shadow);
   }
 }
+
 /* ================= MOBILE FOOTER & ANIMATION FIX ================= */
 
 /* 1. Watermark Styling */
@@ -150,40 +156,24 @@
     color: var(--accent);
   }
 
-  .footer-logo img {
-    width: 14px; height: 14px;
-    animation: spinFooter 4s linear infinite;
+  /* 2. 3D CUBE ANIMATION FOR FOOTER LOGO */
+  .footer-logo {
+    perspective: 100px; /* Gives it depth */
   }
-  @keyframes spinFooter { to { transform: rotate(360deg); } }
+
+  .footer-logo img {
+    width: 16px; 
+    height: 16px;
+    /* This makes it tumble like a 3D cube */
+    animation: tumbleCube 3s infinite linear; 
+    transform-style: preserve-3d;
+  }
+
+  @keyframes tumbleCube { 
+    0% { transform: rotateX(0) rotateY(0); }
+    100% { transform: rotateX(360deg) rotateY(360deg); }
+  }
 
   /* Move input up slightly so it doesn't cover footer */
   body.chat-active #input-area { bottom: 35px; }
-
-
-  /* 2. FIX: KEEP NAME VISIBLE & MOVE RIGHT */
-  
-  /* Force Name to Appear */
-  body.chat-active #hero-section .bot-name-title { 
-    display: block !important; 
-    font-size: 1.1rem; 
-    margin: 0;
-    margin-right: 12px;
-  }
-
-  /* Move container to the RIGHT */
-  body.chat-active #hero-section {
-    height: 60px !important;
-    display: flex; 
-    flex-direction: row; 
-    align-items: center; 
-    justify-content: flex-end !important; /* Right side */
-    padding-right: 20px;
-  }
-
-  /* Shrink Cube */
-  body.chat-active .cube-wrapper { 
-    transform: scale(0.35); 
-    margin: 0; 
-    order: 2; /* Logo stays on the far right */
-  }
 }

@@ -1,4 +1,4 @@
-/* =========================================================
+ /* =========================================================
    UI MANAGER (v7.0 - Animation Trigger & Mobile Fix)
    ========================================================= */
 
@@ -167,7 +167,17 @@ document.addEventListener("DOMContentLoaded", () => {
             closeSidebar();
         };
     }
-
+   
+    const relaxBtn = document.getElementById("relaxBtn");
+    if (relaxBtn) {
+        relaxBtn.onclick = () => {
+            // This forces the menu to close when you click Relax
+            if (sidebar.classList.contains("active")) {
+                sidebar.classList.remove("active");
+            }
+        };
+    }
+    // ======================
     // --- TABS ---
     if(tabAbout && tabColors) {
         tabAbout.onclick = () => {
@@ -205,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-/* === PASTE AT THE VERY BOTTOM OF UI.JS === */
+
 // Force Mobile Menu Fix
 window.onload = function() {
     const btn = document.getElementById("menu-toggle");
@@ -219,3 +229,4 @@ window.onload = function() {
         }
     }
 };
+

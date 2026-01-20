@@ -40,24 +40,33 @@
   }
 
   /* === FIXED SIDEBAR (THE FIX) === */
-  #sidebar {
-    position: fixed; 
-    left: -100% !important; /* Forces it to start hidden */
-    top: 0;
-    height: 100dvh; 
-    width: 280px; 
-    background-color: var(--sidebar-bg); 
-    display: flex !important;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 15px;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 2147483646 !important; /* Just below the button */
-    box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-    padding: 20px;
-    padding-bottom: 150px !important; 
-    overflow-y: auto; 
-  }
+ /* === FIXED SIDEBAR (THE FIX) === */
+#sidebar {
+  position: fixed; 
+  left: -280px !important; /* Start exactly off-screen to the left */
+  top: 0;
+  height: 100dvh; 
+  width: 280px; 
+  background: #1a1a1a !important; /* Force a solid color to test */
+  display: flex !important;
+  flex-direction: column;
+  transition: left 0.3s ease-in-out;
+  z-index: 999999 !important; /* High, but below the max */
+  box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+  padding: 20px;
+  visibility: hidden; /* Hide from screen readers when closed */
+}
+
+/* !!! CRITICAL FIX: Forces Sidebar to Open and be Visible !!! */
+#sidebar.active { 
+  left: 0 !important; 
+  visibility: visible !important;
+}
+
+/* Ensure the text inside is actually visible */
+#sidebar * {
+  color: white !important; 
+}
 
   .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
 
@@ -178,3 +187,4 @@
   /* Move input up slightly so it doesn't cover footer */
   body.chat-active #input-area { bottom: 35px; }
 }
+

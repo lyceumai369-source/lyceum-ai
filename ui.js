@@ -1,5 +1,5 @@
- /* =========================================================
-   UI MANAGER (v7.0 - Animation Trigger & Mobile Fix)
+/* =========================================================
+   UI MANAGER (v7.1 - Cleaned & Fixed)
    ========================================================= */
 
 // 1. INJECT LOADER STYLES
@@ -21,8 +21,6 @@ const UI = {
   typingInd: document.getElementById('typing-indicator'),
 
   renderMessage(text, type, time = "") {
-    // --- FIX 1: TRIGGER THE ANIMATION ---
-    // This tells CSS: "The chat has started! Move the logo!"
     if (!document.body.classList.contains('chat-active')) {
         document.body.classList.add('chat-active');
     }
@@ -111,90 +109,88 @@ const UI = {
 };
 
 /* =========================================================
-   EVENT MANAGERS (Mobile Fix & Settings)
+   EVENT MANAGERS (Unified Logic)
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
-    // --- ELEMENTS ---
+    
+    // --- 1. DEFINE ELEMENTS ---
     const sidebar = document.getElementById("sidebar");
     const menuToggle = document.getElementById("menu-toggle");
     const settingsBtn = document.getElementById("settings-btn");
     const themeBtn = document.getElementById("theme-toggle-btn");
     const closeSettings = document.getElementById("close-settings");
     const settingsModal = document.getElementById("settings-modal");
-    
-    // Tabs
+    const relaxBtn = document.getElementById("relaxBtn");
+
+    // --- 2. MOBILE MENU CLICK LISTENER (FIXED) ---
+    if (menuToggle && sidebar) {
+        // We use addEventListener so nothing overrides it
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop click from passing through
+            sidebar.classList.toggle("active");
+            console.log("Menu clicked via Listener");
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (sidebar.classList.contains('active') && 
+                !sidebar.contains(e.target) && 
+                !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+    }
+
+    // --- 3. SETTINGS & BUTTONS ---
+    const closeSidebar = () => sidebar?.classList.remove("active");
+
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            if(settingsModal) settingsModal.classList.remove("hidden");
+            closeSidebar();
+        });
+    }
+
+    if (closeSettings) {
+        closeSettings.addEventListener('click', () => {
+            if(settingsModal) settingsModal.classList.add("hidden");
+        });
+    }
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle("light-mode");
+            themeBtn.innerText = document.body.classList.contains("light-mode") ? "🌙 Dark Mode" : "☀️ Light Mode";
+            closeSidebar();
+        });
+    }
+
+    if (relaxBtn) {
+        relaxBtn.addEventListener('click', closeSidebar);
+    }
+
+    // --- 4. TABS LOGIC ---
     const tabAbout = document.getElementById("tab-about");
     const tabColors = document.getElementById("tab-colors");
     const contentAbout = document.getElementById("content-about");
     const contentColors = document.getElementById("content-colors");
     const colorGrid = document.getElementById("color-grid");
 
-    // --- HELPER: Close Sidebar ---
-    const closeSidebar = () => {
-        if (sidebar && sidebar.classList.contains("active")) {
-            sidebar.classList.remove("active");
-        }
-    };
-
-    // --- FIX 2: ROBUST MOBILE MENU ---
-    // We use .onclick = ... to ensure no duplicate listeners and hard binding
-    if (menuToggle) {
-        menuToggle.onclick = function(e) {
-            e.preventDefault(); 
-            e.stopPropagation(); // Prevents other clicks from interfering
-            sidebar.classList.toggle("active");
-        };
-    }
-
-    // --- SETTINGS ---
-    if (settingsBtn) {
-        settingsBtn.onclick = () => {
-            if(settingsModal) settingsModal.classList.remove("hidden");
-            closeSidebar();
-        };
-    }
-    if (closeSettings) {
-        closeSettings.onclick = () => {
-            if(settingsModal) settingsModal.classList.add("hidden");
-        };
-    }
-
-    // --- THEME ---
-    if (themeBtn) {
-        themeBtn.onclick = () => {
-            document.body.classList.toggle("light-mode");
-            themeBtn.innerText = document.body.classList.contains("light-mode") ? "🌙 Dark Mode" : "☀️ Light Mode";
-            closeSidebar();
-        };
-    }
-   
-    const relaxBtn = document.getElementById("relaxBtn");
-    if (relaxBtn) {
-        relaxBtn.onclick = () => {
-            // This forces the menu to close when you click Relax
-            if (sidebar.classList.contains("active")) {
-                sidebar.classList.remove("active");
-            }
-        };
-    }
-    // ======================
-    // --- TABS ---
     if(tabAbout && tabColors) {
-        tabAbout.onclick = () => {
+        tabAbout.addEventListener('click', () => {
             tabAbout.classList.add("active");
             tabColors.classList.remove("active");
             contentAbout.classList.remove("hidden");
             contentColors.classList.add("hidden");
-        };
-        tabColors.onclick = () => {
+        });
+        tabColors.addEventListener('click', () => {
             tabColors.classList.add("active");
             tabAbout.classList.remove("active");
             contentColors.classList.remove("hidden");
             contentAbout.classList.add("hidden");
-        };
+        });
     }
 
-    // --- COLORS ---
     if(colorGrid && colorGrid.children.length === 0) {
         const colors = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#6366f1", "#14b8a6", "#f97316", "#06b6d4"];
         colors.forEach(color => {
@@ -205,28 +201,4 @@ document.addEventListener("DOMContentLoaded", () => {
             colorGrid.appendChild(dot);
         });
     }
-
-    // --- CLOSE ON OUTSIDE CLICK ---
-    document.addEventListener('click', (e) => {
-        if (sidebar && sidebar.classList.contains('active') && 
-            !sidebar.contains(e.target) && 
-            !menuToggle.contains(e.target)) {
-            closeSidebar();
-        }
-    });
 });
-
-// Force Mobile Menu Fix
-window.onload = function() {
-    const btn = document.getElementById("menu-toggle");
-    const bar = document.getElementById("sidebar");
-    if(btn && bar) {
-        console.log("Mobile Menu Hooked!");
-        btn.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation(); // Stop anything else from blocking it
-            bar.classList.toggle("active");
-        }
-    }
-};
-

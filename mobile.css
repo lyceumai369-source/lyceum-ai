@@ -1,8 +1,6 @@
 /* ================= MOBILE FINAL – REAL FIX ================= */
 @media (max-width: 768px) {
 
-@media (max-width: 768px) {
-
   /* ===== CHAT LAYOUT STATES ===== */
   #main-content {
     display: flex;
@@ -109,4 +107,5 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
 

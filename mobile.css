@@ -1,48 +1,51 @@
 /* ================= MOBILE FINAL – REAL FIX ================= */
-@media (max-width: 768px) {
+/* ================= CORE CHAT LAYOUT (STABLE) ================= */
 
-  /* ===== MAIN STRUCTURE ===== */
-  #main-content {
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-  }
+#main-content {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
-  /* ===== HERO (LOGO + NAME) ===== */
-  #hero-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
+/* CHAT AREA */
+#chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 110px; /* space for input */
+}
 
-  /* After first message */
-  body.chat-active #hero-section {
-    flex: 0;
-    align-items: flex-start;
-    padding: 16px;
-  }
+/* INPUT – NEVER MOVES */
+#input-area {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #0d0d0d;
+  z-index: 1000;
+}
 
-  /* ===== CHAT AREA ===== */
-  #chat-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    padding-bottom: 100px; /* space for input */
-  }
+/* ================= HERO OVERLAY ================= */
 
-  /* ===== INPUT (ALWAYS BOTTOM) ===== */
-  #input-area {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #0d0d0d;
-    z-index: 1000;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+#hero-section {
+  position: absolute;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* AFTER FIRST MESSAGE */
+body.chat-active #hero-section {
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
 }
 
   /* ===== MODERN HAMBURGER (ICON STYLE) ===== */
@@ -118,6 +121,7 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
 
 
 

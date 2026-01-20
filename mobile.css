@@ -1,6 +1,4 @@
 /* ================= MOBILE FINAL – REAL FIX ================= */
-/* ================= CORE CHAT LAYOUT (STABLE) ================= */
-
 #main-content {
   position: relative;
   height: 100vh;
@@ -171,6 +169,32 @@ body.chat-active #hero-section {
   .cube-wrapper {
     width: 50px;
     height: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #main-content {
+    height: 100dvh;
+  }
+
+  #chat-container {
+    overflow-y: auto;
+    padding-bottom: 100px; /* IMPORTANT for keyboard */
+  }
+
+  #input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #050505;
+    z-index: 999;
   }
 }
 

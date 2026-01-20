@@ -1,11 +1,9 @@
+
 document.addEventListener("DOMContentLoaded", () => {
 
   let score = 0;
   let rewarded = new Set();
   let leafInterval = null;
-
-  // --- ELEMENTS TO MANAGE ---
-  const menuToggle = document.getElementById("menu-toggle");
 
   const rewards = {
     50: {
@@ -38,11 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===== CREATE OVERLAY ===== */
   const overlay = document.createElement("div");
   overlay.id = "relaxOverlay";
-  
-  // FIX: Set Z-Index to the MAXIMUM safe browser limit (2147483647)
-  // This ensures it is on top of everything else without breaking.
-  overlay.style.zIndex = "2147483647"; 
-  
   overlay.innerHTML = `
     <button id="exitRelax" class="exit-btn">✖</button>
 
@@ -51,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <p id="cert-notice" style="color: #d4af37; font-size: 0.8rem; margin-bottom: 10px;">🏆 Reach 500 points for a Premium Certificate</p>
       <button class="games-btn" id="leafBtn">🍃 Leaf Fall</button>
       <button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
+      <button class="games-btn" id="gamesBtn" style="display:none;">🎮 Games</button>
     </div>
 
     <div id="scoreBoard" class="score-only">Score: 0</div>
@@ -76,10 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.appendChild(overlay);
 
   /* ===== INITIAL SETUP ===== */
-  const btnLeaf = document.getElementById("leafBtn");
-  const btnSnake = document.getElementById("snakeBtn");
-  if(btnLeaf) btnLeaf.style.display = "inline-block";
-  if(btnSnake) btnSnake.style.display = "inline-block";
+  document.getElementById("snakeBtn").style.display = "none";
+  document.getElementById("leafBtn").style.display = "inline-block";
 
   /* ===== LEAF LAYER ===== */
   const leafLayer = document.createElement("div");
@@ -89,24 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===== OPEN RELAX ===== */
   const relaxBtn = document.getElementById("relaxBtn");
   if (relaxBtn) {
-    relaxBtn.addEventListener("click", (e) => {
-      // Prevent any other clicks
-      e.preventDefault();
-      e.stopPropagation();
-
-      // 1. Show Game Overlay
+    relaxBtn.addEventListener("click", () => {
       overlay.style.display = "flex";
       document.getElementById("relaxText").style.display = "block";
       document.getElementById("cert-notice").style.display = "block";
-      if(btnLeaf) btnLeaf.style.display = "inline-block";
-      if(btnSnake) btnSnake.style.display = "inline-block";
+      document.getElementById("leafBtn").style.display = "inline-block";
+      document.getElementById("snakeBtn").style.display = "inline-block";
       document.getElementById("scoreBoard").style.display = "none";
-      
-      // 2. Hide Mobile Menu Button (if it is visible)
-      // We check if it is actually visible to avoid issues on Desktop
-      if(menuToggle && window.getComputedStyle(menuToggle).display !== 'none') {
-          menuToggle.style.visibility = "hidden"; // Use visibility so layout doesn't jump
-      }
     });
   }
 
@@ -123,32 +104,23 @@ document.addEventListener("DOMContentLoaded", () => {
     stopGame();
     document.getElementById("exitConfirm").style.display = "none";
     overlay.style.display = "none";
-
-    // RESTORE Mobile Menu Button
-    if(menuToggle) {
-        menuToggle.style.visibility = "visible";
-    }
   };
 
   /* ===== BUTTON ACTIONS ===== */
-  if(btnLeaf) {
-      btnLeaf.onclick = () => {
-        document.getElementById("relaxText").style.display = "none";
-        document.getElementById("cert-notice").style.display = "none";
-        btnLeaf.style.display = "none";
-        btnSnake.style.display = "none";
-        document.getElementById("scoreBoard").style.display = "block";
+  document.getElementById("leafBtn").onclick = () => {
+    document.getElementById("relaxText").style.display = "none";
+    document.getElementById("cert-notice").style.display = "none";
+    document.getElementById("leafBtn").style.display = "none";
+    document.getElementById("snakeBtn").style.display = "none";
+    document.getElementById("scoreBoard").style.display = "block";
 
-        if (!leafInterval) spawnLeaves();
-      };
-  }
+    if (!leafInterval) spawnLeaves();
+  };
 
-  if(btnSnake) {
-      btnSnake.onclick = () => {
-        overlay.style.display = "none"; 
-        window.location.href = "./snake-game/";
-      };
-  }
+  document.getElementById("snakeBtn").onclick = () => {
+    overlay.style.display = "none"; 
+    window.location.href = "./snake-game/";
+  };
 
   /* ===== LEAF GAME ENGINE ===== */
   function spawnLeaves() {
@@ -197,8 +169,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (value === 500) {
         stopGame();
+        // ASKING FOR USER NAME FOR THE CERTIFICATE
         let userName = prompt("Please enter your name for the certificate:");
-        if (!userName) userName = "Valued User"; 
+        if (!userName) userName = "Valued User"; // Fallback name
+
+        // Redirect with name as a URL parameter
         window.location.href = `certificate.html?name=${encodeURIComponent(userName)}`;
       }
     };
@@ -215,8 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     rewarded.clear();
     document.getElementById("scoreBoard").textContent = "Score: 0";
     document.getElementById("relaxText").style.display = "block";
-    
-    if(btnLeaf) btnLeaf.style.display = "inline-block";
-    if(btnSnake) btnSnake.style.display = "inline-block";
+    document.getElementById("leafBtn").style.display = "inline-block";
+    document.getElementById("snakeBtn").style.display = "none";
   }
 });

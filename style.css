@@ -35,7 +35,19 @@ body { background-color: var(--bg); color: var(--text-main); font-family: Inter,
 #app { display: flex; width: 100vw; height: 100vh; }
 
 /* ================= SIDEBAR ================= */
-#sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; padding: 20px; flex-shrink: 0; color: var(--text-main); overflow-y: auto; max-height: 100vh; }
+#sidebar { 
+  width: 260px; 
+  background: var(--sidebar-bg); 
+  border-right: 1px solid var(--border-color); 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  padding: 20px; 
+  flex-shrink: 0; 
+  color: var(--text-main); 
+  overflow-y: auto; 
+  height: 100vh; /* Changed from max-height to height */
+}
 .sidebar-bottom { display: flex; flex-direction: column; gap: 10px; }
 .new-chat-btn, .secondary-btn, .relax-btn { width: 100%; background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; font-weight: 600; }
 
@@ -110,4 +122,5 @@ body.chat-active .bot-name-title {
 body::before { content: ""; position: fixed; inset: 0; background: radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 25%, transparent), transparent 55%), radial-gradient(circle at bottom right, color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%); pointer-events: none; z-index: -1; }
 #menu-toggle { display: none; }
 @media (max-width: 768px) { html, body { height: 100%; overflow: hidden; } }
+
 

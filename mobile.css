@@ -1,7 +1,7 @@
 /* ================= MOBILE FINAL – REAL FIX ================= */
 @media (max-width: 768px) {
 
-  /* ===== BASE LAYOUT ===== */
+  /* ===== MAIN STRUCTURE ===== */
   #main-content {
     min-height: 100svh;
     display: flex;
@@ -10,52 +10,40 @@
 
   /* ===== HERO (LOGO + NAME) ===== */
   #hero-section {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 40vh;
-    transition: all 0.35s ease;
+    transition: all 0.3s ease;
   }
 
-  /* AFTER FIRST MESSAGE → MOVE LOGO LEFT */
+  /* After first message */
   body.chat-active #hero-section {
-    height: auto;
+    flex: 0;
     align-items: flex-start;
     padding: 16px;
   }
 
-  /* ===== CHAT CONTAINER ===== */
+  /* ===== CHAT AREA ===== */
   #chat-container {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
-    padding-bottom: 140px; /* space for input */
+    padding-bottom: 100px; /* space for input */
   }
 
-  /* ===== INPUT BAR (KEY PART) ===== */
+  /* ===== INPUT (ALWAYS BOTTOM) ===== */
   #input-area {
     position: fixed;
+    bottom: 0;
     left: 0;
     width: 100%;
-    transition: transform 0.35s ease;
     background: #0d0d0d;
     z-index: 1000;
-  }
-
-  /* BEFORE FIRST MESSAGE → INPUT IN CENTER */
-  body:not(.chat-active) #input-area {
-    bottom: 50%;
-    transform: translateY(50%);
-  }
-
-  /* AFTER FIRST MESSAGE → INPUT AT BOTTOM */
-  body.chat-active #input-area {
-    bottom: 0;
-    transform: translateY(0);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
-
 
   /* ===== MODERN HAMBURGER (ICON STYLE) ===== */
   .mobile-nav {
@@ -130,6 +118,7 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
 
 
 

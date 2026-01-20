@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let leafInterval = null;
 
   // --- ELEMENTS TO MANAGE ---
-  // We need to hide the mobile menu button while playing so it doesn't get in the way
   const menuToggle = document.getElementById("menu-toggle");
 
   const rewards = {
@@ -39,8 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===== CREATE OVERLAY ===== */
   const overlay = document.createElement("div");
   overlay.id = "relaxOverlay";
-  // FIX: Ensure this is on top of the Mobile Menu (Z-Index > 2147483647)
-  overlay.style.zIndex = "2147483648"; 
+  
+  // FIX: Set Z-Index to the MAXIMUM safe browser limit (2147483647)
+  // This ensures it is on top of everything else without breaking.
+  overlay.style.zIndex = "2147483647"; 
+  
   overlay.innerHTML = `
     <button id="exitRelax" class="exit-btn">✖</button>
 
@@ -74,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.appendChild(overlay);
 
   /* ===== INITIAL SETUP ===== */
-  // Ensure correct initial state
   const btnLeaf = document.getElementById("leafBtn");
   const btnSnake = document.getElementById("snakeBtn");
   if(btnLeaf) btnLeaf.style.display = "inline-block";
@@ -88,7 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===== OPEN RELAX ===== */
   const relaxBtn = document.getElementById("relaxBtn");
   if (relaxBtn) {
-    relaxBtn.addEventListener("click", () => {
+    relaxBtn.addEventListener("click", (e) => {
+      // Prevent any other clicks
+      e.preventDefault();
+      e.stopPropagation();
+
       // 1. Show Game Overlay
       overlay.style.display = "flex";
       document.getElementById("relaxText").style.display = "block";
@@ -97,8 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if(btnSnake) btnSnake.style.display = "inline-block";
       document.getElementById("scoreBoard").style.display = "none";
       
-      // 2. Hide Mobile Menu Button (Clean Look)
-      if(menuToggle) menuToggle.style.display = "none";
+      // 2. Hide Mobile Menu Button (if it is visible)
+      // We check if it is actually visible to avoid issues on Desktop
+      if(menuToggle && window.getComputedStyle(menuToggle).display !== 'none') {
+          menuToggle.style.visibility = "hidden"; // Use visibility so layout doesn't jump
+      }
     });
   }
 
@@ -117,7 +125,9 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.style.display = "none";
 
     // RESTORE Mobile Menu Button
-    if(menuToggle) menuToggle.style.display = "block";
+    if(menuToggle) {
+        menuToggle.style.visibility = "visible";
+    }
   };
 
   /* ===== BUTTON ACTIONS ===== */
@@ -187,11 +197,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (value === 500) {
         stopGame();
-        // ASKING FOR USER NAME FOR THE CERTIFICATE
         let userName = prompt("Please enter your name for the certificate:");
-        if (!userName) userName = "Valued User"; // Fallback name
-
-        // Redirect with name as a URL parameter
+        if (!userName) userName = "Valued User"; 
         window.location.href = `certificate.html?name=${encodeURIComponent(userName)}`;
       }
     };
@@ -210,4 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("relaxText").style.display = "block";
     
     if(btnLeaf) btnLeaf.style.display = "inline-block";
-    // We keep snake button hidden in game
+    if(btnSnake) btnSnake.style.display = "inline-block";
+  }
+});

@@ -70,9 +70,34 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  body.chat-active #hero-section {
-    display: none;
-  }
+ /* ===== HERO MOVE TO TOP-LEFT ON MOBILE (AFTER FIRST MESSAGE) ===== */
+body.chat-active #hero-section {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  height: 56px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  z-index: 1200;
+  background: transparent;
+  margin: 0;
+  padding-left: 56px; /* space for hamburger */
+}
+
+/* shrink rotating cube */
+body.chat-active .cube-wrapper {
+  transform: scale(0.4);
+}
+
+/* shrink bot name */
+body.chat-active .bot-name-title {
+  font-size: 1rem;
+  letter-spacing: 1.5px;
+  margin: 0;
+}
 
   /* ===== CHAT SCROLL AREA ===== */
   #chat-container {
@@ -117,3 +142,4 @@
     display: none;
   }
 }
+

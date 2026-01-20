@@ -1,14 +1,11 @@
+
 /* ================= MOBILE BASE RESET ================= */
 @media (max-width: 768px) {
 
   html, body {
-    height: 100%;
+    height: 100dvh; 
     margin: 0;
-  }
-
-  body {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   #app { height: 100dvh; display: flex; flex-direction: column; }
@@ -45,8 +42,7 @@
   /* === FIXED SIDEBAR (THE FIX) === */
   #sidebar {
     position: fixed; 
-    /* START HIDDEN OFF-SCREEN */
-    left: -100% !important; 
+    left: -100% !important; /* Forces it to start hidden */
     top: 0;
     height: 100dvh; 
     width: 280px; 
@@ -55,17 +51,15 @@
     flex-direction: column;
     justify-content: flex-start;
     gap: 15px;
-    
-    /* ANIMATION SETTINGS */
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    
-    /* STYLING */
     z-index: 2147483646 !important; /* Just below the button */
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
     padding: 20px;
     padding-bottom: 150px !important; 
     overflow-y: auto; 
   }
+
+  .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
 
   /* !!! CRITICAL FIX: Forces Sidebar to Open !!! */
   #sidebar.active { 
@@ -119,7 +113,7 @@
     top: 50%; bottom: auto; left: 20px; right: 20px;
     transform: translateY(-50%);
     background: transparent; padding: 0; z-index: 9999;
-    display: flex; justify-content: center; pointer-events: auto;
+    display: flex; justify-content: center; pointer-events: none;
     transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 

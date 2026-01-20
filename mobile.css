@@ -121,6 +121,58 @@ body.chat-active #hero-section {
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+/* ================= MOBILE OPTIMIZATIONS ================= */
+@media (max-width: 768px) {
+  #app {
+    flex-direction: column; /* Stack sidebar and content vertically if needed */
+  }
+
+  /* 1. Hide the sidebar by default on mobile or make it an overlay */
+  #sidebar {
+    position: fixed;
+    left: -260px; /* Hide it off-screen */
+    z-index: 10002;
+    transition: left 0.3s ease;
+    height: 100%;
+  }
+
+  /* 2. Show sidebar when a 'menu-open' class is added (you'll need a toggle button) */
+  body.menu-open #sidebar {
+    left: 0;
+  }
+
+  /* 3. Fix the Input Area - It's currently covering too much space */
+  #input-area {
+    padding: 10px 5%; /* Reduce padding on mobile */
+  }
+
+  .input-wrapper {
+    padding: 4px 8px;
+  }
+
+  /* 4. Fix the Chat Container - Adjust padding and top position */
+  #chat-container {
+    top: 70px; /* Adjust based on your header height */
+    padding: 15px 5%;
+    bottom: 70px; /* Leave room for the smaller input */
+  }
+
+  .message {
+    max-width: 90%; /* Let messages take more width on small screens */
+    font-size: 14px;
+  }
+
+  /* 5. Fix the Hero/Logo Section */
+  .bot-name-title {
+    font-size: 1.8rem; /* Smaller text for mobile */
+    letter-spacing: 3px;
+  }
+
+  .cube-wrapper {
+    width: 50px;
+    height: 50px;
+  }
+}
 
 
 

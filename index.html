@@ -38,7 +38,7 @@
     <div id="main-content">
 
       <header class="mobile-nav">
-        <button type="button" id="menu-toggle" aria-label="Menu">
+        <button type="button" id="menu-toggle" aria-label="Menu" onclick="forceMenuOpen()">
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
@@ -132,6 +132,27 @@
     </div>
     <span>Powered by <strong>Lyceum Intelligence</strong></span>
   </div>
+
+  <script>
+    function forceMenuOpen() {
+      // 1. Get the sidebar
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('relaxOverlay');
+      
+      // 2. Toggle the Active Class
+      if (sidebar) {
+        sidebar.classList.toggle('active');
+        console.log("Hamburger Clicked: Sidebar class is now " + sidebar.className);
+      } else {
+        console.error("Error: Sidebar not found in DOM");
+      }
+
+      // 3. Ensure Relax overlay is closed if it's open
+      if (overlay && overlay.style.display === 'flex') {
+          overlay.style.display = 'none';
+      }
+    }
+  </script>
+
 </body> 
 </html>
-

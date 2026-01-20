@@ -1,52 +1,30 @@
-/* ================= MOBILE FINAL – REAL FIX ================= */
-#main-content {
-  position: relative;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+/* ================= MOBILE CHATGPT-STYLE LAYOUT ================= */
+@media (max-width: 768px) {
 
-/* CHAT AREA */
-#chat-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  padding-bottom: 110px; /* space for input */
-}
+  /* ===== BASE RESET ===== */
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
 
-/* INPUT – NEVER MOVES */
-#input-area {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #0d0d0d;
-  z-index: 1000;
-}
+  #app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
-/* ================= HERO OVERLAY ================= */
+  /* ===== MAIN CONTENT ===== */
+  #main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    position: relative;
+    overflow: hidden;
+  }
 
-#hero-section {
-  position: absolute;
-  inset: 0;
-  z-index: 900;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  pointer-events: none;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-/* AFTER FIRST MESSAGE */
-body.chat-active #hero-section {
-  opacity: 0;
-  transform: scale(0.95);
-  pointer-events: none;
-}
-
-  /* ===== MODERN HAMBURGER (ICON STYLE) ===== */
+  /* ===== MOBILE NAV / HAMBURGER ===== */
   .mobile-nav {
     position: fixed;
     top: 14px;
@@ -67,18 +45,13 @@ body.chat-active #hero-section {
     color: white;
   }
 
-  /* REMOVE BAR STYLE COMPLETELY */
-  #menu-toggle .bar {
-    display: none;
-  }
-
-  /* ===== SIDEBAR ===== */
+  /* ===== SIDEBAR (OFFCANVAS) ===== */
   #sidebar {
     position: fixed;
     top: 0;
     left: 0;
     width: 280px;
-    height: 100svh;
+    height: 100dvh;
     background: #0d0d0d;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
@@ -90,115 +63,57 @@ body.chat-active #hero-section {
     transform: translateX(0);
   }
 
-  /* ===== HERO (LOGO) ===== */
+  /* ===== HERO (LOGO AREA) ===== */
   #hero-section {
     flex-shrink: 0;
-    margin-top: 70px;
+    margin-top: 80px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  /* HIDE HERO WHEN CHAT STARTS */
   body.chat-active #hero-section {
     display: none;
   }
 
-  /* ===== CHAT AREA ===== */
+  /* ===== CHAT SCROLL AREA ===== */
   #chat-container {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 16px;
-    padding-bottom: 110px; /* space for input */
+    padding-bottom: 120px; /* space for input + keyboard */
   }
 
-  /* ===== INPUT BAR (REAL FIX) ===== */
-  #input-area {
-    position: sticky;
-    bottom: 0;
-    width: 100%;
-    background: #0d0d0d;
-    z-index: 1000;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-/* ================= MOBILE OPTIMIZATIONS ================= */
-@media (max-width: 768px) {
-  #app {
-    flex-direction: column; /* Stack sidebar and content vertically if needed */
-  }
-
-  /* 1. Hide the sidebar by default on mobile or make it an overlay */
-  #sidebar {
-    position: fixed;
-    left: -260px; /* Hide it off-screen */
-    z-index: 10002;
-    transition: left 0.3s ease;
-    height: 100%;
-  }
-
-  /* 2. Show sidebar when a 'menu-open' class is added (you'll need a toggle button) */
-  body.menu-open #sidebar {
-    left: 0;
-  }
-
-  /* 3. Fix the Input Area - It's currently covering too much space */
-  #input-area {
-    padding: 10px 5%; /* Reduce padding on mobile */
-  }
-
-  .input-wrapper {
-    padding: 4px 8px;
-  }
-
-  /* 4. Fix the Chat Container - Adjust padding and top position */
-  #chat-container {
-    top: 70px; /* Adjust based on your header height */
-    padding: 15px 5%;
-    bottom: 70px; /* Leave room for the smaller input */
-  }
-
-  .message {
-    max-width: 90%; /* Let messages take more width on small screens */
-    font-size: 14px;
-  }
-
-  /* 5. Fix the Hero/Logo Section */
-  .bot-name-title {
-    font-size: 1.8rem; /* Smaller text for mobile */
-    letter-spacing: 3px;
-  }
-
-  .cube-wrapper {
-    width: 50px;
-    height: 50px;
-  }
-}
-
-@media (max-width: 768px) {
-
-  html, body {
-    height: 100%;
-    overflow: hidden;
-  }
-
-  #main-content {
-    height: 100dvh;
-  }
-
-  #chat-container {
-    overflow-y: auto;
-    padding-bottom: 100px; /* IMPORTANT for keyboard */
-  }
-
+  /* ===== INPUT BAR (FIXED BOTTOM – REAL FIX) ===== */
   #input-area {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #050505;
-    z-index: 999;
+    background: #0d0d0d;
+    z-index: 1000;
+    padding: 10px 12px;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* ===== INPUT STYLING ===== */
+  .input-wrapper {
+    padding: 6px 10px;
+    border-radius: 14px;
+  }
+
+  #user-input {
+    font-size: 16px; /* prevents iOS zoom */
+  }
+
+  /* ===== CHAT MESSAGE WIDTH ===== */
+  .message {
+    max-width: 90%;
+    font-size: 14px;
+  }
+
+  /* ===== MOBILE FOOTER (OPTIONAL) ===== */
+  #mobile-footer {
+    display: none;
   }
 }
-
-
-
-
-

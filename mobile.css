@@ -38,28 +38,36 @@
     background: var(--text-main, #fff);
     margin: 4px 0; display: block;
   }
- /* === FIXED SIDEBAR (THE FIX) === */
-/* Update these parts in your mobile.css */
+@media (max-width: 768px) {
+  /* This prevents the main content from shrinking when sidebar opens */
+  #app { display: block; position: relative; }
 
-#sidebar {
-  position: fixed; 
-  left: -280px !important; /* Move exactly its width to the left */
-  top: 0;
-  height: 100dvh; 
-  width: 280px; 
-  background-color: #111111 !important; /* Force a dark color to ensure visibility */
-  display: flex !important;
-  flex-direction: column;
-  transition: left 0.3s ease-in-out;
-  z-index: 999999 !important; /* Keep it high but below the button */
-  box-shadow: 5px 0 15px rgba(0,0,0,0.5);
-  padding: 20px;
-  visibility: hidden; /* Prevent interaction when closed */
-}
+  #sidebar {
+    position: fixed !important;
+    top: 0;
+    left: -280px !important; /* Move it completely off-screen */
+    width: 280px;
+    height: 100dvh;
+    z-index: 999999 !important;
+    background-color: #0a0a0a !important; /* Force solid color */
+    transition: left 0.3s ease-in-out !important;
+    display: flex !important;
+    visibility: hidden;
+  }
 
-#sidebar.active { 
-  left: 0 !important; 
-  visibility: visible !important; /* Make it visible when active */
+  #sidebar.active {
+    left: 0 !important;
+    visibility: visible !important;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.8);
+  }
+
+  /* Force the hamburger to show */
+  #menu-toggle {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 /* Ensure the text inside the buttons is white */
@@ -198,5 +206,6 @@
   /* Move input up slightly so it doesn't cover footer */
   body.chat-active #input-area { bottom: 35px; }
 }
+
 
 

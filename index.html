@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +39,7 @@
     <div id="main-content">
 
       <header class="mobile-nav">
-        <button type="button" id="menu-toggle" aria-label="Menu" onclick="forceMenuOpen()">
+        <button type="button" id="menu-toggle" aria-label="Menu" onclick="toggleSidebar()" style="z-index: 2147483647 !important; position: relative;">
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
@@ -134,22 +135,11 @@
   </div>
 
   <script>
-    function forceMenuOpen() {
-      // 1. Get the sidebar
+    function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('relaxOverlay');
-      
-      // 2. Toggle the Active Class
       if (sidebar) {
         sidebar.classList.toggle('active');
-        console.log("Hamburger Clicked: Sidebar class is now " + sidebar.className);
-      } else {
-        console.error("Error: Sidebar not found in DOM");
-      }
-
-      // 3. Ensure Relax overlay is closed if it's open
-      if (overlay && overlay.style.display === 'flex') {
-          overlay.style.display = 'none';
+        console.log("Atomic Click: Sidebar Toggled!");
       }
     }
   </script>

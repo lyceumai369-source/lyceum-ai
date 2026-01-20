@@ -137,11 +137,6 @@ body.chat-active .bot-name-title {
     font-size: 14px;
   }
 
-  /* ===== MOBILE FOOTER (OPTIONAL) ===== */
-  #mobile-footer {
-    display: none;
-  }
-}
 /* ===== MOBILE BOTTOM BRANDING (VERY SUBTLE) ===== */
 #mobile-footer {
   position: fixed;
@@ -163,5 +158,6 @@ body.chat-active .bot-name-title {
   height: auto;
   opacity: 0.7;
 }
+
 
 

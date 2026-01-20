@@ -217,17 +217,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Force Mobile Menu Fix
-window.onload = function() {
-    const btn = document.getElementById("menu-toggle");
-    const bar = document.getElementById("sidebar");
-    if(btn && bar) {
-        console.log("Mobile Menu Hooked!");
-        btn.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation(); // Stop anything else from blocking it
-            bar.classList.toggle("active");
-        }
+// Single source of truth for the mobile menu
+document.addEventListener("click", (e) => {
+    const sidebar = document.getElementById("sidebar");
+    const menuToggle = document.getElementById("menu-toggle");
+
+    // If clicking the toggle button
+    if (menuToggle && menuToggle.contains(e.target)) {
+        e.preventDefault();
+        sidebar.classList.toggle("active");
+        console.log("Sidebar status:", sidebar.classList.contains("active"));
+    } 
+    // If clicking outside the sidebar while it's open
+    else if (sidebar && sidebar.classList.contains("active") && !sidebar.contains(e.target)) {
+        sidebar.classList.remove("active");
     }
-};
+});
 

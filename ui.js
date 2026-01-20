@@ -217,20 +217,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Single source of truth for the mobile menu
-document.addEventListener("click", (e) => {
+// AT THE BOTTOM OF ui.js
+document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById("sidebar");
     const menuToggle = document.getElementById("menu-toggle");
 
-    // If clicking the toggle button
-    if (menuToggle && menuToggle.contains(e.target)) {
-        e.preventDefault();
-        sidebar.classList.toggle("active");
-        console.log("Sidebar status:", sidebar.classList.contains("active"));
-    } 
-    // If clicking outside the sidebar while it's open
-    else if (sidebar && sidebar.classList.contains("active") && !sidebar.contains(e.target)) {
-        sidebar.classList.remove("active");
+    if (menuToggle && sidebar) {
+        // Use a single, clean listener
+        menuToggle.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Stops the "outside click" from firing
+            sidebar.classList.toggle("active");
+            console.log("Menu Toggled. Current class:", sidebar.className);
+        };
+
+        // Close sidebar when clicking on a button inside it
+        sidebar.addEventListener("click", (e) => {
+            if (e.target.tagName === "BUTTON") {
+                sidebar.classList.remove("active");
+            }
+        });
+
+        // Close when clicking the main content area
+        document.addEventListener("click", (e) => {
+            if (sidebar.classList.contains("active") && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove("active");
+            }
+        });
     }
 });
 

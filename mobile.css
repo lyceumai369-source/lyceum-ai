@@ -38,23 +38,34 @@
     background: var(--text-main, #fff);
     margin: 4px 0; display: block;
   }
-
-  /* === FIXED SIDEBAR (THE FIX) === */
  /* === FIXED SIDEBAR (THE FIX) === */
+/* Update these parts in your mobile.css */
+
 #sidebar {
   position: fixed; 
-  left: -280px !important; /* Start exactly off-screen to the left */
+  left: -280px !important; /* Move exactly its width to the left */
   top: 0;
   height: 100dvh; 
   width: 280px; 
-  background: #1a1a1a !important; /* Force a solid color to test */
+  background-color: #111111 !important; /* Force a dark color to ensure visibility */
   display: flex !important;
   flex-direction: column;
   transition: left 0.3s ease-in-out;
-  z-index: 999999 !important; /* High, but below the max */
+  z-index: 999999 !important; /* Keep it high but below the button */
   box-shadow: 5px 0 15px rgba(0,0,0,0.5);
   padding: 20px;
-  visibility: hidden; /* Hide from screen readers when closed */
+  visibility: hidden; /* Prevent interaction when closed */
+}
+
+#sidebar.active { 
+  left: 0 !important; 
+  visibility: visible !important; /* Make it visible when active */
+}
+
+/* Ensure the text inside the buttons is white */
+#sidebar button {
+  color: white !important;
+  opacity: 1 !important;
 }
 
 /* !!! CRITICAL FIX: Forces Sidebar to Open and be Visible !!! */
@@ -187,4 +198,5 @@
   /* Move input up slightly so it doesn't cover footer */
   body.chat-active #input-area { bottom: 35px; }
 }
+
 

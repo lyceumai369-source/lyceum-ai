@@ -159,23 +159,31 @@ html, body {
   z-index: 1000;
 }
 
-/* ================= HERO OVERLAY ================= */
+/* ================= CHAT LAYOUT FIX (DESKTOP + GLOBAL) ================= */
 
-#hero-section {
-  position: absolute;
-  inset: 0;
-  z-index: 900;
+#main-content {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
 }
 
-/* After first message */
-body.chat-active #hero-section {
-  opacity: 0;
-  transform: scale(0.96);
+/* Chat messages scroll area */
+#chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 90px; /* space for input bar */
+}
+
+/* Input bar fixed at bottom */
+#input-area {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  background: var(--bg, #050505);
+  z-index: 50;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 

@@ -1,44 +1,48 @@
-/* ================= MOBILE SIDEBAR – FINAL CORRECT ================= */
+/* ================= FINAL MOBILE UI (STABLE & MODERN) ================= */
 @media (max-width: 768px) {
 
-  /* Hamburger button */
+  /* ================= HAMBURGER (MODERN) ================= */
   .mobile-nav {
     position: fixed;
-    top: 12px;
-    left: 12px;
-    z-index: 1100;
-    padding: 0;
+    top: 14px;
+    left: 14px;
+    z-index: 1200;
   }
 
   #menu-toggle {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(30,30,30,0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 4px;
-    background: #222;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--accent);
     cursor: pointer;
   }
 
   #menu-toggle .bar {
-    width: 22px;
+    width: 18px;
     height: 2px;
     background: #fff;
-    display: block;
+    border-radius: 2px;
   }
 
-  /* Sidebar (ChatGPT style) */
+  /* ================= SIDEBAR (CHATGPT STYLE) ================= */
   #sidebar {
     position: fixed;
     top: 0;
     left: 0;
     width: 280px;
-    height: 100dvh;
+    height: 100vh;
     background: #0d0d0d;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    z-index: 1000;
+    z-index: 1100;
 
     display: flex;
     flex-direction: column;
@@ -46,12 +50,10 @@
     border-right: 2px solid var(--accent);
   }
 
-  /* Open state */
   #sidebar.open {
     transform: translateX(0);
   }
 
-  /* Sidebar content */
   #sidebar .sidebar-top,
   #sidebar .sidebar-bottom {
     display: flex;
@@ -69,9 +71,36 @@
     border-radius: 8px;
   }
 
-  /* Main content stays normal */
+  /* ================= HERO (LOGO + CUBE LOCK) ================= */
+  #hero-section {
+    flex-shrink: 0;
+    margin-top: 70px; /* space for hamburger */
+  }
+
+  /* ================= CHAT AREA ================= */
+  #chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 100px; /* space for input */
+  }
+
+  /* ================= INPUT BAR (KEYBOARD SAFE) ================= */
+  #input-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: #0d0d0d;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* ================= MAIN CONTENT ================= */
   #main-content {
     position: relative;
     z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 }

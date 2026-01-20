@@ -1,16 +1,15 @@
 /* ================= MOBILE BASE RESET ================= */
 @media (max-width: 768px) {
 
- html, body {
-  height: 100%;
-  margin: 0;
-}
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
 
-body {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 
   #app { height: 100dvh; display: flex; flex-direction: column; }
   
@@ -44,30 +43,34 @@ body {
   }
 
   /* === FIXED SIDEBAR (THE FIX) === */
- #sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 280px;
-  height: 100dvh;
-  background-color: var(--sidebar-bg);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 20px;
-  padding-bottom: 150px;
-  overflow-y: auto;
+  #sidebar {
+    position: fixed; 
+    /* START HIDDEN OFF-SCREEN */
+    left: -100% !important; 
+    top: 0;
+    height: 100dvh; 
+    width: 280px; 
+    background-color: var(--sidebar-bg); 
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 15px;
+    
+    /* ANIMATION SETTINGS */
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* STYLING */
+    z-index: 2147483646 !important; /* Just below the button */
+    box-shadow: 2px 0 15px rgba(0,0,0,0.5);
+    padding: 20px;
+    padding-bottom: 150px !important; 
+    overflow-y: auto; 
+  }
 
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-
-  z-index: 2147483646;
-  box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-}
-
-#sidebar.active {
-  transform: translateX(0);
-}
+  /* !!! CRITICAL FIX: Forces Sidebar to Open !!! */
+  #sidebar.active { 
+    left: 0 !important; 
+  }
 
   /* === HERO SECTION (DEFAULT) === */
   #hero-section {
@@ -181,4 +184,3 @@ body {
   /* Move input up slightly so it doesn't cover footer */
   body.chat-active #input-area { bottom: 35px; }
 }
-

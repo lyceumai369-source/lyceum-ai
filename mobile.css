@@ -1,19 +1,40 @@
 /* ================= MOBILE FINAL – REAL FIX ================= */
 @media (max-width: 768px) {
 
-  /* ===== MAIN LAYOUT ===== */
-  #app {
-    height: 100svh;
+@media (max-width: 768px) {
+
+  /* ===== CHAT LAYOUT STATES ===== */
+  #main-content {
     display: flex;
     flex-direction: column;
   }
 
-  #main-content {
+  /* BEFORE first message */
+  body:not(.chat-active) #chat-container {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 0;
   }
+
+  body:not(.chat-active) #input-area {
+    position: relative;
+    bottom: auto;
+  }
+
+  /* AFTER first message */
+  body.chat-active #chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 110px;
+  }
+
+  body.chat-active #input-area {
+    position: sticky;
+    bottom: 0;
+  }
+}
 
   /* ===== MODERN HAMBURGER (ICON STYLE) ===== */
   .mobile-nav {
@@ -88,3 +109,4 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+

@@ -22,11 +22,11 @@ const UI = {
   typingInd: document.getElementById('typing-indicator'),
 
   renderMessage(text, type, time = "") {
-    // --- FIX 1: TRIGGER THE ANIMATION ---
-    // This tells CSS: "The chat has started! Move the logo!"
-    if (!document.body.classList.contains('chat-active')) {
-        document.body.classList.add('chat-active');
-    }
+    // 🔥 Trigger logo move ONLY on first USER message
+if (type === "user" && !document.body.classList.contains("chat-active")) {
+  document.body.classList.add("chat-active");
+}
+
 
     if (!this.messagesArea) return;
     const msg = document.createElement('div');
@@ -240,4 +240,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
 

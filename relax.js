@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let rewarded = new Set();
   let leafInterval = null;
 
+  // --- ELEMENTS TO MANAGE ---
+  // We need to hide the mobile menu button while playing so it doesn't get in the way
+  const menuToggle = document.getElementById("menu-toggle");
+
   const rewards = {
     50: {
       title: "Bronze Badge 🥉",
@@ -35,6 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===== CREATE OVERLAY ===== */
   const overlay = document.createElement("div");
   overlay.id = "relaxOverlay";
+  // FIX: Ensure this is on top of the Mobile Menu (Z-Index > 2147483647)
+  overlay.style.zIndex = "2147483648"; 
   overlay.innerHTML = `
     <button id="exitRelax" class="exit-btn">✖</button>
 
@@ -43,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
       <p id="cert-notice" style="color: #d4af37; font-size: 0.8rem; margin-bottom: 10px;">🏆 Reach 500 points for a Premium Certificate</p>
       <button class="games-btn" id="leafBtn">🍃 Leaf Fall</button>
       <button class="games-btn" id="snakeBtn">🐍 Snake Game</button>
-      <button class="games-btn" id="gamesBtn" style="display:none;">🎮 Games</button>
     </div>
 
     <div id="scoreBoard" class="score-only">Score: 0</div>
@@ -69,8 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.appendChild(overlay);
 
   /* ===== INITIAL SETUP ===== */
-  document.getElementById("snakeBtn").style.display = "none";
-  document.getElementById("leafBtn").style.display = "inline-block";
+  // Ensure correct initial state
+  const btnLeaf = document.getElementById("leafBtn");
+  const btnSnake = document.getElementById("snakeBtn");
+  if(btnLeaf) btnLeaf.style.display = "inline-block";
+  if(btnSnake) btnSnake.style.display = "inline-block";
 
   /* ===== LEAF LAYER ===== */
   const leafLayer = document.createElement("div");
@@ -81,12 +89,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const relaxBtn = document.getElementById("relaxBtn");
   if (relaxBtn) {
     relaxBtn.addEventListener("click", () => {
+      // 1. Show Game Overlay
       overlay.style.display = "flex";
       document.getElementById("relaxText").style.display = "block";
       document.getElementById("cert-notice").style.display = "block";
-      document.getElementById("leafBtn").style.display = "inline-block";
-      document.getElementById("snakeBtn").style.display = "inline-block";
+      if(btnLeaf) btnLeaf.style.display = "inline-block";
+      if(btnSnake) btnSnake.style.display = "inline-block";
       document.getElementById("scoreBoard").style.display = "none";
+      
+      // 2. Hide Mobile Menu Button (Clean Look)
+      if(menuToggle) menuToggle.style.display = "none";
     });
   }
 
@@ -103,23 +115,30 @@ document.addEventListener("DOMContentLoaded", () => {
     stopGame();
     document.getElementById("exitConfirm").style.display = "none";
     overlay.style.display = "none";
+
+    // RESTORE Mobile Menu Button
+    if(menuToggle) menuToggle.style.display = "block";
   };
 
   /* ===== BUTTON ACTIONS ===== */
-  document.getElementById("leafBtn").onclick = () => {
-    document.getElementById("relaxText").style.display = "none";
-    document.getElementById("cert-notice").style.display = "none";
-    document.getElementById("leafBtn").style.display = "none";
-    document.getElementById("snakeBtn").style.display = "none";
-    document.getElementById("scoreBoard").style.display = "block";
+  if(btnLeaf) {
+      btnLeaf.onclick = () => {
+        document.getElementById("relaxText").style.display = "none";
+        document.getElementById("cert-notice").style.display = "none";
+        btnLeaf.style.display = "none";
+        btnSnake.style.display = "none";
+        document.getElementById("scoreBoard").style.display = "block";
 
-    if (!leafInterval) spawnLeaves();
-  };
+        if (!leafInterval) spawnLeaves();
+      };
+  }
 
-  document.getElementById("snakeBtn").onclick = () => {
-    overlay.style.display = "none"; 
-    window.location.href = "./snake-game/";
-  };
+  if(btnSnake) {
+      btnSnake.onclick = () => {
+        overlay.style.display = "none"; 
+        window.location.href = "./snake-game/";
+      };
+  }
 
   /* ===== LEAF GAME ENGINE ===== */
   function spawnLeaves() {
@@ -189,7 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
     rewarded.clear();
     document.getElementById("scoreBoard").textContent = "Score: 0";
     document.getElementById("relaxText").style.display = "block";
-    document.getElementById("leafBtn").style.display = "inline-block";
-    document.getElementById("snakeBtn").style.display = "none";
-  }
-});
+    
+    if(btnLeaf) btnLeaf.style.display = "inline-block";
+    // We keep snake button hidden in game

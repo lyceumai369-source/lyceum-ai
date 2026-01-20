@@ -185,6 +185,11 @@ body::before { content: ""; position: fixed; inset: 0; background: radial-gradie
   overflow-y: auto;
   padding-bottom: 90px; /* space for input bar */
 }
+/* ===== HIDE MOBILE FOOTER ON DESKTOP ===== */
+#mobile-footer {
+  display: none !important;
+}
+
 
 
 

@@ -95,14 +95,35 @@ body { background-color: var(--bg); color: var(--text-main); font-family: Inter,
 
 /* ================= ANIMATION LOGIC (FIXED) ================= */
 
-/* When Chat is Active, Move Hero to Top Right */
+/* ================= HERO AFTER FIRST MESSAGE (LEFT TOP) ================= */
 body.chat-active #hero-section {
-  height: 70px;
-  flex: none; /* Stop taking up whole screen */
+  height: 64px;
+  flex: none;
+  display: flex;
   flex-direction: row;
-  justify-content: flex-end; /* RIGHT SIDE */
-  padding-right: 40px; /* Spacing from edge */
+  align-items: center;
+  justify-content: flex-start;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1200;
+  padding-left: 60px; /* space for hamburger button */
+  gap: 10px;
 }
+
+/* Shrink rotating cube */
+body.chat-active .cube-wrapper {
+  transform: scale(0.45);
+  margin: 0;
+}
+
+/* Shrink bot name */
+body.chat-active .bot-name-title {
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
 
 body.chat-active .cube-wrapper {
   transform: scale(0.4);
@@ -164,6 +185,7 @@ body::before { content: ""; position: fixed; inset: 0; background: radial-gradie
   overflow-y: auto;
   padding-bottom: 90px; /* space for input bar */
 }
+
 
 
 

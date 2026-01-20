@@ -217,33 +217,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// AT THE BOTTOM OF ui.js
 document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.getElementById("sidebar");
-    const menuToggle = document.getElementById("menu-toggle");
+  const sidebar = document.getElementById("sidebar");
+  const menuToggle = document.getElementById("menu-toggle");
 
-    if (menuToggle && sidebar) {
-        // Use a single, clean listener
-        menuToggle.onclick = (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // Stops the "outside click" from firing
-            sidebar.classList.toggle("active");
-            console.log("Menu Toggled. Current class:", sidebar.className);
-        };
+  if (!sidebar || !menuToggle) return;
 
-        // Close sidebar when clicking on a button inside it
-        sidebar.addEventListener("click", (e) => {
-            if (e.target.tagName === "BUTTON") {
-                sidebar.classList.remove("active");
-            }
-        });
+  // Toggle sidebar
+  menuToggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    sidebar.classList.toggle("open");
+  });
 
-        // Close when clicking the main content area
-        document.addEventListener("click", (e) => {
-            if (sidebar.classList.contains("active") && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-                sidebar.classList.remove("active");
-            }
-        });
+  // Close when clicking outside
+  document.addEventListener("click", (e) => {
+    if (
+      sidebar.classList.contains("open") &&
+      !sidebar.contains(e.target) &&
+      !menuToggle.contains(e.target)
+    ) {
+      sidebar.classList.remove("open");
     }
+  });
 });
 

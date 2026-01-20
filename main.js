@@ -107,27 +107,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') handleSend();
   });
 
-  /* ===== SIDEBAR ===== */
+ /* ===== SIDEBAR (Fixed & Cleaned) ===== */
+if (menuToggle && sidebar) {
   menuToggle.addEventListener('click', e => {
-    e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation(); // Stops the 'document' click from firing immediately
     sidebar.classList.toggle('active');
+    console.log("Sidebar Toggled. Is active?", sidebar.classList.contains('active'));
   });
+
+  // Prevents clicks inside the sidebar from closing it
   sidebar.addEventListener('click', e => e.stopPropagation());
-  document.addEventListener('click', () => { sidebar.classList.remove('active'); });
 
-  /* ===== SETTINGS MODAL ===== */
-  sBtn.addEventListener('click', () => sModal.classList.remove('hidden'));
-  cBtn.addEventListener('click', () => sModal.classList.add('hidden'));
-  sModal.addEventListener('click', e => { if (e.target === sModal) sModal.classList.add('hidden'); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') sModal.classList.add('hidden'); });
-
-  tabAbout.addEventListener('click', () => {
-    contentAbout.classList.remove('hidden');
-    contentColors.classList.add('hidden');
-    tabAbout.classList.add('active');
-    tabColors.classList.remove('active');
+  // Only closes if you click outside the sidebar
+  document.addEventListener('click', (e) => {
+    if (sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+    }
   });
-
+}
   tabColors.addEventListener('click', () => {
     contentColors.classList.remove('hidden');
     contentAbout.classList.add('hidden');
@@ -159,3 +157,4 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+

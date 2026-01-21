@@ -208,19 +208,26 @@
 }
 #close-lyra-btn:hover { color: white; }
 
-/* Premium Logo Box */
+/* INCREASED SIZE FOR CLARITY */
 .lyra-logo-box {
-  width: 90px; height: 90px; margin: 0 auto 20px auto;
-  background: #fff; border-radius: 20px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); /* White Glow */
+  width: 160px;               /* Changed from 90px to 160px */
+  height: 160px;              /* Changed from 90px to 160px */
+  margin: 0 auto 15px auto;
+  background: #ffffff;
+  border-radius: 20px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
   animation: floatLogo 4s ease-in-out infinite;
+  overflow: hidden;           /* Keeps corners rounded */
 }
-.lyra-img { width: 70%; height: auto; }
 
-@keyframes floatLogo {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+.lyra-img {
+  width: 100%;                /* Changed from 70% to 100% to use full space */
+  height: auto;
+  object-fit: contain;        /* Ensures the whole logo fits nicely */
+  display: block;
 }
 
 /* Typography */
@@ -261,3 +268,4 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .lyra-cta:active { transform: scale(0.96); }
+

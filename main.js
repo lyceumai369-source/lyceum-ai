@@ -136,3 +136,30 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+/* ================= LYRA REVEAL LOGIC ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const lyraModal = document.getElementById("lyra-modal");
+  const closeBtn = document.getElementById("close-lyra-btn");
+  const exploreBtn = document.getElementById("explore-lyra-btn");
+
+  // Reveal Popup after 1.5 seconds
+  setTimeout(() => {
+    if (lyraModal) {
+      lyraModal.classList.remove("hidden");
+      // Small delay to allow CSS display:flex to apply before opacity transition
+      setTimeout(() => lyraModal.classList.add("show"), 50);
+    }
+  }, 1500);
+
+  function closeLyra() {
+    if (lyraModal) {
+      lyraModal.classList.remove("show");
+      setTimeout(() => {
+        lyraModal.classList.add("hidden");
+      }, 800); // Wait for fade out
+    }
+  }
+
+  if (closeBtn) closeBtn.addEventListener("click", closeLyra);
+  if (exploreBtn) exploreBtn.addEventListener("click", closeLyra);
+});

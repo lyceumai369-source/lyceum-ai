@@ -167,16 +167,20 @@
     padding: 10px !important;
   }
   
- /* 3. Hide Footer Completely When Chatting */
-  body.chat-active #mobile-footer,
-  body.chat-active .tiny-cube-wrapper { 
-    display: none !important; 
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    height: 0 !important;
-    width: 0 !important;
-    overflow: hidden !important;
+ /* 3. SHOW Footer When Chatting (Fixed) */
+  body.chat-active #mobile-footer {
+    display: flex !important;           /* Force it to show */
+    opacity: 1 !important;              /* Make it fully visible */
+    visibility: visible !important;
+    z-index: 10000 !important;          /* HIGHER than Input Box (9999) */
+    bottom: 5px !important;             /* Sit at the very bottom edge */
+  }
+  
+  /* Optional: Make text slightly darker so it shows on the white bar */
+  body.chat-active #mobile-footer span {
+    color: #000000 !important;
+    font-weight: bold !important;
+    opacity: 0.5;
   }
   /* 4. Messages Padding */
   body.chat-active #chat-container { padding-top: 80px !important; }
@@ -190,4 +194,5 @@
   #input-area { position: fixed !important; bottom: 0 !important; width: 100% !important; border-radius: 0 !important; }
   #mobile-footer { display: none !important; }
 }
+
 

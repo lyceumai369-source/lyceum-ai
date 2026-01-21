@@ -15,9 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const contentColors = document.getElementById('content-colors');
   const colorGrid = document.getElementById('color-grid');
 
-  const menuToggle = document.getElementById('menu-toggle');
-  const sidebar = document.getElementById('sidebar');
-
   /* ===== COLORS ===== */
   const colors = [
     '#ffffff','#ff4757','#2ed573','#1e90ff','#ffa502',
@@ -107,25 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') handleSend();
   });
 
- /* ===== SIDEBAR (Fixed & Cleaned) ===== */
-if (menuToggle && sidebar) {
-  menuToggle.addEventListener('click', e => {
-    e.preventDefault();
-    e.stopPropagation(); // Stops the 'document' click from firing immediately
-    sidebar.classList.toggle('active');
-    console.log("Sidebar Toggled. Is active?", sidebar.classList.contains('active'));
-  });
-
-  // Prevents clicks inside the sidebar from closing it
-  sidebar.addEventListener('click', e => e.stopPropagation());
-
-  // Only closes if you click outside the sidebar
-  document.addEventListener('click', (e) => {
-    if (sidebar.classList.contains('active')) {
-      sidebar.classList.remove('active');
-    }
-  });
-}
+  /* ===== THEME/COLOR LOGIC ===== */
   tabColors.addEventListener('click', () => {
     contentColors.classList.remove('hidden');
     contentAbout.classList.add('hidden');
@@ -157,4 +136,3 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
-

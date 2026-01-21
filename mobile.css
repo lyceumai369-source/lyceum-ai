@@ -62,7 +62,7 @@
     font-size: 20px; color: white; cursor: pointer;
   }
 
-  /* ===== SIDEBAR (FIXED: BUTTONS GLUED TOGETHER) ===== */
+  /* ===== SIDEBAR ===== */
   #sidebar {
     position: fixed; top: 0; left: 0;
     width: 280px; height: 100dvh;
@@ -75,33 +75,37 @@
     /* FORCE ITEMS TO TOP */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start !important; /* Forces top alignment */
+    justify-content: flex-start !important; 
     align-items: stretch;
-    gap: 10px; /* Small gap between all items */
+    gap: 10px; 
   }
 
   #sidebar.open { transform: translateX(0); }
 
-  /* STOP STRETCHING: Force these sections to only take the space they need */
-  .sidebar-top, 
-  .sidebar-bottom {
-    flex: 0 0 auto !important; /* Do not grow */
-    margin: 0 !important;      /* Remove any auto margins */
+  .sidebar-top, .sidebar-bottom {
+    flex: 0 0 auto !important;
+    margin: 0 !important;
     width: 100%;
   }
 
-  /* Settings container layout */
   .sidebar-bottom {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
-  /* ===== HERO HEADER ===== */
+  /* ===== HERO HEADER (Big Logo) ===== */
   #hero-section {
-    flex-shrink: 0; margin-top: 80px; transition: all 0.4s ease; z-index: 1000;
+    flex-shrink: 0; 
+    margin-top: 20vh; /* Pushes logo down to middle initially */
+    transition: all 0.5s ease; 
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
+  /* WHEN CHATTING: Logo Moves to Top Bar */
   body.chat-active #hero-section {
     position: fixed; top: 0; left: 0; right: 0; height: 70px;
     background: #0d0d0d; border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -118,17 +122,69 @@
   }
   body.chat-active #chat-container { padding-top: 90px !important; }
 
-  /* ===== INPUT AREA ===== */
+  /* ===== INPUT AREA (MAGIC CENTERING) ===== */
   #input-area {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: #0d0d0d; z-index: 1000;
-    padding: 10px 12px; padding-bottom: env(safe-area-inset-bottom);
-    border-top: 1px solid rgba(255,255,255,0.1);
+    position: fixed;
+    /* STARTING POSITION: Center of screen */
+    bottom: 40%; 
+    left: 20px; 
+    right: 20px; /* Makes it floating box */
+    background: #0d0d0d;
+    z-index: 1000;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.5s ease;
   }
+
+  /* WHEN CHATTING: Moves to Bottom */
+  body.chat-active #input-area {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
   .input-wrapper { padding: 6px 10px; border-radius: 14px; }
   #user-input { font-size: 16px; }
   .message { max-width: 90%; font-size: 14px; }
-  #mobile-footer { display: none; }
+
+  /* ===== NEW FOOTER WITH TINY CUBE ===== */
+  #mobile-footer {
+    position: fixed;
+    bottom: 20px;
+    left: 0; 
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    opacity: 0.7;
+    z-index: 5;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  /* Tiny cube settings for footer */
+  .tiny-cube-wrapper { width: 20px; height: 20px; perspective: 200px; }
+  .tiny-cube-wrapper .mini-cube .face { width: 20px; height: 20px; border: 1px solid rgba(255,255,255,0.3); }
+  .tiny-cube-wrapper .mini-cube .face img { width: 15px; }
+  .tiny-cube-wrapper .mini-cube .front  { transform: rotateY(0deg) translateZ(10px); }
+  .tiny-cube-wrapper .mini-cube .back   { transform: rotateY(180deg) translateZ(10px); }
+  .tiny-cube-wrapper .mini-cube .right  { transform: rotateY(90deg) translateZ(10px); }
+  .tiny-cube-wrapper .mini-cube .left   { transform: rotateY(-90deg) translateZ(10px); }
+  .tiny-cube-wrapper .mini-cube .top    { transform: rotateX(90deg) translateZ(10px); }
+  .tiny-cube-wrapper .mini-cube .bottom { transform: rotateX(-90deg) translateZ(10px); }
+
+  /* Hide footer when chatting */
+  body.chat-active #mobile-footer {
+    opacity: 0;
+  }
 }
 
 /* ================= DESKTOP RULES ================= */
@@ -147,4 +203,19 @@
 
   #menu-toggle { display: none !important; }
   body.chat-active #hero-section { display: none !important; }
+  
+  /* Reset input bar for desktop to be normal */
+  #input-area {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  
+  #mobile-footer { display: none !important; }
 }

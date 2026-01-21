@@ -1,4 +1,6 @@
-/* ================= MINI CUBE (SIDEBAR) ================= */
+/* =========================================================
+   1. MINI CUBE ANIMATION (GLOBAL - FOR SIDEBAR)
+   ========================================================= */
 .sidebar-brand {
   display: flex;
   flex-direction: column;
@@ -11,10 +13,10 @@
 
 .brand-text {
   color: white;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 10px;
   letter-spacing: 2px;
   margin-top: 10px;
+  font-weight: bold;
   opacity: 0.8;
 }
 
@@ -45,6 +47,7 @@
 
 .mini-cube .face img { width: 30px; opacity: 0.8; }
 
+/* Cube Faces */
 .mini-cube .front  { transform: rotateY(0deg) translateZ(20px); }
 .mini-cube .back   { transform: rotateY(180deg) translateZ(20px); }
 .mini-cube .right  { transform: rotateY(90deg) translateZ(20px); }
@@ -57,7 +60,9 @@
   to { transform: rotateX(360deg) rotateY(360deg); }
 }
 
-/* ================= MOBILE CHATGPT-STYLE LAYOUT ================= */
+/* =========================================================
+   2. MOBILE CHAT LAYOUT (MAX-WIDTH: 768px)
+   ========================================================= */
 @media (max-width: 768px) {
 
   /* ===== BASE RESET ===== */
@@ -73,7 +78,6 @@
     flex-direction: column;
   }
 
-  /* ===== MAIN CONTENT ===== */
   #main-content {
     flex: 1;
     display: flex;
@@ -83,12 +87,12 @@
     overflow: hidden;
   }
 
-  /* ===== MOBILE NAV / HAMBURGER ===== */
+  /* ===== MOBILE NAV BUTTON ===== */
   .mobile-nav {
     position: fixed;
     top: 14px;
     left: 14px;
-    z-index: 2000; 
+    z-index: 2000; /* Highest Priority */
   }
 
   #menu-toggle {
@@ -115,7 +119,7 @@
     background: #0d0d0d;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    z-index: 2100;
+    z-index: 2100; /* Above everything */
     padding: 20px;
   }
 
@@ -123,60 +127,62 @@
     transform: translateX(0);
   }
 
-  /* ===== HERO (LOGO AREA) ===== */
+  /* ===== HERO SECTION (DEFAULT) ===== */
   #hero-section {
     flex-shrink: 0;
     margin-top: 80px;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 1000; 
+    transition: all 0.4s ease;
+    z-index: 1000;
   }
 
- /* ===== HERO STICKY HEADER FIX ===== */
-body.chat-active #hero-section {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 70px; /* Fixed height for header */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  z-index: 1100;
-  background: #0d0d0d; /* Background color prevents see-through */
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  margin: 0;
-  padding-left: 66px; /* Space for hamburger */
-}
+  /* ===== HERO HEADER (WHEN CHATTING) - FIX HERE ===== */
+  body.chat-active #hero-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 70px;            /* Fixed Header Height */
+    background: #0d0d0d;     /* SOLID BLACK BACKGROUND */
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin: 0;
+    padding-left: 66px;      /* Space for Hamburger Button */
+    z-index: 1500;           /* Above messages, Below Button */
+  }
 
-/* Ensure messages don't hide behind the sticky header */
-body.chat-active #chat-container {
-  padding-top: 80px !important; 
-}
+  /* Shrink Cube in Header */
+  body.chat-active .cube-wrapper {
+    transform: scale(0.35);
+    margin-right: 5px;
+  }
 
-/* shrink rotating cube */
-body.chat-active .cube-wrapper {
-  transform: scale(0.4);
-}
+  /* Shrink Text in Header */
+  body.chat-active .bot-name-title {
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin: 0;
+  }
 
-/* shrink bot name */
-body.chat-active .bot-name-title {
-  font-size: 1rem;
-  letter-spacing: 1.5px;
-  margin: 0;
-}
-
-  /* ===== CHAT SCROLL AREA ===== */
+  /* ===== CHAT MESSAGES ===== */
   #chat-container {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding: 16px;
     padding-bottom: 120px;
+    padding-top: 0;
   }
 
-  /* ===== INPUT BAR (FIXED BOTTOM) ===== */
+  /* PUSH MESSAGES DOWN SO THEY DON'T HIDE BEHIND HEADER */
+  body.chat-active #chat-container {
+    padding-top: 90px !important; 
+  }
+
+  /* ===== INPUT AREA (FIXED BOTTOM) ===== */
   #input-area {
     position: fixed;
     bottom: 0;
@@ -203,31 +209,17 @@ body.chat-active .bot-name-title {
     font-size: 14px;
   }
 
-#mobile-footer {
-  position: fixed;
-  bottom: 4px;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 10px;
-  opacity: 0.6;
-  pointer-events: none;
-  z-index: 5;
+  /* Hide Footer on Mobile Chat */
+  #mobile-footer {
+    display: none;
+  }
 }
 
-#mobile-footer img {
-  width: 14px;
-  height: auto;
-  opacity: 0.7;
-}
-
-}
-
-/* ================= DESKTOP FIXES ================= */
+/* =========================================================
+   3. DESKTOP RULES (MIN-WIDTH: 769px)
+   ========================================================= */
 @media (min-width: 769px) {
+  /* Sidebar always visible on PC */
   #sidebar {
     transform: none !important;
     left: 0 !important;
@@ -235,12 +227,12 @@ body.chat-active .bot-name-title {
     display: block !important;
   }
   
+  /* Hide Menu Button on PC */
   #menu-toggle {
     display: none !important;
   }
 
-  /* IMPORTANT: HIDE the main logo when chatting on PC */
-  /* The Sidebar Mini-Cube takes over branding */
+  /* HIDE Main Logo on PC when chatting (You have Sidebar Cube) */
   body.chat-active #hero-section {
     display: none !important;
   }

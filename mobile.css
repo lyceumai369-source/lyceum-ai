@@ -6,10 +6,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px 0 20px 0; /* Adjusted padding */
+  padding: 30px 0 20px 0;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   margin-bottom: 20px;
-  flex-shrink: 0; /* Prevents logo from squishing */
+  flex-shrink: 0;
 }
 
 .brand-text {
@@ -62,7 +62,7 @@
     font-size: 20px; color: white; cursor: pointer;
   }
 
-  /* ===== SIDEBAR (FIXED GAP ISSUE) ===== */
+  /* ===== SIDEBAR (FIX: NO GAP BETWEEN BUTTONS) ===== */
   #sidebar {
     position: fixed; top: 0; left: 0;
     width: 280px; height: 100dvh;
@@ -70,27 +70,28 @@
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     z-index: 2100;
-    padding: 0 20px 20px 20px; /* Padding for sides and bottom */
+    padding: 0 20px 20px 20px;
     
-    /* FLEXBOX MAGIC TO FIX GAP */
+    /* STACK ITEMS AT TOP */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* FORCE ITEMS TO TOP */
+    justify-content: flex-start; 
+    gap: 15px; /* Small consistent gap between sections */
   }
 
   #sidebar.open { transform: translateX(0); }
 
-  /* Keep 'New Chat' close to top */
+  /* REMOVED 'margin-bottom: auto' SO BUTTONS STAY TOGETHER */
   .sidebar-top {
-    margin-bottom: auto; /* Pushes everything else to bottom */
+    width: 100%;
   }
 
-  /* Keep Settings at bottom */
+  /* Sidebar Bottom (Settings) follows immediately after New Chat */
   .sidebar-bottom {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding-bottom: 20px;
+    width: 100%;
   }
 
   /* ===== HERO HEADER ===== */
@@ -133,8 +134,8 @@
     transform: none !important; left: 0 !important;
     position: relative !important; display: flex !important;
     flex-direction: column; justify-content: flex-start;
+    gap: 15px; /* Consistent gap on Desktop too */
   }
-  .sidebar-top { margin-bottom: auto; } /* Same fix for Desktop */
   
   #menu-toggle { display: none !important; }
   body.chat-active #hero-section { display: none !important; }

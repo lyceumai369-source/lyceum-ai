@@ -39,18 +39,13 @@
       </div>
 
       <div class="sidebar-bottom">
-        <button type="button" id="settings-btn" class="secondary-btn">
-          ⚙️ Settings
-        </button>
-        <button type="button" id="theme-toggle-btn" class="secondary-btn">
-          🌙 Dark Mode
-        </button>
+        <button type="button" id="settings-btn" class="secondary-btn">⚙️ Settings</button>
+        <button type="button" id="theme-toggle-btn" class="secondary-btn">🌙 Dark Mode</button>
         <button id="relaxBtn" class="relax-btn">🌿 Relax</button>
       </div>
     </aside>
 
     <div id="main-content">
-
       <header class="mobile-nav">
         <button id="menu-toggle">☰</button>
       </header>
@@ -66,15 +61,12 @@
             <div class="face bottom"><img src="logo.png" alt="Lyceum AI logo"></div>
           </div>
         </div>
-
         <h1 class="bot-name-title">LYCEUM AI</h1>
       </section>
 
       <main id="chat-container">
         <div id="chat-messages"></div>
-        <div id="wiki-loading" class="hidden">
-           🔍 Searching Wikipedia...
-        </div>
+        <div id="wiki-loading" class="hidden">🔍 Searching Wikipedia...</div>
         <div id="typing-indicator" class="hidden">
           <span></span><span></span><span></span>
         </div>
@@ -83,48 +75,45 @@
       <footer id="input-area">
         <div class="input-wrapper">
           <div class="footer-input">
-            <input
-              type="text"
-              id="user-input"
-              placeholder="Type to Lyceum..."
-              autocomplete="off"
-            />
-
+            <input type="text" id="user-input" placeholder="Type to Lyceum..." autocomplete="off" />
             <button type="button" id="mic-btn" class="icon-btn">🎤</button>
-
             <button type="button" id="send-btn">
-              <svg viewBox="0 0 24 24">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-              </svg>
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
             </button>
           </div>
         </div>
       </footer>
-
     </div>
   </div>
 
   <div id="settings-modal" class="modal hidden">
     <div class="modal-content">
-
       <div class="modal-tabs">
         <button type="button" id="tab-about" class="tab-btn active">About</button>
         <button type="button" id="tab-colors" class="tab-btn">Themes</button>
       </div>
-
       <div id="content-about" class="tab-content">
         <img src="logo.png" alt="Lyceum AI Logo" class="modal-logo">
         <h2>Lyceum AI v2</h2>
         <p><strong>Developer:</strong> Ananthu Shaji</p>
         <p>Private architecture for visionaries.</p>
       </div>
-
       <div id="content-colors" class="tab-content hidden">
         <h3>Select Accent Color</h3>
         <div id="color-grid" class="color-grid"></div>
       </div>
-
       <button type="button" id="close-settings" class="close-btn">Done</button>
+    </div>
+  </div>
+
+  <div id="lyra-modal" class="lyra-overlay hidden">
+    <div class="lyra-card video-container">
+      <button id="close-lyra-btn">×</button>
+      <video id="lyra-video" width="100%" playsinline muted loop>
+        <source src="your-video-file.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <button id="explore-lyra-btn" class="lyra-cta">Initialize System</button>
     </div>
   </div>
 
@@ -135,35 +124,5 @@
   <script src="fallback.js" defer></script>
   <script src="main.js" defer></script>
   <script src="relax.js" defer></script>
-
-  <div id="mobile-footer">
-    <div class="tiny-cube-wrapper">
-      <div class="mini-cube">
-        <div class="face front"><img src="logo.png" alt=""></div>
-        <div class="face back"><img src="logo.png" alt=""></div>
-        <div class="face right"><img src="logo.png" alt=""></div>
-        <div class="face left"><img src="logo.png" alt=""></div>
-        <div class="face top"><img src="logo.png" alt=""></div>
-        <div class="face bottom"><img src="logo.png" alt=""></div>
-      </div>
-    </div>
-    <span>Powered by <strong>Lyceum Intelligence</strong></span>
-  </div>
-
-    <div id="lyra-modal" class="lyra-overlay hidden">
-  <div class="lyra-card video-container">
-    <button id="close-lyra-btn">×</button>
-  <video id="lyra-video" width="100%" height="auto" playsinline muted loop>
-  <source src="your-video-file.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
-    <button id="explore-lyra-btn" class="lyra-cta">Go to lyceum</button>
-  </div>
-</div>
-</body> 
+</body>
 </html>
-
-
-
-

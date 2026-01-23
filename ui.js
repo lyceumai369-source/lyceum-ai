@@ -255,3 +255,30 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 });
+/* --- Lyra Video Modal Logic --- */
+  const lyraModal = document.getElementById("lyra-modal");
+  const lyraVideo = document.getElementById("lyra-video");
+  const closeLyra = document.getElementById("close-lyra-btn");
+  const exploreLyra = document.getElementById("explore-lyra-btn");
+
+  // Function to open the video popup
+  const openLyraVideo = () => {
+    if (lyraModal && lyraVideo) {
+      lyraModal.classList.remove("hidden");
+      lyraVideo.currentTime = 0; // Start from beginning
+      lyraVideo.play().catch(err => console.log("Autoplay blocked, waiting for interaction."));
+    }
+  };
+
+  // Trigger it: You can call openLyraVideo() here to show it on load
+  // Or set a timeout to show it after 1 second
+  setTimeout(openLyraVideo, 1000);
+
+  // Close and stop video
+  const stopLyra = () => {
+    lyraModal.classList.add("hidden");
+    lyraVideo.pause();
+  };
+
+  if (closeLyra) closeLyra.onclick = stopLyra;
+  if (exploreLyra) exploreLyra.onclick = stopLyra;

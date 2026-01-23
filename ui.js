@@ -1,5 +1,5 @@
 /* =========================================================
-   UI MANAGER (v7.1 - CLEAN & STABLE)
+   UI MANAGER (v7.2 - VIDEO INTEGRATED)
    ========================================================= */
 
 // 1. INJECT LOADER STYLES
@@ -30,10 +30,8 @@ style.innerHTML = `
     justify-content: center;
   }
   .smart-image-box img {
-    width: 100%;
-    height: auto;
-    display: block;
-    opacity: 0;
+    width: 100%; height: auto;
+    display: block; opacity: 0;
     transition: opacity 0.8s ease;
   }
   .smart-image-box.loaded img { opacity: 1; }
@@ -45,17 +43,19 @@ style.innerHTML = `
     padding: 8px 12px;
     background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
     color: white;
-    font-size: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-    pointer-events: none;
+    font-size: 10px; font-weight: bold;
+    text-transform: uppercase; pointer-events: none;
+  }
+
+  /* Lyra Video specific fixes */
+  .lyra-card { position: relative; background: #000; overflow: hidden; border-radius: 12px; }
+  #close-lyra-btn { 
+    position: absolute; top: 10px; right: 10px; z-index: 100; 
+    background: rgba(0,0,0,0.6); color: #fff; border: none; 
+    border-radius: 50%; width: 30px; height: 30px; cursor: pointer;
   }
 `;
 document.head.appendChild(style);
-
-/* =========================================================
-   CHAT UI
-   ========================================================= */
 
 const UI = {
   chatContainer: document.getElementById("chat-container"),
@@ -63,19 +63,15 @@ const UI = {
   typingInd: document.getElementById("typing-indicator"),
 
   renderMessage(text, type, time = "") {
-    // 🔥 move logo ONLY on first USER message
     if (type === "user" && !document.body.classList.contains("chat-active")) {
       document.body.classList.add("chat-active");
     }
-
     if (!this.messagesArea) return;
 
     const msg = document.createElement("div");
     msg.className = `message ${type}`;
-
     const content = document.createElement("div");
     content.className = "msg-content";
-
     const timestamp = document.createElement("span");
     timestamp.className = "timestamp";
     timestamp.textContent = time;
@@ -100,16 +96,13 @@ const UI = {
   },
 
   typeEffect(el, text) {
-    let i = 0;
-    el.textContent = "";
+    let i = 0; el.textContent = "";
     const loop = () => {
       if (i < text.length) {
         el.textContent += text[i++];
         this.scrollToBottom(false);
         setTimeout(loop, 15);
-      } else {
-        this.scrollToBottom();
-      }
+      } else { this.scrollToBottom(); }
     };
     loop();
   },
@@ -121,10 +114,7 @@ const UI = {
     let html = text;
     html = html.replace(/!\[(.*?)\]\((.*?)\)/g, (_, alt, url) =>
       `<div class="smart-image-box">
-        <div class="loader-wrapper">
-          <div class="img-loading-spinner"></div>
-          <div style="color:white;font-size:10px;margin-top:5px;">Creating Art...</div>
-        </div>
+        <div class="loader-wrapper"><div class="img-loading-spinner"></div></div>
         <img src="${url}" alt="${alt}" loading="lazy">
         <div class="watermark-overlay">✨ Lyceum AI</div>
       </div>`
@@ -142,8 +132,7 @@ const UI = {
   },
 
   showTyping(show) {
-    if (!this.typingInd) return;
-    this.typingInd.classList.toggle("hidden", !show);
+    if (this.typingInd) this.typingInd.classList.toggle("hidden", !show);
     this.scrollToBottom();
   },
 
@@ -158,127 +147,52 @@ const UI = {
   }
 };
 
-/* =========================================================
-   SIDEBAR + SETTINGS + THEME (ONE LOGIC ONLY)
-   ========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
+  // Sidebar & Theme Elements
   const sidebar = document.getElementById("sidebar");
   const menuToggle = document.getElementById("menu-toggle");
-  const settingsBtn = document.getElementById("settings-btn");
   const themeBtn = document.getElementById("theme-toggle-btn");
-  const closeSettings = document.getElementById("close-settings");
+  const settingsBtn = document.getElementById("settings-btn");
   const settingsModal = document.getElementById("settings-modal");
+  const closeSettings = document.getElementById("close-settings");
 
-  const tabAbout = document.getElementById("tab-about");
-  const tabColors = document.getElementById("tab-colors");
-  const contentAbout = document.getElementById("content-about");
-  const contentColors = document.getElementById("content-colors");
-  const colorGrid = document.getElementById("color-grid");
-  const relaxBtn = document.getElementById("relaxBtn");
-
-  const closeSidebar = () => {
-    if (sidebar?.classList.contains("open")) {
-      sidebar.classList.remove("open");
-    }
-  };
-
-  // ☰ Hamburger
-  if (menuToggle) {
-    menuToggle.onclick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      sidebar.classList.toggle("open");
-    };
-  }
-
-  // Close sidebar outside
-  document.addEventListener("click", (e) => {
-    if (
-      sidebar?.classList.contains("open") &&
-      !sidebar.contains(e.target) &&
-      !menuToggle.contains(e.target)
-    ) {
-      closeSidebar();
-    }
-  });
-
-  // Settings
-  settingsBtn && (settingsBtn.onclick = () => {
-    settingsModal.classList.remove("hidden");
-    closeSidebar();
-  });
-
-  closeSettings && (closeSettings.onclick = () =>
-    settingsModal.classList.add("hidden")
-  );
-
-  // Theme
-  themeBtn && (themeBtn.onclick = () => {
-    document.body.classList.toggle("light-mode");
-    themeBtn.innerText =
-      document.body.classList.contains("light-mode")
-        ? "🌙 Dark Mode"
-        : "☀️ Light Mode";
-    closeSidebar();
-  });
-
-  // Relax
-  relaxBtn && (relaxBtn.onclick = closeSidebar);
-
-  // Tabs
-  if (tabAbout && tabColors) {
-    tabAbout.onclick = () => {
-      tabAbout.classList.add("active");
-      tabColors.classList.remove("active");
-      contentAbout.classList.remove("hidden");
-      contentColors.classList.add("hidden");
-    };
-    tabColors.onclick = () => {
-      tabColors.classList.add("active");
-      tabAbout.classList.remove("active");
-      contentColors.classList.remove("hidden");
-      contentAbout.classList.add("hidden");
-    };
-  }
-
-  // Accent colors
-  if (colorGrid && !colorGrid.children.length) {
-    ["#3b82f6","#ef4444","#10b981","#f59e0b","#8b5cf6","#ec4899","#6366f1","#14b8a6","#f97316","#06b6d4"]
-      .forEach(c => {
-        const dot = document.createElement("div");
-        dot.className = "color-dot";
-        dot.style.backgroundColor = c;
-        dot.onclick = () =>
-          document.documentElement.style.setProperty("--accent", c);
-        colorGrid.appendChild(dot);
-      });
-  }
-});
-/* --- Lyra Video Modal Logic --- */
+  // Video Elements
   const lyraModal = document.getElementById("lyra-modal");
   const lyraVideo = document.getElementById("lyra-video");
   const closeLyra = document.getElementById("close-lyra-btn");
   const exploreLyra = document.getElementById("explore-lyra-btn");
 
-  // Function to open the video popup
+  // Toggle Sidebar logic
+  if (menuToggle) menuToggle.onclick = () => sidebar.classList.toggle("open");
+
+  // Theme Toggle logic
+  if (themeBtn) {
+    themeBtn.onclick = () => {
+      document.body.classList.toggle("light-mode");
+      themeBtn.innerText = document.body.classList.contains("light-mode") ? "🌙 Dark Mode" : "☀️ Light Mode";
+    };
+  }
+
+  // Settings Logic
+  if (settingsBtn) settingsBtn.onclick = () => settingsModal.classList.remove("hidden");
+  if (closeSettings) closeSettings.onclick = () => settingsModal.classList.add("hidden");
+
+  // --- LYRA VIDEO LOGIC ---
   const openLyraVideo = () => {
     if (lyraModal && lyraVideo) {
       lyraModal.classList.remove("hidden");
-      lyraVideo.currentTime = 0; // Start from beginning
-      lyraVideo.play().catch(err => console.log("Autoplay blocked, waiting for interaction."));
+      lyraVideo.play().catch(e => console.log("Autoplay blocked: ", e));
     }
   };
 
-  // Trigger it: You can call openLyraVideo() here to show it on load
-  // Or set a timeout to show it after 1 second
+  // Show intro video 1 second after loading
   setTimeout(openLyraVideo, 1000);
 
-  // Close and stop video
-  const stopLyra = () => {
+  const stopVideoAndClose = () => {
     lyraModal.classList.add("hidden");
     lyraVideo.pause();
   };
 
-  if (closeLyra) closeLyra.onclick = stopLyra;
-  if (exploreLyra) exploreLyra.onclick = stopLyra;
+  if (closeLyra) closeLyra.onclick = stopVideoAndClose;
+  if (exploreLyra) exploreLyra.onclick = stopVideoAndClose;
+});

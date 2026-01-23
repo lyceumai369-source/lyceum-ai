@@ -1,8 +1,8 @@
 /* =========================================================
-   UI MANAGER (v7.2 - VIDEO INTEGRATED)
+   UI MANAGER (v7.3 - MOBILE & VIDEO STABILIZED)
    ========================================================= */
 
-// 1. INJECT LOADER STYLES
+// 1. INJECT DYNAMIC STYLES
 const style = document.createElement("style");
 style.innerHTML = `
   .img-loading-spinner {
@@ -17,43 +17,43 @@ style.innerHTML = `
 
   .smart-image-box {
     position: relative;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #000;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    margin-bottom: 10px;
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%; max-width: 400px;
+    border-radius: 12px; overflow: hidden;
+    background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    margin-bottom: 10px; min-height: 200px;
+    display: flex; align-items: center; justify-content: center;
   }
-  .smart-image-box img {
-    width: 100%; height: auto;
-    display: block; opacity: 0;
-    transition: opacity 0.8s ease;
-  }
+  .smart-image-box img { width: 100%; height: auto; display: block; opacity: 0; transition: opacity 0.8s ease; }
   .smart-image-box.loaded img { opacity: 1; }
   .smart-image-box.loaded .loader-wrapper { display: none; }
 
   .watermark-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 8px 12px;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    color: white;
-    font-size: 10px; font-weight: bold;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 8px 12px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white; font-size: 10px; font-weight: bold;
     text-transform: uppercase; pointer-events: none;
   }
 
-  /* Lyra Video specific fixes */
-  .lyra-card { position: relative; background: #000; overflow: hidden; border-radius: 12px; }
+  /* Video Modal Fullscreen Fix */
+  .lyra-card.video-container { 
+    position: relative; background: #000; overflow: hidden; border-radius: 12px; 
+    width: 95vw; max-width: 800px; 
+  }
+  #lyra-video { width: 100%; height: auto; display: block; }
+  
   #close-lyra-btn { 
     position: absolute; top: 10px; right: 10px; z-index: 100; 
     background: rgba(0,0,0,0.6); color: #fff; border: none; 
-    border-radius: 50%; width: 30px; height: 30px; cursor: pointer;
+    border-radius: 50%; width: 32px; height: 32px; cursor: pointer;
+    font-size: 20px;
   }
+
+  /* Sidebar Overlay */
+  #sidebar-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 99; display: none;
+  }
+  #sidebar-overlay.active { display: block; }
 `;
 document.head.appendChild(style);
 
@@ -148,51 +148,46 @@ const UI = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Sidebar & Theme Elements
   const sidebar = document.getElementById("sidebar");
   const menuToggle = document.getElementById("menu-toggle");
-  const themeBtn = document.getElementById("theme-toggle-btn");
-  const settingsBtn = document.getElementById("settings-btn");
-  const settingsModal = document.getElementById("settings-modal");
-  const closeSettings = document.getElementById("close-settings");
-
-  // Video Elements
+  const overlay = document.getElementById("sidebar-overlay");
   const lyraModal = document.getElementById("lyra-modal");
   const lyraVideo = document.getElementById("lyra-video");
-  const closeLyra = document.getElementById("close-lyra-btn");
-  const exploreLyra = document.getElementById("explore-lyra-btn");
 
-  // Toggle Sidebar logic
-  if (menuToggle) menuToggle.onclick = () => sidebar.classList.toggle("open");
+  // Sidebar Toggle with Overlay support
+  const toggleSidebar = (state) => {
+    if (state === "close") {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+    } else {
+      sidebar.classList.toggle("open");
+      overlay.classList.toggle("active");
+    }
+  };
 
-  // Theme Toggle logic
-  if (themeBtn) {
-    themeBtn.onclick = () => {
-      document.body.classList.toggle("light-mode");
-      themeBtn.innerText = document.body.classList.contains("light-mode") ? "🌙 Dark Mode" : "☀️ Light Mode";
-    };
-  }
+  if (menuToggle) menuToggle.onclick = () => toggleSidebar();
+  if (overlay) overlay.onclick = () => toggleSidebar("close");
 
-  // Settings Logic
-  if (settingsBtn) settingsBtn.onclick = () => settingsModal.classList.remove("hidden");
-  if (closeSettings) closeSettings.onclick = () => settingsModal.classList.add("hidden");
+  // Close sidebar when clicking any button inside it
+  sidebar.querySelectorAll("button").forEach(btn => {
+    btn.onclick = () => toggleSidebar("close");
+  });
 
   // --- LYRA VIDEO LOGIC ---
   const openLyraVideo = () => {
     if (lyraModal && lyraVideo) {
       lyraModal.classList.remove("hidden");
-      lyraVideo.play().catch(e => console.log("Autoplay blocked: ", e));
+      lyraVideo.play().catch(e => console.log("User interaction needed"));
     }
   };
 
-  // Show intro video 1 second after loading
   setTimeout(openLyraVideo, 1000);
 
-  const stopVideoAndClose = () => {
+  const stopVideo = () => {
     lyraModal.classList.add("hidden");
     lyraVideo.pause();
   };
 
-  if (closeLyra) closeLyra.onclick = stopVideoAndClose;
-  if (exploreLyra) exploreLyra.onclick = stopVideoAndClose;
+  document.getElementById("close-lyra-btn").onclick = stopVideo;
+  document.getElementById("explore-lyra-btn").onclick = stopVideo;
 });

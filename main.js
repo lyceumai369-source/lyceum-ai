@@ -61,16 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
     micBtn.style.display = 'none';
   }
 
+  /* ===== GEMINI FUNCTION ===== */
+  async function askGemini(message) {
+    const res = await fetch("/.netlify/functions/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+    const data = await res.json();
+    return data.reply || null;
+  }
+
   /* ===== SEND MESSAGE ===== */
-  function handleSend() {
+  async function handleSend() {
     const text = userInput.value.trim();
     if (!text) return;
-
-    if (text === "april8!") {
-      window.open("anju/index.html", "_blank");
-      userInput.value = "";
-      return;
-    }
 
     document.body.classList.add('chat-active');
     const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -78,25 +83,25 @@ document.addEventListener('DOMContentLoaded', () => {
     userInput.value = '';
     UI.showTyping(true);
 
-    (async () => {
-      let response = Brain.getResponse(text);
-      if (response) {
-        UI.showTyping(false);
-        const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        if (text.includes('?')) speak(response);
-        UI.renderMessage(response, 'bot', botTime);
-        return;
-      }
+    let response = Brain.getResponse(text);
 
+    if (!response) {
       response = await getKnowledge(text, toggleWikiLoading);
-      if (!response) { response = getFallbackReply(); }
+    }
 
-      UI.showTyping(false);
-      const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      if (text.includes('?')) speak(response);
-      UI.renderMessage(response, 'bot', botTime);
-    })();
-  } 
+    if (!response) {
+      response = await askGemini(text);
+    }
+
+    if (!response) {
+      response = getFallbackReply();
+    }
+
+    UI.showTyping(false);
+    const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (text.includes('?')) speak(response);
+    UI.renderMessage(response, 'bot', botTime);
+  }
 
   /* ===== EVENT LISTENERS ===== */
   sendBtn.addEventListener('click', handleSend);
@@ -104,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Enter') handleSend();
   });
 
-  /* ===== THEME/COLOR LOGIC ===== */
+  /* ===== THEME / COLORS ===== */
   tabColors.addEventListener('click', () => {
     contentColors.classList.remove('hidden');
     contentAbout.classList.add('hidden');
@@ -118,48 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
         dot.style.background = color;
         dot.onclick = () => {
           document.documentElement.style.setProperty('--accent', color);
-          const light = ['#ffffff','#eccc68','#7bed9f','#ff9ff3','#d1ccc0'];
-          document.documentElement.style.setProperty('--user-text', light.includes(color.toLowerCase()) ? '#000' : '#fff');
-          const tint = color + '1a';
-          document.documentElement.style.setProperty('--sidebar-bg', tint);
         };
         colorGrid.appendChild(dot);
       });
     }
   });
 
-}); 
+});
 
-/* ===== WIKIPEDIA LOADING TOGGLE ===== */
+/* ===== WIKI LOADING ===== */
 function toggleWikiLoading(show) {
   const loader = document.getElementById("wiki-loading");
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
-/* ================= LYRA REVEAL LOGIC ================= */
-document.addEventListener("DOMContentLoaded", () => {
-  const lyraModal = document.getElementById("lyra-modal");
-  const closeBtn = document.getElementById("close-lyra-btn");
-  const exploreBtn = document.getElementById("explore-lyra-btn");
-
-  // Reveal Popup after 1.5 seconds
-  setTimeout(() => {
-    if (lyraModal) {
-      lyraModal.classList.remove("hidden");
-      // Small delay to allow CSS display:flex to apply before opacity transition
-      setTimeout(() => lyraModal.classList.add("show"), 50);
-    }
-  }, 1500);
-
-  function closeLyra() {
-    if (lyraModal) {
-      lyraModal.classList.remove("show");
-      setTimeout(() => {
-        lyraModal.classList.add("hidden");
-      }, 800); // Wait for fade out
-    }
-  }
-
-  if (closeBtn) closeBtn.addEventListener("click", closeLyra);
-  if (exploreBtn) exploreBtn.addEventListener("click", closeLyra);
-});

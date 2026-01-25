@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ===== SAFE FETCH WITH TIMEOUT (MOBILE FIX) ===== */
-  async function fetchWithTimeout(url, options = {}, timeout = 15000) {
+  async function fetchWithTimeout(url, options = {}, timeout = 40000) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     try {
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message })
         },
-        30000
+        40000
 
       );
 

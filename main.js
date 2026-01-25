@@ -57,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message })
         },
-        15000
+        30000
+
       );
 
       const data = await res.json();
@@ -141,3 +142,10 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+// 🔥 Warm up Netlify function (reduces mobile delay)
+fetch("/.netlify/functions/gemini", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ message: "ping" })
+});
+

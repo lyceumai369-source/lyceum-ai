@@ -1,45 +1,16 @@
-
-const memoryStore = {};
-
 exports.handler = async function (event) {
   try {
     const apiKey = process.env.GROQ_API_KEY;
+
     if (!apiKey) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ reply: "Groq API key missing." })
+        body: JSON.stringify({ reply: "❌ GROQ_API_KEY missing in Netlify." })
       };
     }
 
     const body = JSON.parse(event.body || "{}");
     const userMessage = body.message;
-
-    const userId =
-      event.headers["x-forwarded-for"] ||
-      event.headers["client-ip"] ||
-      "anon";
-
-    if (!memoryStore[userId]) {
-      memoryStore[userId] = [];
-    }
-
-    // Add user message
-    memoryStore[userId].push({
-      role: "user",
-      content: userMessage
-    });
-
-    // Keep only last 4 messages (safer)
-    memoryStore[userId] = memoryStore[userId].slice(-4);
-
-    const messages = [
-      {
-        role: "system",
-        content:
-          "You are Lyceum AI. Speak like a calm, friendly human. Explain things simply. Call the user bro casually."
-      },
-      ...memoryStore[userId]
-    ];
 
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
@@ -47,11 +18,21 @@ exports.handler = async function (event) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`
+          "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: "llama3-8b-8192",
-          messages,
+          model: "mixtral-8x7b-32768",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are Lyceum AI. Speak like a friendly human. Explain things simply. Call the user bro."
+            },
+            {
+              role: "user",
+              content: userMessage
+            }
+          ],
           temperature: 0.6,
           max_tokens: 300
         })
@@ -60,28 +41,37 @@ exports.handler = async function (event) {
 
     const data = await response.json();
 
-    const reply =
-      data?.choices?.[0]?.message?.content ||
-      "Bro, I’m a bit stuck. Try asking again.";
+    // 🔥 SHOW REAL GROQ ERROR IF ANY
+    if (data.error) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          reply: `Groq error: ${data.error.message}`
+        })
+      };
+    }
 
-    // Save assistant reply
-    memoryStore[userId].push({
-      role: "assistant",
-      content: reply
-    });
-
-    memoryStore[userId] = memoryStore[userId].slice(-4);
+    if (!data.choices || !data.choices.length) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          reply: "Groq returned no choices. Try again."
+        })
+      };
+    }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ reply })
+      body: JSON.stringify({
+        reply: data.choices[0].message.content
+      })
     };
 
   } catch (err) {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: "Something went wrong bro, please try again."
+        reply: "Server error: " + err.message
       })
     };
   }

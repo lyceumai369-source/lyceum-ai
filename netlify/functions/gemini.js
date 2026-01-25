@@ -1,4 +1,3 @@
-// 🧠 Simple in-memory memory (per user IP)
 const memoryStore = {};
 
 exports.handler = async function (event) {
@@ -7,47 +6,39 @@ exports.handler = async function (event) {
     if (!apiKey) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ reply: "AI key missing." })
+        body: JSON.stringify({ reply: "Groq API key missing." })
       };
     }
 
     const body = JSON.parse(event.body || "{}");
     const userMessage = body.message;
 
-    // 🧍 Identify user by IP (basic session memory)
     const userId =
       event.headers["x-forwarded-for"] ||
       event.headers["client-ip"] ||
-      "anonymous";
+      "anon";
 
-    // Initialize memory if not exists
     if (!memoryStore[userId]) {
       memoryStore[userId] = [];
     }
 
-    // Add user message to memory
+    // Add user message
     memoryStore[userId].push({
       role: "user",
       content: userMessage
     });
 
-    // Keep only last 6 messages (memory limit)
-    memoryStore[userId] = memoryStore[userId].slice(-6);
+    // Keep only last 4 messages (safer)
+    memoryStore[userId] = memoryStore[userId].slice(-4);
 
-    // 🧠 System personality (THIS MAKES IT HUMAN)
-    const systemPrompt = {
-      role: "system",
-      content: `
-You are Lyceum AI.
-You speak in a friendly, calm, human way.
-You explain things simply, like talking to a friend.
-You may call the user "bro" casually.
-Do not sound robotic.
-Be encouraging, warm, and clear.
-      `
-    };
-
-    const messages = [systemPrompt, ...memoryStore[userId]];
+    const messages = [
+      {
+        role: "system",
+        content:
+          "You are Lyceum AI. Speak like a calm, friendly human. Explain things simply. Call the user bro casually."
+      },
+      ...memoryStore[userId]
+    ];
 
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
@@ -55,12 +46,13 @@ Be encouraging, warm, and clear.
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: "llama3-70b-8192",
+          model: "llama3-8b-8192",
           messages,
-          temperature: 0.7
+          temperature: 0.6,
+          max_tokens: 300
         })
       }
     );
@@ -69,26 +61,26 @@ Be encouraging, warm, and clear.
 
     const reply =
       data?.choices?.[0]?.message?.content ||
-      "Sorry bro, I couldn’t think of a reply right now.";
+      "Bro, I’m a bit stuck. Try asking again.";
 
-    // Add assistant reply to memory
+    // Save assistant reply
     memoryStore[userId].push({
       role: "assistant",
       content: reply
     });
 
-    memoryStore[userId] = memoryStore[userId].slice(-6);
+    memoryStore[userId] = memoryStore[userId].slice(-4);
 
     return {
       statusCode: 200,
       body: JSON.stringify({ reply })
     };
 
-  } catch (error) {
+  } catch (err) {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: "Something went wrong bro, try again."
+        reply: "Something went wrong bro, please try again."
       })
     };
   }

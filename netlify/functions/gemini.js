@@ -1,79 +1,93 @@
-exports.handler = async function (event) {
+export async function handler(event) {
   try {
-    const apiKey = process.env.GROQ_API_KEY;
-
-    if (!apiKey) {
+    // ✅ Allow only POST
+    if (event.httpMethod !== "POST") {
       return {
-        statusCode: 200,
-        body: JSON.stringify({ reply: "❌ GROQ_API_KEY missing in Netlify." })
+        statusCode: 405,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reply: "Method not allowed" })
       };
     }
 
-    const body = JSON.parse(event.body || "{}");
-    const userMessage = body.message;
+    // ✅ Parse body safely
+    let body = {};
+    try {
+      body = JSON.parse(event.body || "{}");
+    } catch {
+      body = {};
+    }
 
+    // ✅ Handle warm-up ping (VERY IMPORTANT)
+    if (!body.message || body.message === "ping") {
+      return {
+        statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reply: "ready" })
+      };
+    }
+
+    // 🔑 API key check
+    if (!process.env.GEMINI_API_KEY) {
+      return {
+        statusCode: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reply: "API key missing" })
+      };
+    }
+
+    // 🔗 Call Gemini API
     const response = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" +
+        process.env.GEMINI_API_KEY,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-         model: "llama-3.1-8b-instant",
-
-          messages: [
+          contents: [
             {
-              role: "system",
-              content:
-                "You are Lyceum AI. Speak like a friendly human. Explain things simply. Call the user dear."
-            },
-            {
-              role: "user",
-              content: userMessage
+              parts: [{ text: body.message }]
             }
-          ],
-          temperature: 0.6,
-          max_tokens: 300
+          ]
         })
       }
     );
 
     const data = await response.json();
 
-    // 🔥 SHOW REAL GROQ ERROR IF ANY
-    if (data.error) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          reply: `Groq error: ${data.error.message}`
-        })
-      };
-    }
-
-    if (!data.choices || !data.choices.length) {
-      return {
-        statusCode: 200,
-        body: JSON.stringify({
-          reply: "Groq returned no choices. Try again."
-        })
-      };
-    }
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No response from AI";
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        reply: data.choices[0].message.content
-      })
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ reply })
     };
 
   } catch (err) {
     return {
-      statusCode: 200,
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({
-        reply: "Server error: " + err.message
+        reply: "Bro, network is slow. Please try again 🙏"
       })
     };
   }
-};
+}

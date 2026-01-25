@@ -5,10 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendBtn = document.getElementById('send-btn');
   const micBtn = document.getElementById('mic-btn');
 
-  const sModal = document.getElementById('settings-modal');
-  const sBtn = document.getElementById('settings-btn');
-  const cBtn = document.getElementById('close-settings');
-
   const tabAbout = document.getElementById('tab-about');
   const tabColors = document.getElementById('tab-colors');
   const contentAbout = document.getElementById('content-about');
@@ -23,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '#00d2d3','#54a0ff','#5f27cd','#ff9ff3','#48dbfb'
   ];
 
-  /* ===== SPEECH OUTPUT ===== */
+  /* ===== SPEECH OUTPUT (OPTIONAL) ===== */
   let voices = [];
   function loadVoices() {
     voices = speechSynthesis.getVoices();
@@ -34,42 +30,42 @@ document.addEventListener('DOMContentLoaded', () => {
   function speak(text) {
     if (!('speechSynthesis' in window)) return;
     const utterance = new SpeechSynthesisUtterance(text);
-    const male = voices.find(v => /male|david|google us english/i.test(v.name));
-    if (male) utterance.voice = male;
-    utterance.pitch = 0.9;
     utterance.rate = 1;
+    utterance.pitch = 0.9;
     speechSynthesis.cancel();
     speechSynthesis.speak(utterance);
   }
 
-  /* ===== SPEECH INPUT ===== */
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SpeechRecognition && micBtn) {
-    const recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    micBtn.addEventListener('click', () => {
-      recognition.start();
-      micBtn.textContent = '🛑';
-    });
-    recognition.onresult = e => {
-      userInput.value = e.results[0][0].transcript;
-      micBtn.textContent = '🎤';
-      handleSend();
-    };
-    recognition.onerror = () => { micBtn.textContent = '🎤'; };
-  } else if (micBtn) {
-    micBtn.style.display = 'none';
+  /* ===== SAFE FETCH WITH TIMEOUT (MOBILE FIX) ===== */
+  async function fetchWithTimeout(url, options = {}, timeout = 15000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      clearTimeout(id);
+    }
   }
 
-  /* ===== GEMINI FUNCTION ===== */
-  async function askGemini(message) {
-    const res = await fetch("/.netlify/functions/gemini", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message })
-    });
-    const data = await res.json();
-    return data.reply || null;
+  /* ===== AI CALL (THIS CALLS GROQ VIA NETLIFY) ===== */
+  async function askAI(message) {
+    try {
+      const res = await fetchWithTimeout(
+        "/.netlify/functions/gemini",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        },
+        15000
+      );
+
+      const data = await res.json();
+      return data.reply || null;
+
+    } catch (e) {
+      return "Bro, network is slow. Please try again 🙏";
+    }
   }
 
   /* ===== SEND MESSAGE ===== */
@@ -77,43 +73,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = userInput.value.trim();
     if (!text) return;
 
-    document.body.classList.add('chat-active');
-    const userTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const userTime = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
     UI.renderMessage(text, 'user', userTime);
     userInput.value = '';
     UI.showTyping(true);
 
-   let response = Brain.getResponse(text);
+    let response = Brain.getResponse(text);
 
-// 🔥 FIRST: Gemini
-if (!response) {
-  response = await askGemini(text);
-}
+    if (!response) {
+      response = await askAI(text);
+    }
 
-// THEN: Wikipedia
-if (!response) {
-  response = await getKnowledge(text, toggleWikiLoading);
-}
+    if (!response) {
+      response = await getKnowledge(text, toggleWikiLoading);
+    }
 
-// LAST: fallback
-if (!response) {
-  response = getFallbackReply();
-}
-
+    if (!response) {
+      response = getFallbackReply();
+    }
 
     UI.showTyping(false);
-    const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const botTime = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
     if (text.includes('?')) speak(response);
     UI.renderMessage(response, 'bot', botTime);
   }
 
-  /* ===== EVENT LISTENERS ===== */
+  /* ===== EVENTS ===== */
   sendBtn.addEventListener('click', handleSend);
   userInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') handleSend();
   });
 
-  /* ===== THEME / COLORS ===== */
+  /* ===== THEME COLORS ===== */
   tabColors.addEventListener('click', () => {
     contentColors.classList.remove('hidden');
     contentAbout.classList.add('hidden');
@@ -141,4 +141,3 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
-

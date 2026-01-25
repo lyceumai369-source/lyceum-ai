@@ -21,12 +21,13 @@ exports.handler = async function (event) {
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: "mixtral-8x7b-32768",
+         model: "llama-3.1-8b-instant",
+
           messages: [
             {
               role: "system",
               content:
-                "You are Lyceum AI. Speak like a friendly human. Explain things simply. Call the user bro."
+                "You are Lyceum AI. Speak like a friendly human. Explain things simply. Call the user dear."
             },
             {
               role: "user",

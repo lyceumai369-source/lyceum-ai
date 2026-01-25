@@ -1,5 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+  // 🔥 EARLY warm-up Netlify function (MOBILE FIX)
+  fetch("/.netlify/functions/gemini", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: "ping" })
+  }).catch(() => {});
+
   /* ===== ELEMENTS ===== */
   const userInput = document.getElementById('user-input');
   const sendBtn = document.getElementById('send-btn');
@@ -19,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '#00d2d3','#54a0ff','#5f27cd','#ff9ff3','#48dbfb'
   ];
 
-  /* ===== SPEECH OUTPUT (OPTIONAL) ===== */
+  /* ===== SPEECH OUTPUT (OPTIONAL & MOBILE SAFE) ===== */
   let voices = [];
   function loadVoices() {
     voices = speechSynthesis.getVoices();
@@ -29,11 +36,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function speak(text) {
     if (!('speechSynthesis' in window)) return;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1;
-    utterance.pitch = 0.9;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
+    try {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 0.9;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.log("Speech skipped on this device");
+    }
   }
 
   /* ===== SAFE FETCH WITH TIMEOUT (MOBILE FIX) ===== */
@@ -47,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ===== AI CALL (THIS CALLS GROQ VIA NETLIFY) ===== */
+  /* ===== AI CALL (NETLIFY FUNCTION) ===== */
   async function askAI(message) {
     try {
       const res = await fetchWithTimeout(
@@ -58,11 +69,19 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ message })
         },
         40000
-
       );
 
+      if (!res.ok) {
+        throw new Error("Server error");
+      }
+
       const data = await res.json();
-      return data.reply || null;
+
+      if (!data || !data.reply) {
+        throw new Error("Empty reply");
+      }
+
+      return data.reply;
 
     } catch (e) {
       return "Bro, network is slow. Please try again 🙏";
@@ -142,10 +161,3 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
-// 🔥 Warm up Netlify function (reduces mobile delay)
-fetch("/.netlify/functions/gemini", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ message: "ping" })
-});
-

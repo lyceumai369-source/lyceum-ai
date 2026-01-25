@@ -1,19 +1,19 @@
 exports.handler = async function (event) {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
-
     const body = JSON.parse(event.body || "{}");
     const userMessage = body.message;
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           contents: [
             {
-              role: "user",
               parts: [{ text: userMessage }]
             }
           ]
@@ -23,14 +23,18 @@ exports.handler = async function (event) {
 
     const data = await response.json();
 
-    // 🔥 SAFE TEXT EXTRACTION
-    let reply = "Sorry, I couldn't generate a response.";
+    // ✅ FORCE SAFE READ
+    let reply = "I am thinking... please ask again.";
 
-    if (data.candidates && data.candidates.length > 0) {
-      reply =
-        data.candidates[0]?.content?.parts
-          ?.map(p => p.text)
-          .join("") || reply;
+    if (
+      data &&
+      data.candidates &&
+      data.candidates.length > 0 &&
+      data.candidates[0].content &&
+      data.candidates[0].content.parts &&
+      data.candidates[0].content.parts.length > 0
+    ) {
+      reply = data.candidates[0].content.parts[0].text;
     }
 
     return {
@@ -38,11 +42,11 @@ exports.handler = async function (event) {
       body: JSON.stringify({ reply })
     };
 
-  } catch (err) {
+  } catch (error) {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        reply: "Gemini error. Please try again."
+        reply: "Free AI limit reached. Please try again later."
       })
     };
   }

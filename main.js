@@ -83,19 +83,23 @@ document.addEventListener('DOMContentLoaded', () => {
     userInput.value = '';
     UI.showTyping(true);
 
-    let response = Brain.getResponse(text);
+   let response = Brain.getResponse(text);
 
-    if (!response) {
-      response = await getKnowledge(text, toggleWikiLoading);
-    }
+// 🔥 FIRST: Gemini
+if (!response) {
+  response = await askGemini(text);
+}
 
-    if (!response) {
-      response = await askGemini(text);
-    }
+// THEN: Wikipedia
+if (!response) {
+  response = await getKnowledge(text, toggleWikiLoading);
+}
 
-    if (!response) {
-      response = getFallbackReply();
-    }
+// LAST: fallback
+if (!response) {
+  response = getFallbackReply();
+}
+
 
     UI.showTyping(false);
     const botTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -137,3 +141,4 @@ function toggleWikiLoading(show) {
   if (!loader) return;
   loader.classList.toggle("hidden", !show);
 }
+

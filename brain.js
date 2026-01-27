@@ -17,12 +17,12 @@ if (
 
     /* ===== GREETINGS ===== */
     if (has('hi') || has('hello') || has('hey')) {
-      return "Hey bro 👋 I’m Lyceum AI. I’m still in my early phase, but I’m growing every day to help your vision.";
+      return "Hey bro 👋 I’m Lyceum AI. I’m  a vision-aligned intelligence system, architected around Ananthu Shaji’s thinking, continuously integrating focus, learning, and long-range vision into a single evolving core..";
     }
 
     /* ===== IDENTITY ===== */
     if (has('who') && (has('you') || has('u'))) {
-      return "I’m Lyceum AI, a private offline assistant created for focus, learning, and vision building.";
+      return "I’m Lyceum AI,a highly integrated AI assistant engineered to seamlessly align focus, learning, and vision into one intelligent system.";
     }
 
     if (has('owner') || has('creator') || has('developer')) {
@@ -95,3 +95,4 @@ if (has('joke')) {
   }
 
 };
+

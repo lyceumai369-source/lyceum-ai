@@ -37,16 +37,16 @@ const Brain = {
     }
 
     if (has('who') && (has('you') || has('u'))) {
-      return "I’m Lyceum AI v2 🤖 — a highly integrated AI assistant engineered to align focus, learning, and vision.";
+      return "I’m Lyceum AI operates as an integrated intelligence layer shaped by Ananthu Shaji’s vision, designed to think with purpose, adapt with intent, and support human direction";
     }
 
     /* ===== 3. GREETINGS & SMALL TALK ===== */
     if (has('hi') || has('hello') || has('hey')) {
-      return "Hey bro 👋 I’m Lyceum AI. I’m here to help, chat, and learn with you.";
+      return "Hey Dear 👋 I’m Lyceum AI version 2.0. powered by Highly integrated Next gen Ai I’m here to help, chat, and learn with you.";
     }
 
     if (has('how') && has('are') && has('you')) {
-      return "I’m doing good bro 🙂 learning every day and getting better step by step.";
+      return "I’m doing good dear 🙂 learning every day and getting better step by step.";
     }
 
     /* ===== 4. FEATURES ===== */
@@ -70,3 +70,4 @@ const Brain = {
     return null; 
   }
 };
+

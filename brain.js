@@ -42,7 +42,7 @@ const Brain = {
 
     /* ===== 3. GREETINGS & SMALL TALK ===== */
     if (has('hi') || has('hello') || has('hey')) {
-      return "Hey Dear 👋 I’m Lyceum AI version 2.0. powered by Highly integrated Next gen Ai I’m here to help, chat, and learn with you.";
+      return "Hey Dear 👋 I’m Lyceum AI version 2.0. powered by lyceum intelligence . A Highly integrated Next generation Ai I’m here to help, chat, and learn with you.";
     }
 
     if (has('how') && has('are') && has('you')) {
@@ -70,4 +70,5 @@ const Brain = {
     return null; 
   }
 };
+
 

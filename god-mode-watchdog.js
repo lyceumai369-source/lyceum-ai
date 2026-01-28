@@ -6,11 +6,12 @@
 (function () {
 
     // ---- CONFIGURATION ZONE ----
-    const requiredElements = [
-        { id: "sendBtn", name: "Send Button" },
-        { id: "userInput", name: "Message Input Box" },
-        { id: "chatBox", name: "Chat Display Area" }
-    ];
+   const requiredElements = [
+  { id: "send-btn", name: "Send Button" },
+  { id: "user-input", name: "Message Input Box" },
+  { id: "chat-messages", name: "Chat Display Area" }
+];
+
 
     // ---- PREVENT DUPLICATE LOG SPAM ----
     const seenErrors = new Set();
